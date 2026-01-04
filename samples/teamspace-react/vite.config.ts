@@ -10,6 +10,19 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Workspace package aliases for development - points to source instead of dist
+      '@asgardeo/react': path.resolve(__dirname, '../../packages/react/src'),
+      '@asgardeo/react-router': path.resolve(__dirname, '../../packages/react-router/src'),
+      '@asgardeo/i18n': path.resolve(__dirname, '../../packages/i18n/src'),
+      '@asgardeo/browser': path.resolve(__dirname, '../../packages/browser/src'),
     },
+  },
+  // Enable source maps for better debugging
+  build: {
+    sourcemap: true,
+  },
+  // Ensure proper dev server configuration
+  server: {
+    sourcemapIgnoreList: false,
   },
 });

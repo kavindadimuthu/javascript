@@ -42,12 +42,14 @@ await build({
   ...commonOptions,
   format: 'esm',
   outfile: 'dist/index.js',
-  sourcemap: true,
+  sourcemap: 'linked',
+  sourcesContent: true,
 });
 
 await build({
   ...commonOptions,
   format: 'cjs',
   outfile: 'dist/cjs/index.js',
-  sourcemap: true,
+  sourcemap: 'linked',
+  sourcesContent: true,
 });

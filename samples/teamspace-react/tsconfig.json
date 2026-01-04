@@ -5,7 +5,16 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      // Workspace package path mappings for IDE navigation - points to source files
+      "@asgardeo/react": ["../../packages/react/src"],
+      "@asgardeo/react/*": ["../../packages/react/src/*"],
+      "@asgardeo/react-router": ["../../packages/react-router/src"],
+      "@asgardeo/react-router/*": ["../../packages/react-router/src/*"],
+      "@asgardeo/i18n": ["../../packages/i18n/src"],
+      "@asgardeo/i18n/*": ["../../packages/i18n/src/*"],
+      "@asgardeo/browser": ["../../packages/browser/src"],
+      "@asgardeo/browser/*": ["../../packages/browser/src/*"]
     }
   }
 }
