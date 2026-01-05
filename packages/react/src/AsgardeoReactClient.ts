@@ -69,11 +69,11 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
   private asgardeo: AuthAPI;
   private _isLoading: boolean = false;
 
-  constructor() {
+  constructor(id?: number) {
     super();
 
     // FIXME: This has to be the browser client from `@asgardeo/browser` package.
-    this.asgardeo = new AuthAPI();
+    this.asgardeo = new AuthAPI(id);
   }
 
   /**

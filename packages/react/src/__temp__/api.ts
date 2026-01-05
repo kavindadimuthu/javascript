@@ -40,8 +40,8 @@ class AuthAPI {
 
   private _isLoading: boolean;
 
-  constructor(spaClient?: AsgardeoSPAClient) {
-    this._client = spaClient ?? AsgardeoSPAClient.getInstance();
+  constructor(id?: number, spaClient?: AsgardeoSPAClient) {
+    this._client = spaClient ?? AsgardeoSPAClient.getInstance(id);
 
     this.getState = this.getState.bind(this);
     this.init = this.init.bind(this);

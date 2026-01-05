@@ -48,7 +48,13 @@ import UserProvider from '../User/UserProvider';
 /**
  * Props interface of {@link AsgardeoProvider}
  */
-export type AsgardeoProviderProps = AsgardeoReactConfig;
+export type AsgardeoProviderProps = AsgardeoReactConfig & {
+  /**
+   * Optional ID to pass to the AsgardeoReactClient constructor.
+   * Used to identify and manage multiple client instances.
+   */
+  id?: number;
+};
 
 const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   afterSignInUrl = window.location.origin,
@@ -64,10 +70,11 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   applicationId,
   signInOptions,
   syncSession,
+  id,
   ...rest
 }: PropsWithChildren<AsgardeoProviderProps>): ReactElement => {
   const reRenderCheckRef: RefObject<boolean> = useRef(false);
-  const asgardeo: AsgardeoReactClient = useMemo(() => new AsgardeoReactClient(), []);
+  const asgardeo: AsgardeoReactClient = useMemo(() => new AsgardeoReactClient(id), [id]);
   const {hasAuthParams} = useBrowserUrl();
   const [user, setUser] = useState<any | null>(null);
   const [currentOrganization, setCurrentOrganization] = useState<Organization | null>(null);
