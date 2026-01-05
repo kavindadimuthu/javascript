@@ -14,6 +14,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import AuthenticatedLayout from './layouts/AuthenticatedLayout';
 import SignUpPage from './pages/SignUpPage';
 import {ProtectedRoute} from '@asgardeo/react-router';
+import LogPage from './pages/LogPage';
 
 // Types
 export interface User {
@@ -109,6 +110,15 @@ function App() {
             }
           />
 
+          <Route
+            path="/log"
+            element={
+              <LandingLayout>
+                <LogPage />
+              </LandingLayout>
+            }
+          />
+
           {/* Auth Routes */}
           <Route
             path="/signin"
@@ -131,11 +141,11 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute redirectTo="/signin">
+              // <ProtectedRoute redirectTo="/signin">
                 <DashboardLayout>
                   <DashboardPage />
                 </DashboardLayout>
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
