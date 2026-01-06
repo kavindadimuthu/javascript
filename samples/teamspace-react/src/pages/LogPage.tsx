@@ -2,7 +2,7 @@ import { AsgardeoProvider, SignInButton, SignOutButton, useAsgardeo } from "@asg
 import { useEffect, useState } from "react";
 
 // Component to display root provider details
-function ProviderInfo({ providername, providerid }: { providername: string; providerid: number }) {
+export function ProviderInfo({ providername, providerid }: { providername: string; providerid: number }) {
     const asgardeo = useAsgardeo();
     const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -41,7 +41,7 @@ function ProviderInfo({ providername, providerid }: { providername: string; prov
 
             {/* Display sign-in or sign-out buttons according to the user's authentication status */}
             {!isSignedIn ? (
-                <div className="pb-4"><SignInButton signInOptions={{ prompt: "login" }} /></div>
+                <div className="pb-4"><SignInButton/></div>
             ) : (
                 <div className="pb-4"><SignOutButton /></div>
             )}
