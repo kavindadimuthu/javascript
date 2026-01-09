@@ -41,11 +41,22 @@ export function ProviderInfo({ providername, providerid }: { providername: strin
 
             {/* Display sign-in or sign-out buttons according to the user's authentication status */}
             {!isSignedIn ? (
-                <div className="pb-4"><SignInButton/></div>
+                <div className="pb-4"><SignInButton /></div>
             ) : (
                 <div className="pb-4"><SignOutButton /></div>
             )}
 
+            {/*button for checking the instance id of provider during debugging*/}
+            <div className="pb-4">
+                <button
+                    onClick={() => {
+                        // console.warn(`Instance ID of provider ${providername} (ID: ${providerid}):`, asgardeo.getInstanceId());
+                    }}
+                    className="p-2 border border-2 bg-gray-100 cursor-pointer"
+                >
+                    Check Instance ID
+                </button>
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
                 <div>
                     <strong>Is Signed In:</strong>
@@ -98,10 +109,43 @@ export default function LogPage() {
 
             <div className="flex w-full gap-8 border p-4 rounded-lg">
                 <div className="flex-1">
-                    <ProviderInfo
-                        providername="Root"
-                        providerid={0}
-                    />
+                    <AsgardeoProvider
+                        id={2}
+                        baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
+                        clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
+                        afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
+                        afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
+                        // baseUrl={import.meta.env.VITE_ASGARDEO_BASE_URL}
+                        // clientId={import.meta.env.VITE_ASGARDEO_CLIENT_ID}
+                        // afterSignInUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL}
+                        // afterSignOutUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL}
+                        scopes="openid profile internal_login"
+                    >
+                        <ProviderInfo
+                            providername="Nested"
+                            providerid={2}
+                        />
+                    </AsgardeoProvider>
+                </div>
+                <div className="flex-1">
+                    <AsgardeoProvider
+                        id={1}
+                        // baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
+                        // clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
+                        // afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
+                        // afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
+                        baseUrl={import.meta.env.VITE_ASGARDEO_BASE_URL}
+                        clientId={import.meta.env.VITE_ASGARDEO_CLIENT_ID}
+                        afterSignInUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL}
+                        afterSignOutUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL}
+                        scopes="openid profile internal_login"
+                    >
+                        <ProviderInfo
+                            providername="Root"
+                            providerid={1}
+                        />
+                    </AsgardeoProvider>
+
                 </div>
 
                 {/* 
@@ -141,25 +185,6 @@ export default function LogPage() {
                    - Nested: Minimal scopes (openid profile internal_login)
             */}
                 {/* Nested Provider */}
-                <div className="flex-1">
-                    <AsgardeoProvider
-                        id={2}
-                        baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
-                        clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
-                        afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
-                        afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
-                        // baseUrl={import.meta.env.VITE_ASGARDEO_BASE_URL}
-                        // clientId={import.meta.env.VITE_ASGARDEO_CLIENT_ID}
-                        // afterSignInUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL}
-                        // afterSignOutUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL}
-                        scopes="openid profile internal_login"
-                    >
-                        <ProviderInfo
-                            providername="Nested"
-                            providerid={1}
-                        />
-                    </AsgardeoProvider>
-                </div>
             </div>
 
             {/* Support Status */}
