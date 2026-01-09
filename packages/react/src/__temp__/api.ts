@@ -50,6 +50,10 @@ class AuthAPI {
     this.updateState = this.updateState.bind(this);
   }
 
+  public getInstanceId(): number {
+    return this._client.getInstanceId();
+  }
+
   public _setIsLoading(isLoading: boolean): void {
     this._isLoading = isLoading;
   }

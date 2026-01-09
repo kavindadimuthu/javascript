@@ -829,6 +829,8 @@ export const WebWorkerClient = async (
     }
   };
 
+  const getInstanceId = (): number => _authenticationClient.getInstanceId();
+
   const reInitialize = async (newConfig: Partial<AuthClientConfig<WebWorkerClientConfig>>): Promise<void> => {
     const existingConfig = await getConfigData();
     const isCheckSessionIframeDifferent: boolean = !(
@@ -882,5 +884,6 @@ export const WebWorkerClient = async (
     signOut,
     signInSilently,
     reInitialize,
+    getInstanceId,
   };
 };

@@ -76,6 +76,10 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
     this.asgardeo = new AuthAPI(id);
   }
 
+  public getInstanceId(): number {
+    return this.asgardeo.getInstanceId();
+  }
+
   /**
    * Set the loading state of the client
    * @param loading - Boolean indicating if the client is in a loading state

@@ -138,6 +138,14 @@ export type AsgardeoContextProps = {
    * @returns Promise resolving to boolean indicating success.
    */
   reInitialize: (config: Partial<AsgardeoReactConfig>) => Promise<boolean>;
+
+  /**
+   * Returns the instance ID of the current auth client.
+   * This is useful when working with multiple Asgardeo provider instances.
+   *
+   * @returns The instance ID number.
+   */
+  getInstanceId: () => number;
 } & Pick<AsgardeoReactConfig, 'storage' | 'platform'> &
   Pick<AsgardeoReactClient, 'clearSession' | 'switchOrganization'>;
 
@@ -173,6 +181,7 @@ const AsgardeoContext: Context<AsgardeoContextProps | null> = createContext<null
   switchOrganization: null,
   reInitialize: null,
   platform: undefined,
+  getInstanceId: () => 0,
 });
 
 AsgardeoContext.displayName = 'AsgardeoContext';

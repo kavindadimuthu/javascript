@@ -164,8 +164,20 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
 
       const isV2Platform = config.platform === Platform.AsgardeoV2;
 
-      if (hasAuthParamsResult) {
+      //extract state param from url
+      const urlParams = currentUrl.searchParams;
+      const stateParam = urlParams.get('state');
+
+      // const instanceIdInThisInstance = asgardeo.getInstanceId();
+      const instanceIdInThisInstance = id;
+
+      //check for instance id in state param is matching with asgardeo provider instance id
+      const isCalledForThisInstance = (stateParam?.split('-')[0] === 'instance_' + (instanceIdInThisInstance ?? 1));
+      console.log('Has auth params in URL?', hasAuthParamsResult, 'clientId:', clientId, 'Instance check :' , isCalledForThisInstance);
+
+      if (hasAuthParamsResult && isCalledForThisInstance) {
         try {
+          console.log('Attempting to sign in from clientID- ', clientId, 'This is the instance being called-',id);
           if (isV2Platform) {
             // For V2 platform, check if this is an embedded flow or traditional OAuth
             const urlParams = currentUrl.searchParams;
@@ -530,6 +542,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       syncSession,
       platform: config?.platform,
       switchOrganization,
+      getInstanceId: asgardeo.getInstanceId.bind(asgardeo),
     }),
     [
       applicationId,

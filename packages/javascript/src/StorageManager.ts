@@ -75,7 +75,11 @@ class StorageManager<T> {
     await this._store.setData(key, dataToBeSavedJSON);
   }
 
-  protected _resolveKey(store: Stores | string, userId?: string): string {
+  protected _resolveKey(store: Stores | string, userId?: string, requestedByJsClient?: boolean): string {
+    if (requestedByJsClient) {
+      console.log('StorageManager - _resolveKey - requested by js client');
+      console.log('StorageManager - _resolveKey - instance id:', this._id);
+    }
     return userId ? `${store}-${this._id}-${userId}` : `${store}-${this._id}`;
   }
 
@@ -173,8 +177,9 @@ class StorageManager<T> {
     return data && JSON.parse(data)[key];
   }
 
-  public async getTemporaryDataParameter(key: keyof TemporaryStore, userId?: string): Promise<TemporaryStoreValue> {
-    const data: string = await this._store.getData(this._resolveKey(Stores.TemporaryData, userId));
+  public async getTemporaryDataParameter(key: keyof TemporaryStore, userId?: string, requestedByJsClient?: boolean): Promise<TemporaryStoreValue> {
+    const data: string = await this._store.getData(this._resolveKey(Stores.TemporaryData, userId, requestedByJsClient));
+    console.log('StorageManager - getTemporaryDataParameter - data:', data);
 
     return data && JSON.parse(data)[key];
   }

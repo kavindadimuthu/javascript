@@ -67,6 +67,7 @@ export interface MainThreadClientInterface {
   getAccessToken(sessionId?: string): Promise<string>;
   getStorageManager(): Promise<StorageManager<MainThreadClientConfig>>;
   isSignedIn(): Promise<boolean>;
+  getInstanceId(): number;
   reInitialize(config: Partial<AuthClientConfig<MainThreadClientConfig>>): Promise<void>;
   signInSilently(
     additionalParams?: Record<string, string | boolean>,
@@ -111,4 +112,5 @@ export interface WebWorkerClientInterface {
     additionalParams?: Record<string, string | boolean>,
     tokenRequestConfig?: {params: Record<string, unknown>},
   ): Promise<User | boolean>;
+  getInstanceId(): number;
 }

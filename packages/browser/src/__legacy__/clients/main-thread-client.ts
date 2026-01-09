@@ -391,6 +391,8 @@ export const MainThreadClient = async (
 
   const isSessionActive = async (): Promise<boolean> => (await _dataLayer.getSessionStatus()) === 'true';
 
+  const getInstanceId = (): number => _authenticationClient.getInstanceId();
+
   const reInitialize = async (newConfig: Partial<AuthClientConfig<MainThreadClientConfig>>): Promise<void> => {
     const existingConfig = await _dataLayer.getConfigData();
     const isCheckSessionIframeDifferent: boolean = !(
@@ -440,5 +442,6 @@ export const MainThreadClient = async (
     signOut,
     signInSilently,
     reInitialize,
+    getInstanceId,
   };
 };

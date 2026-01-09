@@ -134,6 +134,24 @@ export class AsgardeoSPAClient {
   }
 
   /**
+   * This method returns the instance ID of the current auth client.
+   *
+   * @return {number} - The instance ID.
+   *
+   * @example
+   * ```
+   * const instanceId = auth.getInstanceId();
+   * ```
+   *
+   * @memberof AsgardeoSPAClient
+   *
+   * @preserve
+   */
+  public getInstanceId(): number {
+    return this._instanceID;
+  }
+
+  /**
    * This method checks if the SDK is initialized and the user is authenticated.
    *
    * @param validateAuthentication - should user's authenticated status be checked as part of validation
