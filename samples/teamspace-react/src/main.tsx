@@ -1,19 +1,27 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
-import {AsgardeoProvider} from '@asgardeo/react';
+import { AsgardeoProvider } from '@asgardeo/react';
+// import { ProviderInfo } from './pages/LogPage';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AsgardeoProvider
+      id={1}
       baseUrl={import.meta.env.VITE_ASGARDEO_BASE_URL}
       afterSignInUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL}
       afterSignOutUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL}
       clientId={import.meta.env.VITE_ASGARDEO_CLIENT_ID}
+      // baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
+      // clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
+      // afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
+      // afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
+
       signInUrl={import.meta.env.VITE_ASGARDEO_SIGN_IN_URL}
       signUpUrl={import.meta.env.VITE_ASGARDEO_SIGN_UP_URL}
       scopes="openid address email profile user:email read:user internal_organization_create internal_organization_view internal_organization_update internal_organization_delete internal_org_organization_update internal_org_organization_create internal_org_organization_view internal_org_organization_delete"
+      syncSession={true}
       preferences={{
         theme: {
           // overrides: {
@@ -57,5 +65,19 @@ createRoot(document.getElementById('root')!).render(
     >
       <App />
     </AsgardeoProvider>
+    {/* <AsgardeoProvider
+      id={3}
+      baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
+      clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
+      afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
+      afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
+      scopes="openid profile internal_login"
+      syncSession={true}
+    >
+      <ProviderInfo
+        providername="Parellel"
+        providerid={3}
+      />
+    </AsgardeoProvider> */}
   </StrictMode>,
 );

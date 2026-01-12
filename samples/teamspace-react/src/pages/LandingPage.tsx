@@ -17,7 +17,8 @@ import {
   Linkedin,
   Mail,
 } from 'lucide-react';
-import {SignUpButton} from '@asgardeo/react';
+import {AsgardeoProvider, SignUpButton} from '@asgardeo/react';
+import { ProviderInfo } from './LogPage';
 
 export default function LandingPage() {
   const features = [
@@ -153,6 +154,45 @@ export default function LandingPage() {
     <div className="bg-white">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        {/* Nested Provider */}
+                {/* <div className="flex-1">
+                    <AsgardeoProvider
+                        id={1}
+                        // baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
+                        // clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
+                        // afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
+                        // afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
+                        baseUrl={import.meta.env.VITE_ASGARDEO_BASE_URL}
+                        clientId={import.meta.env.VITE_ASGARDEO_CLIENT_ID}
+                        afterSignInUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL}
+                        afterSignOutUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL}
+                        scopes="openid profile internal_login"
+                    >
+                        <ProviderInfo
+                            providername="Nested"
+                            providerid={1}
+                        />
+                    </AsgardeoProvider>
+                </div>
+                <div className="flex-1">
+                    <AsgardeoProvider
+                        id={2}
+                        baseUrl={import.meta.env.VITE_ASGARDEO_NESTED_BASE_URL}
+                        clientId={import.meta.env.VITE_ASGARDEO_NESTED_CLIENT_ID}
+                        afterSignInUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_IN_URL}
+                        afterSignOutUrl={import.meta.env.VITE_ASGARDEO_NESTED_AFTER_SIGN_OUT_URL}
+                        // baseUrl={import.meta.env.VITE_ASGARDEO_BASE_URL}
+                        // clientId={import.meta.env.VITE_ASGARDEO_CLIENT_ID}
+                        // afterSignInUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL}
+                        // afterSignOutUrl={import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL}
+                        scopes="openid profile internal_login"
+                    >
+                        <ProviderInfo
+                            providername="Nested"
+                            providerid={2}
+                        />
+                    </AsgardeoProvider>
+                </div> */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">

@@ -1,6 +1,6 @@
 'use client';
 
-import {OrganizationSwitcher} from '@asgardeo/react';
+// import {OrganizationSwitcher} from '@asgardeo/react';
 import UserDropdown from './UserDropdown';
 
 interface AuthenticatedActionsProps {
@@ -10,7 +10,7 @@ interface AuthenticatedActionsProps {
 export default function AuthenticatedActions({className = ''}: AuthenticatedActionsProps) {
   return (
     <div className={`flex items-center space-x-4 ${className}`}>
-      <OrganizationSwitcher />
+      {/* <OrganizationSwitcher /> */}
       <UserDropdown />
     </div>
   );
