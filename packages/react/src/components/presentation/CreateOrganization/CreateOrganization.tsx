@@ -113,6 +113,7 @@ export const CreateOrganization: FC<CreateOrganizationProps> = ({
             ...payload,
             parentId,
           },
+          instanceId,
         });
       }
 

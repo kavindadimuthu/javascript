@@ -160,6 +160,7 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({
         baseUrl,
         instanceId,
         organizationId,
+        instanceId,
       });
       setOrganization(orgData);
     } catch (err) {
