@@ -30,7 +30,7 @@ import {
   User,
 } from '@asgardeo/browser';
 import AsgardeoReactClient from '../../AsgardeoReactClient';
-import {AsgardeoReactConfig} from '../../models/config';
+import {AsgardeoReactConfig, MultiOrgConfig} from '../../models/config';
 
 /**
  * Props interface of {@link AsgardeoContext}
@@ -142,6 +142,19 @@ export type AsgardeoContextProps = {
    * Instance ID for multi-instance support.
    */
   instanceId: number;
+  /**
+   * Multi-organization configuration for this provider.
+   * Indicates whether this provider is configured for multi-org workflows.
+   */
+  multiOrg?: MultiOrgConfig;
+  /**
+   * Indicates if this provider is a sub-organization provider.
+   */
+  isSubOrgProvider: boolean;
+  /**
+   * The target organization ID if this is a sub-org provider.
+   */
+  targetOrganizationId?: string;
 } & Pick<AsgardeoReactConfig, 'storage' | 'platform'> &
   Pick<AsgardeoReactClient, 'clearSession' | 'switchOrganization'>;
 
@@ -178,6 +191,9 @@ const AsgardeoContext: Context<AsgardeoContextProps | null> = createContext<null
   reInitialize: null,
   platform: undefined,
   instanceId: 0,
+  multiOrg: undefined,
+  isSubOrgProvider: false,
+  targetOrganizationId: undefined,
 });
 
 AsgardeoContext.displayName = 'AsgardeoContext';

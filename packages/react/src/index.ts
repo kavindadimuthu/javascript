@@ -25,6 +25,8 @@ export * from './contexts/Asgardeo/AsgardeoContext';
 export {default as useAsgardeo} from './contexts/Asgardeo/useAsgardeo';
 export * from './contexts/Asgardeo/useAsgardeo';
 
+export type {AsgardeoReactConfig, MultiOrgConfig} from './models/config';
+
 export {default as UserContext} from './contexts/User/UserContext';
 export * from './contexts/User/UserContext';
 
@@ -42,6 +44,15 @@ export * from './contexts/Organization/OrganizationProvider';
 
 export {default as useOrganization} from './contexts/Organization/useOrganization';
 export * from './contexts/Organization/useOrganization';
+
+export {default as MultiOrgContext} from './contexts/MultiOrg/MultiOrgContext';
+export * from './contexts/MultiOrg/MultiOrgContext';
+
+export {default as MultiOrgProvider} from './contexts/MultiOrg/MultiOrgProvider';
+export * from './contexts/MultiOrg/MultiOrgProvider';
+
+export {default as useMultiOrg} from './contexts/MultiOrg/useMultiOrg';
+export * from './contexts/MultiOrg/useMultiOrg';
 
 export {default as FlowContext} from './contexts/Flow/FlowContext';
 export * from './contexts/Flow/FlowContext';

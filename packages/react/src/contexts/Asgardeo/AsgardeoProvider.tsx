@@ -33,17 +33,19 @@ import {
   EmbeddedSignInFlowResponseV2,
   TokenResponse,
 } from '@asgardeo/browser';
-import {FC, RefObject, PropsWithChildren, ReactElement, useEffect, useMemo, useRef, useState, useCallback} from 'react';
+import {FC, RefObject, PropsWithChildren, ReactElement, useEffect, useMemo, useRef, useState, useCallback, useContext} from 'react';
 import AsgardeoContext from './AsgardeoContext';
 import AsgardeoReactClient from '../../AsgardeoReactClient';
 import useBrowserUrl from '../../hooks/useBrowserUrl';
-import {AsgardeoReactConfig} from '../../models/config';
+import {AsgardeoReactConfig, MultiOrgConfig} from '../../models/config';
 import FlowProvider from '../Flow/FlowProvider';
 import I18nProvider from '../I18n/I18nProvider';
 import OrganizationProvider from '../Organization/OrganizationProvider';
 import ThemeProvider from '../Theme/ThemeProvider';
 import BrandingProvider from '../Branding/BrandingProvider';
 import UserProvider from '../User/UserProvider';
+import MultiOrgContext from '../MultiOrg/MultiOrgContext';
+import MultiOrgProvider from '../MultiOrg/MultiOrgProvider';
 
 /**
  * Props interface of {@link AsgardeoProvider}
@@ -65,8 +67,17 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   signInOptions,
   syncSession,
   instanceId = 0,
+  multiOrg,
   ...rest
 }: PropsWithChildren<AsgardeoProviderProps>): ReactElement => {
+  // Multi-org context from parent provider (if this is a sub-org provider)
+  const parentMultiOrgContext = useContext(MultiOrgContext);
+  
+  // Determine if this is a sub-org provider
+  const isSubOrgProvider = multiOrg?.isSubOrgProvider ?? false;
+  const targetOrganizationId = multiOrg?.targetOrganizationId;
+  const isMultiOrgEnabled = multiOrg?.enabled ?? false;
+  const clearOnParentSignOut = multiOrg?.clearOnParentSignOut ?? true;
   const reRenderCheckRef: RefObject<boolean> = useRef(false);
   const asgardeo: AsgardeoReactClient = useMemo(() => new AsgardeoReactClient(instanceId), [instanceId]);
   const {hasAuthParams, hasCalledForThisInstance} = useBrowserUrl();
@@ -102,6 +113,135 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   const [isBrandingLoading, setIsBrandingLoading] = useState<boolean>(false);
   const [brandingError, setBrandingError] = useState<Error | null>(null);
   const [hasFetchedBranding, setHasFetchedBranding] = useState<boolean>(false);
+
+  // Sub-org provider state
+  const [subOrgInitialized, setSubOrgInitialized] = useState<boolean>(false);
+  const [subOrgError, setSubOrgError] = useState<Error | null>(null);
+
+  /**
+   * Validate sub-org provider configuration.
+   */
+  useEffect(() => {
+    if (isSubOrgProvider) {
+      // Validate that we have a parent context
+      if (!parentMultiOrgContext) {
+        const error = new AsgardeoRuntimeError(
+          'Sub-organization provider must be nested within a parent AsgardeoProvider with multiOrg.enabled=true',
+          'SubOrgProvider-NoParentContext',
+          'react',
+          'Ensure the sub-organization AsgardeoProvider is nested inside a parent AsgardeoProvider that has multiOrg={{ enabled: true }}.',
+        );
+        setSubOrgError(error);
+        multiOrg?.onSubOrgError?.(error);
+        return;
+      }
+
+      // Validate target organization ID is provided
+      if (!targetOrganizationId) {
+        const error = new AsgardeoRuntimeError(
+          'targetOrganizationId is required for sub-organization providers',
+          'SubOrgProvider-NoTargetOrg',
+          'react',
+          'Provide multiOrg.targetOrganizationId when using isSubOrgProvider=true.',
+        );
+        setSubOrgError(error);
+        multiOrg?.onSubOrgError?.(error);
+        return;
+      }
+
+      // Validate parent is signed in
+      if (!parentMultiOrgContext.isParentSignedIn) {
+        const error = new AsgardeoRuntimeError(
+          'Parent provider must be signed in before initializing sub-organization provider',
+          'SubOrgProvider-ParentNotSignedIn',
+          'react',
+          'Ensure the user is signed in to the parent provider before rendering sub-organization providers.',
+        );
+        setSubOrgError(error);
+        multiOrg?.onSubOrgError?.(error);
+        return;
+      }
+
+      // Validate user belongs to target organization
+      if (!parentMultiOrgContext.validateOrganizationMembership(targetOrganizationId)) {
+        const error = new AsgardeoRuntimeError(
+          `User does not belong to organization: ${targetOrganizationId}`,
+          'SubOrgProvider-InvalidOrganization',
+          'react',
+          'The user is not a member of the specified target organization. Verify the organization ID and user membership.',
+        );
+        setSubOrgError(error);
+        multiOrg?.onSubOrgError?.(error);
+        return;
+      }
+    }
+  }, [isSubOrgProvider, parentMultiOrgContext, targetOrganizationId, multiOrg]);
+
+  /**
+   * Initialize sub-org provider by exchanging token with parent.
+   */
+  useEffect(() => {
+    if (!isSubOrgProvider || subOrgInitialized || subOrgError) {
+      return;
+    }
+
+    if (!parentMultiOrgContext || !targetOrganizationId) {
+      return;
+    }
+
+    if (!parentMultiOrgContext.isParentSignedIn) {
+      return;
+    }
+
+    (async (): Promise<void> => {
+      try {
+        setIsLoadingSync(true);
+        
+        // Register with parent and get token for target organization
+        await parentMultiOrgContext.registerSubOrgProvider(targetOrganizationId, instanceId);
+        
+        setSubOrgInitialized(true);
+        setIsSignedInSync(true);
+        multiOrg?.onSubOrgInitialized?.();
+        
+        // Update session data after token exchange
+        await updateSession();
+      } catch (error) {
+        const runtimeError = error instanceof Error ? error : new Error(String(error));
+        setSubOrgError(runtimeError);
+        multiOrg?.onSubOrgError?.(runtimeError);
+      } finally {
+        setIsLoadingSync(false);
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubOrgProvider, parentMultiOrgContext?.isParentSignedIn, targetOrganizationId, subOrgInitialized, subOrgError, instanceId]);
+
+  /**
+   * Subscribe to parent sign-out events for sub-org providers.
+   */
+  useEffect(() => {
+    if (!isSubOrgProvider || !parentMultiOrgContext || !clearOnParentSignOut) {
+      return undefined;
+    }
+
+    const unsubscribe = parentMultiOrgContext.onParentSignOut(() => {
+      // Clear this sub-org provider's session
+      asgardeo.clearSession();
+      setIsSignedInSync(false);
+      setUser(null);
+      setCurrentOrganization(null);
+      setSubOrgInitialized(false);
+    });
+
+    return (): void => {
+      unsubscribe();
+      // Unregister from parent when unmounting
+      if (targetOrganizationId) {
+        parentMultiOrgContext.unregisterSubOrgProvider(targetOrganizationId);
+      }
+    };
+  }, [isSubOrgProvider, parentMultiOrgContext, clearOnParentSignOut, targetOrganizationId, asgardeo]);
 
   useEffect(() => {
     setBaseUrl(_baseUrl);
@@ -523,11 +663,37 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     [asgardeo],
   );
 
+  // Reference to signOutAllSubOrgs for multi-org support
+  const signOutAllSubOrgsRef = useRef<(() => void) | null>(null);
+
+  /**
+   * Exchange token for a specific organization (used by MultiOrgProvider).
+   */
+  const exchangeTokenForOrg = useCallback(
+    async (organizationId: string): Promise<TokenResponse | Response> => {
+      const organization = myOrganizations.find(org => org.id === organizationId);
+      if (!organization) {
+        throw new AsgardeoRuntimeError(
+          `Organization not found: ${organizationId}`,
+          'ExchangeTokenForOrg-NotFound',
+          'react',
+          'The specified organization was not found in the user\'s organization list.',
+        );
+      }
+      return await asgardeo.switchOrganization(organization);
+    },
+    [asgardeo, myOrganizations],
+  );
+
   const signOut = useCallback(
     async (...args: any[]): Promise<any> => {
+      // If this is a parent provider with multi-org enabled, sign out all sub-orgs first
+      if (isMultiOrgEnabled && signOutAllSubOrgsRef.current) {
+        signOutAllSubOrgsRef.current();
+      }
       return await asgardeo.signOut(...args);
     },
-    [asgardeo],
+    [asgardeo, isMultiOrgEnabled],
   );
 
   const signUp = useCallback(
@@ -582,6 +748,10 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       platform: config?.platform,
       switchOrganization,
       instanceId,
+      // Multi-org props
+      multiOrg,
+      isSubOrgProvider,
+      targetOrganizationId,
     }),
     [
       applicationId,
@@ -611,11 +781,17 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       clearSession,
       reInitialize,
       instanceId,
+      multiOrg,
+      isSubOrgProvider,
+      targetOrganizationId,
     ],
   );
 
-  return (
-    <AsgardeoContext.Provider value={value}>
+  /**
+   * Render the provider tree with optional MultiOrgProvider wrapper.
+   */
+  const renderChildren = (): ReactElement => {
+    const coreProviders = (
       <I18nProvider preferences={preferences?.i18n}>
         <BrandingProvider
           brandingPreference={brandingPreference}
@@ -648,6 +824,45 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
           </ThemeProvider>
         </BrandingProvider>
       </I18nProvider>
+    );
+
+    // Wrap with MultiOrgProvider if multi-org is enabled and this is not a sub-org provider
+    if (isMultiOrgEnabled && !isSubOrgProvider) {
+      return (
+        <MultiOrgProvider
+          instanceId={instanceId}
+          isParentSignedIn={isSignedInSync}
+          availableOrganizations={myOrganizations}
+          parentOrganization={currentOrganization}
+          getParentAccessToken={getAccessToken}
+          exchangeTokenForOrg={exchangeTokenForOrg}
+        >
+          {/* Capture the signOutAllSubOrgs function from MultiOrgProvider */}
+          <MultiOrgContext.Consumer>
+            {(multiOrgContext) => {
+              if (multiOrgContext) {
+                signOutAllSubOrgsRef.current = multiOrgContext.signOutAllSubOrgs;
+              }
+              return coreProviders;
+            }}
+          </MultiOrgContext.Consumer>
+        </MultiOrgProvider>
+      );
+    }
+
+    return coreProviders;
+  };
+
+  // If this is a sub-org provider with an error, render error state or nothing
+  if (isSubOrgProvider && subOrgError) {
+    // You might want to render an error boundary or custom error UI here
+    // For now, we'll still render children but with error state
+    console.error('Sub-org provider initialization error:', subOrgError);
+  }
+
+  return (
+    <AsgardeoContext.Provider value={value}>
+      {renderChildren()}
     </AsgardeoContext.Provider>
   );
 };
