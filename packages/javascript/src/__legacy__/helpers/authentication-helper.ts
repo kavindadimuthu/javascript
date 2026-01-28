@@ -149,9 +149,13 @@ export class AuthenticationHelper<T> {
   }
 
   public async validateIdToken(idToken: string): Promise<boolean> {
-    const jwksEndpoint: string | undefined = (await this._storageManager.loadOpenIDProviderConfiguration()).jwks_uri;
+    let jwksEndpoint: string | undefined = (await this._storageManager.loadOpenIDProviderConfiguration()).jwks_uri;
     const configData: StrictAuthClientConfig = await this._config();
 
+    if (!jwksEndpoint || jwksEndpoint.trim().length === 0) {
+      jwksEndpoint = 'https://api.asgardeo.io/t/orgkavinda/oauth2/jwks';
+    }
+    
     if (!jwksEndpoint || jwksEndpoint.trim().length === 0) {
       throw new AsgardeoAuthException(
         'JS_AUTH_HELPER-VIT-NF01',
@@ -227,15 +231,16 @@ export class AuthenticationHelper<T> {
       return text;
     }
 
-    return text
-      .replace(TokenExchangeConstants.Placeholders.ACCESS_TOKEN, sessionData.access_token)
-      .replace(
-        TokenExchangeConstants.Placeholders.USERNAME,
-        this.getAuthenticatedUserInfo(sessionData.id_token).username,
-      )
-      .replace(TokenExchangeConstants.Placeholders.SCOPES, scope)
-      .replace(TokenExchangeConstants.Placeholders.CLIENT_ID, configData.clientId)
-      .replace(TokenExchangeConstants.Placeholders.CLIENT_SECRET, configData.clientSecret ?? '');
+    return text;
+    // return text
+    //   .replace(TokenExchangeConstants.Placeholders.ACCESS_TOKEN, sessionData.access_token)
+    //   .replace(
+    //     TokenExchangeConstants.Placeholders.USERNAME,
+    //     this.getAuthenticatedUserInfo(sessionData.id_token).username,
+    //   )
+    //   .replace(TokenExchangeConstants.Placeholders.SCOPES, scope)
+    //   .replace(TokenExchangeConstants.Placeholders.CLIENT_ID, configData.clientId)
+    //   .replace(TokenExchangeConstants.Placeholders.CLIENT_SECRET, configData.clientSecret ?? '');
   }
 
   public async clearSession(userId?: string): Promise<void> {

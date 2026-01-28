@@ -142,6 +142,8 @@ export type AsgardeoContextProps = {
    * Instance ID for multi-instance support.
    */
   instanceId: number;
+  initialAccessToken?: string;
+  organizationId?: string;
 } & Pick<AsgardeoReactConfig, 'storage' | 'platform'> &
   Pick<AsgardeoReactClient, 'clearSession' | 'switchOrganization'>;
 
@@ -178,6 +180,8 @@ const AsgardeoContext: Context<AsgardeoContextProps | null> = createContext<null
   reInitialize: null,
   platform: undefined,
   instanceId: 0,
+  initialAccessToken: undefined,
+  organizationId: undefined,
 });
 
 AsgardeoContext.displayName = 'AsgardeoContext';

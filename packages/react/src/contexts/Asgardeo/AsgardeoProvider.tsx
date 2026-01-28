@@ -48,7 +48,14 @@ import UserProvider from '../User/UserProvider';
 /**
  * Props interface of {@link AsgardeoProvider}
  */
-export type AsgardeoProviderProps = AsgardeoReactConfig;
+export type AsgardeoProviderProps = AsgardeoReactConfig & {
+  /**
+   * Optional initialAccessToken to pass to the AsgardeoReactClient constructor.
+   * Used to identify and manage multiple client instances.
+   */
+  initialAccessToken?: string;
+  organizationId?: string;
+};
 
 const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   afterSignInUrl = window.location.origin,
@@ -65,6 +72,8 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   signInOptions,
   syncSession,
   instanceId = 0,
+  initialAccessToken,
+  organizationId,
   ...rest
 }: PropsWithChildren<AsgardeoProviderProps>): ReactElement => {
   const reRenderCheckRef: RefObject<boolean> = useRef(false);
@@ -94,6 +103,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     syncSession,
     ...rest,
   });
+  const [initAccessToken, setInitAccessToken] = useState<string | undefined>(initialAccessToken);
 
   const [isUpdatingSession, setIsUpdatingSession] = useState<boolean>(false);
 
@@ -102,6 +112,41 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   const [isBrandingLoading, setIsBrandingLoading] = useState<boolean>(false);
   const [brandingError, setBrandingError] = useState<Error | null>(null);
   const [hasFetchedBranding, setHasFetchedBranding] = useState<boolean>(false);
+
+  // Check initialAccessToken and organizationId has passed and if so, exchange initial access token for that organization token
+  useEffect(() => {
+    (async (): Promise<void> => {
+      if (initialAccessToken) {
+        try {
+          const subOrgToken =await asgardeo.exchangeToken({
+            attachToken: false,
+            data: {
+              client_id: `${clientId}`,
+              grant_type: 'organization_switch',
+              scope: `${scopes}`,
+              // switching_organization: organizationId,
+              switching_organization: 'e667b58a-63ac-42f7-b31a-3c74f9fab12c',
+              token: initialAccessToken,
+            },
+            id: 'organization-switch',
+            returnsSession: true,
+            signInRequired: false,
+            tokenEndpoint: `https://api.asgardeo.io/t/orgkavinda/oauth2/token`,
+          });
+
+          console.log('Exchanged organization token:', subOrgToken);
+        } catch (error) {
+          console.error('Failed to exchange initial access token for organization token:', error);
+        }
+      } else {
+        console.log('initialAccessToken or organizationId not provided.');
+      }
+
+      // counter for debugging re-renders
+      console.log('AsgardeoProvider mounted or initialAccessToken changed.');
+    })();
+  }, [initialAccessToken]);
+
 
   useEffect(() => {
     setBaseUrl(_baseUrl);
@@ -582,6 +627,8 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       platform: config?.platform,
       switchOrganization,
       instanceId,
+      initialAccessToken,
+      organizationId,
     }),
     [
       applicationId,
@@ -611,6 +658,8 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       clearSession,
       reInitialize,
       instanceId,
+      initialAccessToken,
+      organizationId,
     ],
   );
 
