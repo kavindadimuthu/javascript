@@ -50,10 +50,10 @@ import UserProvider from '../User/UserProvider';
  */
 export type AsgardeoProviderProps = AsgardeoReactConfig & {
   /**
-   * Optional initialAccessToken to pass to the AsgardeoReactClient constructor.
+   * Optional parentAccessToken to pass to the AsgardeoReactClient constructor.
    * Used to identify and manage multiple client instances.
    */
-  initialAccessToken?: string;
+  parentAccessToken?: string;
   organizationId?: string;
 };
 
@@ -72,7 +72,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   signInOptions,
   syncSession,
   instanceId = 0,
-  initialAccessToken,
+  parentAccessToken,
   organizationId,
   ...rest
 }: PropsWithChildren<AsgardeoProviderProps>): ReactElement => {
@@ -103,8 +103,6 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     syncSession,
     ...rest,
   });
-  const [initAccessToken, setInitAccessToken] = useState<string | undefined>(initialAccessToken);
-
   const [isUpdatingSession, setIsUpdatingSession] = useState<boolean>(false);
 
   // Branding state
@@ -113,10 +111,10 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   const [brandingError, setBrandingError] = useState<Error | null>(null);
   const [hasFetchedBranding, setHasFetchedBranding] = useState<boolean>(false);
 
-  // Check initialAccessToken and organizationId has passed and if so, exchange initial access token for that organization token
+  // Check parentAccessToken and organizationId has passed and if so, exchange initial access token for that organization token
   useEffect(() => {
     (async (): Promise<void> => {
-      if (initialAccessToken) {
+      if (parentAccessToken) {
         try {
           const subOrgToken =await asgardeo.exchangeToken({
             attachToken: false,
@@ -124,9 +122,8 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
               client_id: `${clientId}`,
               grant_type: 'organization_switch',
               scope: `${scopes}`,
-              // switching_organization: organizationId,
-              switching_organization: 'e667b58a-63ac-42f7-b31a-3c74f9fab12c',
-              token: initialAccessToken,
+              switching_organization: organizationId,
+              token: parentAccessToken,
             },
             id: 'organization-switch',
             returnsSession: true,
@@ -136,16 +133,16 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
 
           console.log('Exchanged organization token:', subOrgToken);
         } catch (error) {
-          console.error('Failed to exchange initial access token for organization token:', error);
+          console.error('Failed to exchange parent access token for organization token:', error);
         }
       } else {
-        console.log('initialAccessToken or organizationId not provided.');
+        console.log('parentAccessToken or organizationId not provided.');
       }
 
       // counter for debugging re-renders
-      console.log('AsgardeoProvider mounted or initialAccessToken changed.');
+      console.log('AsgardeoProvider mounted or parentAccessToken changed.');
     })();
-  }, [initialAccessToken]);
+  }, [parentAccessToken]);
 
 
   useEffect(() => {
@@ -627,7 +624,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       platform: config?.platform,
       switchOrganization,
       instanceId,
-      initialAccessToken,
+      parentAccessToken,
       organizationId,
     }),
     [
@@ -658,7 +655,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       clearSession,
       reInitialize,
       instanceId,
-      initialAccessToken,
+      parentAccessToken,
       organizationId,
     ],
   );
