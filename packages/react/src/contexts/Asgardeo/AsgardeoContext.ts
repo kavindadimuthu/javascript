@@ -142,7 +142,14 @@ export type AsgardeoContextProps = {
    * Instance ID for multi-instance support.
    */
   instanceId: number;
-  parentAccessToken?: string;
+  /**
+   * Parent instance ID for sub-organization scenarios.
+   * Used to retrieve access token from parent instance for organization token exchange.
+   */
+  parentInstanceId?: number;
+  /**
+   * Organization ID for sub-organization scenarios.
+   */
   organizationId?: string;
 } & Pick<AsgardeoReactConfig, 'storage' | 'platform'> &
   Pick<AsgardeoReactClient, 'clearSession' | 'switchOrganization'>;
@@ -180,7 +187,7 @@ const AsgardeoContext: Context<AsgardeoContextProps | null> = createContext<null
   reInitialize: null,
   platform: undefined,
   instanceId: 0,
-  parentAccessToken: undefined,
+  parentInstanceId: undefined,
   organizationId: undefined,
 });
 
