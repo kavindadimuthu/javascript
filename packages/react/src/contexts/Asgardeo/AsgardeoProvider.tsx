@@ -44,6 +44,11 @@ import OrganizationProvider from '../Organization/OrganizationProvider';
 import ThemeProvider from '../Theme/ThemeProvider';
 import BrandingProvider from '../Branding/BrandingProvider';
 import UserProvider from '../User/UserProvider';
+import {
+  setInstanceStatus,
+  clearInstanceStatus,
+  waitForParentAuthentication,
+} from '../../utils/instance-coordination';
 
 /**
  * Props interface of {@link AsgardeoProvider}
@@ -152,137 +157,183 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     // prevent the re-render of this hook as suggested in the following discussion.
     // https://github.com/reactwg/react-18/discussions/18#discussioncomment-795623
     if (reRenderCheckRef.current) {
-      return;
+      return undefined;
     }
 
     reRenderCheckRef.current = true;
 
     (async (): Promise<void> => {
-      // Wait for SDK initialization before proceeding
-      const isInitialized = await asgardeo.isInitialized();
-      if (!isInitialized) {
-        // Retry after a short delay if not initialized
-        setTimeout(async () => {
-          if (await asgardeo.isInitialized()) {
-            reRenderCheckRef.current = false;
-          }
-        }, 100);
-        return;
-      }
+      try {
+        // Set initial status for this instance
+        setInstanceStatus(instanceId, 'initializing');
 
-      // User is already authenticated. Skip...
-      const isAlreadySignedIn: boolean = await asgardeo.isSignedIn();
-
-      if (isAlreadySignedIn) {
-        await updateSession();
-        return;
-      }
-      
-      // Handle organization token exchange for parent-sub org scenarios
-      if (organizationId && parentInstanceId !== undefined) {
-        try {
-          setIsUpdatingSession(true);
-          setIsLoadingSync(true);
-
-          // Get parent access token from the specified parent instance
-          let tokenForExchange: string;
-          
-          try {
-            // Get access token from the specified parent instance
-            const parentInstance = new AsgardeoReactClient(parentInstanceId);
-            const isParentSignedIn = await parentInstance.isSignedIn();
-            
-            if (!isParentSignedIn) {
-              throw new Error(`Parent instance ${parentInstanceId} is not signed in. Cannot perform organization token exchange.`);
+        // Wait for SDK initialization before proceeding
+        const isInitialized = await asgardeo.isInitialized();
+        if (!isInitialized) {
+          // Retry after a short delay if not initialized
+          setTimeout(async () => {
+            if (await asgardeo.isInitialized()) {
+              reRenderCheckRef.current = false;
             }
-            
-            tokenForExchange = await parentInstance.getAccessToken();
-          } catch (error) {
-            throw new Error(`Cannot retrieve parent access token from instance ${parentInstanceId}: ${error instanceof Error ? error.message : String(error)}`);
-          }
-
-          const initializedConfig = await asgardeo.getConfiguration();
-          const tokenEndpoint = `${initializedConfig.baseUrl}/oauth2/token`;
-
-          const subOrgToken = await asgardeo.exchangeToken({
-            attachToken: false,
-            data: {
-              client_id: clientId,
-              grant_type: 'organization_switch',
-              scope: scopes || 'address email openid profile',
-              switching_organization: organizationId,
-              token: tokenForExchange,
-            },
-            id: 'organization-switch',
-            returnsSession: true,
-            signInRequired: false,
-            tokenEndpoint,
-          });
-
-          console.log('Flag 4.6: Token exchange successful, updating session...');
-
-          // Verify the exchange was successful before updating session
-          if (subOrgToken && await asgardeo.isSignedIn()) {
-            await updateSession();
-            console.log('Flag 4.7: Session updated successfully for organization:', organizationId);
-          } else {
-            console.error('Flag 4.8: Token exchange completed but user is not signed in');
-          }
-        } catch (error) {
-          console.error('Flag 4.9: Organization token exchange failed:', error);
-          throw new AsgardeoRuntimeError(
-            `Organization token exchange failed: ${error instanceof Error ? error.message : String(JSON.stringify(error))}`,
-            'asgardeo-organizationTokenExchange-Error',
-            'react',
-            'An error occurred while exchanging the parent access token for organization token.',
-          );
-        } finally {
-          setIsUpdatingSession(false);
-          setIsLoadingSync(asgardeo.isLoading());
+          }, 100);
+          return;
         }
-        return;
-      }
 
-      const currentUrl: URL = new URL(window.location.href);
-      const hasAuthParamsResult: boolean = hasAuthParams(currentUrl, afterSignInUrl) && hasCalledForThisInstance(currentUrl, instanceId ?? 1);
+        // User is already authenticated. Skip...
+        const isAlreadySignedIn: boolean = await asgardeo.isSignedIn();
 
-      const isV2Platform = config.platform === Platform.AsgardeoV2;
+        if (isAlreadySignedIn) {
+          setInstanceStatus(instanceId, 'authenticated');
+          await updateSession();
+          return;
+        }
 
-      if (hasAuthParamsResult) {
-        try {
-          if (isV2Platform) {
-            // For V2 platform, check if this is an embedded flow or traditional OAuth
-            const urlParams = currentUrl.searchParams;
-            const code = urlParams.get('code');
-            const flowIdFromUrl = urlParams.get('flowId');
-            const storedFlowId = sessionStorage.getItem('asgardeo_flow_id');
+        // Handle organization token exchange for parent-sub org scenarios
+        if (organizationId && parentInstanceId !== undefined) {
+          try {
+            setIsUpdatingSession(true);
+            setIsLoadingSync(true);
 
-            // If there's a code and no flowId, exchange OAuth code for tokens
-            if (code && !flowIdFromUrl && !storedFlowId) {
-              await signIn();
+            // Wait for parent instance to complete authentication
+            console.log(`Sub-org instance ${instanceId}: Waiting for parent instance ${parentInstanceId} to authenticate...`);
+            const parentReady = await waitForParentAuthentication(parentInstanceId);
+
+            if (!parentReady) {
+              throw new Error(
+                `Parent instance ${parentInstanceId} failed to authenticate or timed out. Cannot perform organization token exchange.`
+              );
             }
-          } else {
-            // If non-V2 platform, use traditional OAuth callback handling
-            await signIn(
-              {callOnlyOnRedirect: true},
-              // authParams?.authorizationCode,
-              // authParams?.sessionState,
-              // authParams?.state,
+
+            console.log(`Sub-org instance ${instanceId}: Parent instance ${parentInstanceId} is ready, proceeding with token exchange...`);
+
+            // Get parent access token from the specified parent instance
+            let tokenForExchange: string;
+
+            try {
+              // Get access token from the specified parent instance
+              const parentInstance = new AsgardeoReactClient(parentInstanceId);
+              const isParentSignedIn = await parentInstance.isSignedIn();
+
+              if (!isParentSignedIn) {
+                throw new Error(
+                  `Parent instance ${parentInstanceId} is not signed in. Cannot perform organization token exchange.`
+                );
+              }
+
+              tokenForExchange = await parentInstance.getAccessToken();
+            } catch (error) {
+              throw new Error(
+                `Cannot retrieve parent access token from instance ${parentInstanceId}: ${error instanceof Error ? error.message : String(error)}`
+              );
+            }
+
+            const initializedConfig = await asgardeo.getConfiguration();
+            const tokenEndpoint = `${initializedConfig.baseUrl}/oauth2/token`;
+
+            const subOrgToken = await asgardeo.exchangeToken({
+              attachToken: false,
+              data: {
+                client_id: clientId,
+                grant_type: 'organization_switch',
+                scope: scopes || 'address email openid profile',
+                switching_organization: organizationId,
+                token: tokenForExchange,
+              },
+              id: 'organization-switch',
+              returnsSession: true,
+              signInRequired: false,
+              tokenEndpoint,
+            });
+
+            console.log(`Sub-org instance ${instanceId}: Token exchange successful, updating session...`);
+
+            // Verify the exchange was successful before updating session
+            if (subOrgToken && (await asgardeo.isSignedIn())) {
+              setInstanceStatus(instanceId, 'authenticated');
+              await updateSession();
+              console.log(`Sub-org instance ${instanceId}: Session updated successfully for organization:`, organizationId);
+            } else {
+              setInstanceStatus(instanceId, 'failed');
+              console.error(`Sub-org instance ${instanceId}: Token exchange completed but user is not signed in`);
+            }
+          } catch (error) {
+            setInstanceStatus(instanceId, 'failed');
+            console.error(`Sub-org instance ${instanceId}: Organization token exchange failed:`, error);
+            throw new AsgardeoRuntimeError(
+              `Organization token exchange failed: ${error instanceof Error ? error.message : String(JSON.stringify(error))}`,
+              'asgardeo-organizationTokenExchange-Error',
+              'react',
+              'An error occurred while exchanging the parent access token for organization token.',
+            );
+          } finally {
+            setIsUpdatingSession(false);
+            setIsLoadingSync(asgardeo.isLoading());
+          }
+          return;
+        }
+
+        // Mark parent as authenticating when proceeding with standard OAuth flow
+        if (parentInstanceId === undefined) {
+          setInstanceStatus(instanceId, 'authenticating');
+        }
+
+        const currentUrl: URL = new URL(window.location.href);
+        const hasAuthParamsResult: boolean =
+          hasAuthParams(currentUrl, afterSignInUrl) && hasCalledForThisInstance(currentUrl, instanceId ?? 1);
+
+        const isV2Platform = config.platform === Platform.AsgardeoV2;
+
+        if (hasAuthParamsResult) {
+          try {
+            if (isV2Platform) {
+              // For V2 platform, check if this is an embedded flow or traditional OAuth
+              const urlParams = currentUrl.searchParams;
+              const code = urlParams.get('code');
+              const flowIdFromUrl = urlParams.get('flowId');
+              const storedFlowId = sessionStorage.getItem('asgardeo_flow_id');
+
+              // If there's a code and no flowId, exchange OAuth code for tokens
+              if (code && !flowIdFromUrl && !storedFlowId) {
+                await signIn();
+                setInstanceStatus(instanceId, 'authenticated');
+              }
+            } else {
+              // If non-V2 platform, use traditional OAuth callback handling
+              await signIn(
+                {callOnlyOnRedirect: true},
+                // authParams?.authorizationCode,
+                // authParams?.sessionState,
+                // authParams?.state,
+              );
+              setInstanceStatus(instanceId, 'authenticated');
+            }
+            // setError(null);
+          } catch (error) {
+            setInstanceStatus(instanceId, 'failed');
+            throw new AsgardeoRuntimeError(
+              `Sign in failed: ${error instanceof Error ? error.message : String(JSON.stringify(error))}`,
+              'asgardeo-signIn-Error',
+              'react',
+              'An error occurred while trying to sign in.',
             );
           }
-          // setError(null);
-        } catch (error) {
-          throw new AsgardeoRuntimeError(
-            `Sign in failed: ${error instanceof Error ? error.message : String(JSON.stringify(error))}`,
-            'asgardeo-signIn-Error',
-            'react',
-            'An error occurred while trying to sign in.',
-          );
+        } else {
+          // No auth params, set to idle
+          if (parentInstanceId === undefined) {
+            setInstanceStatus(instanceId, 'idle');
+          }
+          // TODO: Add a debug log to indicate that the user is not signed in
         }
-      } else {
-        // TODO: Add a debug log to indicate that the user is not signed in
+      } catch (error) {
+        setInstanceStatus(instanceId, 'failed');
+        console.error(`Instance ${instanceId}: Authentication initialization failed:`, error);
       }
     })();
+
+    // Cleanup function to clear instance status on unmount
+    return () => {
+      clearInstanceStatus(instanceId);
+    };
   }, []);
 
   /**

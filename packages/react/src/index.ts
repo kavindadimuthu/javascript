@@ -273,6 +273,9 @@ export {default as updateMeProfile, UpdateMeProfileConfig} from './api/updateMeP
 export {default as getMeProfile} from './api/getScim2Me';
 export * from './api/getScim2Me';
 
+// Export instance coordination utilities
+export * from './utils/instance-coordination';
+
 export {
   AsgardeoRuntimeError,
   http,

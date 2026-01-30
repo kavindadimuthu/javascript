@@ -463,6 +463,62 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
   override clearSession(sessionId?: string): void {
     this.asgardeo.clearSession(sessionId);
   }
+
+  /**
+   * Checks if a parent instance exists and is ready (authenticated).
+   * This is useful for sub-organization scenarios where you need to verify
+   * that the parent organization is authenticated before proceeding.
+   *
+   * @param parentInstanceId - The instance ID of the parent to check
+   * @returns Promise resolving to true if parent is authenticated, false otherwise
+   */
+  public async isParentReady(parentInstanceId: number): Promise<boolean> {
+    try {
+      const parentClient = new AsgardeoReactClient(parentInstanceId);
+      return await parentClient.isSignedIn();
+    } catch (error) {
+      console.error(`Failed to check parent instance ${parentInstanceId} status:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Gets the access token from a parent instance.
+   * This is useful for sub-organization scenarios where you need the parent's
+   * access token to perform organization token exchange.
+   *
+   * @param parentInstanceId - The instance ID of the parent
+   * @returns Promise resolving to the parent's access token
+   * @throws {AsgardeoRuntimeError} If parent instance is not found or not authenticated
+   */
+  public async getParentAccessToken(parentInstanceId: number): Promise<string> {
+    try {
+      const parentClient = new AsgardeoReactClient(parentInstanceId);
+      const isSignedIn = await parentClient.isSignedIn();
+
+      if (!isSignedIn) {
+        throw new AsgardeoRuntimeError(
+          `Parent instance ${parentInstanceId} is not authenticated`,
+          'AsgardeoReactClient-getParentAccessToken-NotAuthenticated',
+          'react',
+          'The parent instance must be authenticated before retrieving its access token.',
+        );
+      }
+
+      return await parentClient.getAccessToken();
+    } catch (error) {
+      if (error instanceof AsgardeoRuntimeError) {
+        throw error;
+      }
+
+      throw new AsgardeoRuntimeError(
+        `Failed to get access token from parent instance ${parentInstanceId}: ${error instanceof Error ? error.message : String(error)}`,
+        'AsgardeoReactClient-getParentAccessToken-RuntimeError',
+        'react',
+        'An error occurred while retrieving the access token from the parent instance.',
+      );
+    }
+  }
 }
 
 export default AsgardeoReactClient;
