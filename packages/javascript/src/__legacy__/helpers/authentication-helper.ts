@@ -149,13 +149,9 @@ export class AuthenticationHelper<T> {
   }
 
   public async validateIdToken(idToken: string): Promise<boolean> {
-    let jwksEndpoint: string | undefined = (await this._storageManager.loadOpenIDProviderConfiguration()).jwks_uri;
+    const jwksEndpoint: string | undefined = (await this._storageManager.loadOpenIDProviderConfiguration()).jwks_uri;
     const configData: StrictAuthClientConfig = await this._config();
 
-    if (!jwksEndpoint || jwksEndpoint.trim().length === 0) {
-      jwksEndpoint = 'https://api.asgardeo.io/t/orgkavinda/oauth2/jwks';
-    }
-    
     if (!jwksEndpoint || jwksEndpoint.trim().length === 0) {
       throw new AsgardeoAuthException(
         'JS_AUTH_HELPER-VIT-NF01',
