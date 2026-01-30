@@ -218,25 +218,84 @@ export class AuthenticationHelper<T> {
   }
 
   public async replaceCustomGrantTemplateTags(text: string, userId?: string): Promise<string> {
-    const configData: StrictAuthClientConfig = await this._config();
-    const sessionData: SessionData = await this._storageManager.getSessionData(userId);
-
-    const scope: string = processOpenIDScopes(configData.scopes);
-
     if (typeof text !== 'string') {
       return text;
     }
 
-    return text;
-    // return text
-    //   .replace(TokenExchangeConstants.Placeholders.ACCESS_TOKEN, sessionData.access_token)
-    //   .replace(
-    //     TokenExchangeConstants.Placeholders.USERNAME,
-    //     this.getAuthenticatedUserInfo(sessionData.id_token).username,
-    //   )
-    //   .replace(TokenExchangeConstants.Placeholders.SCOPES, scope)
-    //   .replace(TokenExchangeConstants.Placeholders.CLIENT_ID, configData.clientId)
-    //   .replace(TokenExchangeConstants.Placeholders.CLIENT_SECRET, configData.clientSecret ?? '');
+    // If text doesn't contain any placeholders, return as-is
+    // This avoids unnecessary processing and handles explicit values
+    if (!text.includes('{{')) {
+      return text;
+    }
+
+    try {
+      const configData: StrictAuthClientConfig = await this._config();
+      const scope: string = processOpenIDScopes(configData.scopes);
+      let result = text;
+
+      // Try to get session data, but don't fail if it doesn't exist
+      // This is important for scenarios like organization switching where
+      // the target instance may not have session data yet
+      let sessionData: SessionData | null = null;
+      try {
+        sessionData = await this._storageManager.getSessionData(userId);
+      } catch (error: any) {
+        // Session data doesn't exist yet (e.g., during organization token exchange)
+        // Continue with limited replacements using only config-based values
+        throw new AsgardeoAuthException(
+          'JS-AUTH_HELPER-RCGTT-SD01',
+          'Session data retrieval failed.',
+          error?.message ?? 'Unable to retrieve session data. This may occur during organization token exchange when session has not been established yet.',
+        );
+      }
+
+      // Replace session-dependent placeholders only if session data exists
+      if (sessionData?.access_token && result.includes(TokenExchangeConstants.Placeholders.ACCESS_TOKEN)) {
+        result = result.replace(TokenExchangeConstants.Placeholders.ACCESS_TOKEN, sessionData.access_token);
+      }
+
+      if (sessionData?.id_token && result.includes(TokenExchangeConstants.Placeholders.USERNAME)) {
+        try {
+          const userInfo = this.getAuthenticatedUserInfo(sessionData.id_token);
+          if (userInfo?.username) {
+            result = result.replace(TokenExchangeConstants.Placeholders.USERNAME, userInfo.username);
+          }
+        } catch (error: any) {
+          throw new AsgardeoAuthException(
+            'JS-AUTH_HELPER-RCGTT-UI02',
+            'Failed to extract user information from ID token.',
+            error?.message ?? 'Unable to decode or extract username from the ID token.',
+          );
+        }
+      }
+
+      // Replace config-dependent placeholders (always available)
+      if (result.includes(TokenExchangeConstants.Placeholders.SCOPES)) {
+        result = result.replace(TokenExchangeConstants.Placeholders.SCOPES, scope);
+      }
+
+      if (result.includes(TokenExchangeConstants.Placeholders.CLIENT_ID)) {
+        result = result.replace(TokenExchangeConstants.Placeholders.CLIENT_ID, configData.clientId);
+      }
+
+      if (configData.clientSecret && result.includes(TokenExchangeConstants.Placeholders.CLIENT_SECRET)) {
+        result = result.replace(TokenExchangeConstants.Placeholders.CLIENT_SECRET, configData.clientSecret);
+      }
+
+      return result;
+    } catch (error: any) {
+      // Re-throw AsgardeoAuthException to preserve error details
+      if (error instanceof AsgardeoAuthException) {
+        throw error;
+      }
+      
+      // For unexpected errors, wrap them in an AsgardeoAuthException
+      throw new AsgardeoAuthException(
+        'JS-AUTH_HELPER-RCGTT-UE03',
+        'Unexpected error during template tag replacement.',
+        error?.message ?? 'An unexpected error occurred while replacing custom grant template tags.',
+      );
+    }
   }
 
   public async clearSession(userId?: string): Promise<void> {
