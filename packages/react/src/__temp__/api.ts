@@ -32,6 +32,19 @@ import {
 } from '@asgardeo/browser';
 import {AuthStateInterface} from './models';
 
+/**
+ * @deprecated This class is deprecated and will be removed in a future version.
+ * Use `AsgardeoReactClient` directly instead, which now properly extends
+ * `AsgardeoBrowserClient` and provides the same functionality with a cleaner
+ * architecture.
+ *
+ * Migration guide:
+ * - Replace `new AuthAPI(instanceId)` with `new AsgardeoReactClient(instanceId)`
+ * - All methods from AuthAPI are available on AsgardeoReactClient
+ * - The React client now uses proper inheritance from the browser client
+ *
+ * @see AsgardeoReactClient
+ */
 class AuthAPI {
   static DEFAULT_STATE: AuthStateInterface;
 
@@ -41,7 +54,14 @@ class AuthAPI {
 
   private _isLoading: boolean;
 
+  /**
+   * @deprecated Use AsgardeoReactClient instead
+   */
   constructor(spaClient?: AsgardeoSPAClient, instanceId: number = 0) {
+    console.warn(
+      '[Asgardeo SDK] AuthAPI is deprecated and will be removed in a future version. ' +
+      'Use AsgardeoReactClient directly instead.'
+    );
     this._instanceId = instanceId;
     this._client = spaClient ?? AsgardeoSPAClient.getInstance(instanceId);
 
@@ -55,6 +75,7 @@ class AuthAPI {
   /**
    * Get the instance ID for this AuthAPI instance.
    * @returns The instance ID used for multi-auth context support.
+   * @deprecated Use AsgardeoReactClient.getInstanceId() instead
    */
   public getInstanceId(): number {
     return this._instanceId;
@@ -76,6 +97,7 @@ class AuthAPI {
    * Method to return Auth Client instance authentication state.
    *
    * @return {AuthStateInterface} Authentication State.
+   * @deprecated Use AsgardeoReactClient methods instead
    */
   public getState(): AuthStateInterface {
     return this._authState;
@@ -85,6 +107,7 @@ class AuthAPI {
    * Method to initialize the AuthClient instance.
    *
    * @param {Config} config - `dispatch` function from React Auth Context.
+   * @deprecated Use AsgardeoReactClient.initialize() instead
    */
   public async init(config: AuthClientConfig<Config>): Promise<boolean> {
     return this._client.initialize(config);
@@ -94,6 +117,7 @@ class AuthAPI {
    * Method to get the configuration data.
    *
    * @returns {Promise<AuthClientConfig<Config>>} - A promise that resolves with the configuration data.
+   * @deprecated Use AsgardeoReactClient.getConfiguration() instead
    */
   public async getConfigData(): Promise<AuthClientConfig<Config>> {
     return this._client.getConfigData();

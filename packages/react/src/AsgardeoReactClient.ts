@@ -18,6 +18,7 @@
 
 import {
   AsgardeoBrowserClient,
+  AsgardeoSPAClient,
   flattenUserSchema,
   generateFlattenedUserProfile,
   UserProfile,
@@ -52,7 +53,6 @@ import {
   EmbeddedSignInFlowResponseV2,
   executeEmbeddedSignUpFlowV2,
 } from '@asgardeo/browser';
-import AuthAPI from './__temp__/api';
 import getMeOrganizations from './api/getMeOrganizations';
 import getScim2Me from './api/getScim2Me';
 import getSchemas from './api/getSchemas';
@@ -60,15 +60,35 @@ import {AsgardeoReactConfig} from './models/config';
 import getAllOrganizations from './api/getAllOrganizations';
 
 /**
- * Client for mplementing Asgardeo in React applications.
- * This class provides the core functionality for managing user authentication and sessions.
+ * Client for implementing Asgardeo in React applications.
+ * This class extends AsgardeoBrowserClient and provides React-specific functionality
+ * for managing user authentication and sessions, including loading state management,
+ * enhanced user profiles via SCIM2, and parent/sub-organization coordination.
  *
  * @typeParam T - Configuration type that extends AsgardeoReactConfig.
  */
 class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> extends AsgardeoBrowserClient<T> {
-  private asgardeo: AuthAPI;
+  /**
+   * React-specific loading state for UI feedback.
+   */
   private _isLoading: boolean = false;
-  private _instanceId: number;
+
+  /**
+   * The underlying SPA client instance for React-specific operations.
+   * This duplicates the parent's spaClient for now until the browser package is rebuilt.
+   * TODO: Remove this after rebuilding @asgardeo/browser package.
+   */
+  private _spaClient: AsgardeoSPAClient;
+
+  /**
+   * The instance ID used for multi-auth context support.
+   */
+  private _reactInstanceId: number;
+
+  /**
+   * The current configuration.
+   */
+  private _reactConfig: T | undefined;
 
   /**
    * Creates a new AsgardeoReactClient instance.
@@ -76,18 +96,16 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
    */
   constructor(instanceId: number = 0) {
     super();
-    this._instanceId = instanceId;
-
-    // FIXME: This has to be the browser client from `@asgardeo/browser` package.
-    this.asgardeo = new AuthAPI(undefined, instanceId);
+    this._reactInstanceId = instanceId;
+    this._spaClient = AsgardeoSPAClient.getInstance(instanceId);
   }
 
   /**
    * Get the instance ID for this client.
    * @returns The instance ID used for multi-auth context support.
    */
-  public getInstanceId(): number {
-    return this._instanceId;
+  public override getInstanceId(): number {
+    return this._reactInstanceId;
   }
 
   /**
@@ -103,7 +121,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
    * @param operation - The async operation to execute
    * @returns Promise with the result of the operation
    */
-  private async withLoading<T>(operation: () => Promise<T>): Promise<T> {
+  private async withLoading<R>(operation: () => Promise<R>): Promise<R> {
     this.setLoading(true);
     try {
       const result = await operation();
@@ -121,28 +139,25 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
     }
 
     return this.withLoading(async () => {
-      return this.asgardeo.init({...config, organizationHandle: resolvedOrganizationHandle} as any);
+      this._reactConfig = {...config, organizationHandle: resolvedOrganizationHandle} as unknown as T;
+      return this._spaClient.initialize(this._reactConfig as any);
     });
   }
 
   override reInitialize(config: Partial<AsgardeoReactConfig>): Promise<boolean> {
     return this.withLoading(async () => {
-      let isInitialized: boolean;
-
       try {
-        await this.asgardeo.reInitialize(config);
-
-        isInitialized = true;
+        this._reactConfig = {...this._reactConfig, ...config} as T;
+        await this._spaClient.reInitialize(config as any);
+        return true;
       } catch (error) {
         throw new AsgardeoRuntimeError(
-          `Failed to check if the client is initialized: ${error instanceof Error ? error.message : String(error)}`,
+          `Failed to re-initialize the client: ${error instanceof Error ? error.message : String(error)}`,
           'AsgardeoReactClient-reInitialize-RuntimeError-001',
           'react',
-          'An error occurred while checking the initialization status of the client.',
+          'An error occurred while re-initializing the client.',
         );
       }
-
-      return isInitialized;
     });
   }
 
@@ -155,12 +170,12 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
       let baseUrl = options?.baseUrl;
 
       if (!baseUrl) {
-        const configData = await this.asgardeo.getConfigData();
+        const configData = this.getConfiguration();
         baseUrl = configData?.baseUrl;
       }
 
-      const profile = await getScim2Me({baseUrl});
-      const schemas = await getSchemas({baseUrl});
+      const profile = await getScim2Me({baseUrl, instanceId: this._reactInstanceId});
+      const schemas = await getSchemas({baseUrl, instanceId: this._reactInstanceId});
 
       return generateUserProfile(profile, flattenUserSchema(schemas));
     } catch (error) {
@@ -168,22 +183,26 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
     }
   }
 
-  async getDecodedIdToken(sessionId?: string): Promise<IdToken> {
-    return this.asgardeo.getDecodedIdToken(sessionId);
+  override async getDecodedIdToken(sessionId?: string): Promise<IdToken> {
+    const idToken = await this._spaClient.getDecodedIdToken(sessionId);
+    if (!idToken) {
+      throw new Error('ID token not found. Please ensure the user is signed in.');
+    }
+    return idToken;
   }
 
-  async getUserProfile(options?: any): Promise<UserProfile> {
+  override async getUserProfile(options?: any): Promise<UserProfile> {
     return this.withLoading(async () => {
       try {
         let baseUrl = options?.baseUrl;
 
         if (!baseUrl) {
-          const configData = await this.asgardeo.getConfigData();
+          const configData = this.getConfiguration();
           baseUrl = configData?.baseUrl;
         }
 
-        const profile = await getScim2Me({baseUrl, instanceId: this._instanceId});
-        const schemas = await getSchemas({baseUrl, instanceId: this._instanceId});
+        const profile = await getScim2Me({baseUrl, instanceId: this._reactInstanceId});
+        const schemas = await getSchemas({baseUrl, instanceId: this._reactInstanceId});
 
         const processedSchemas = flattenUserSchema(schemas);
 
@@ -209,11 +228,11 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
       let baseUrl = options?.baseUrl;
 
       if (!baseUrl) {
-        const configData = await this.asgardeo.getConfigData();
+        const configData = this.getConfiguration();
         baseUrl = configData?.baseUrl;
       }
 
-      return getMeOrganizations({baseUrl, instanceId: this._instanceId});
+      return getMeOrganizations({baseUrl, instanceId: this._reactInstanceId});
     } catch (error) {
       throw new AsgardeoRuntimeError(
         `Failed to fetch the user's associated organizations: ${
@@ -231,11 +250,11 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
       let baseUrl = options?.baseUrl;
 
       if (!baseUrl) {
-        const configData = await this.asgardeo.getConfigData();
+        const configData = this.getConfiguration();
         baseUrl = configData?.baseUrl;
       }
 
-      return getAllOrganizations({baseUrl, instanceId: this._instanceId});
+      return getAllOrganizations({baseUrl, instanceId: this._reactInstanceId});
     } catch (error) {
       throw new AsgardeoRuntimeError(
         `Failed to fetch all organizations: ${error instanceof Error ? error.message : String(error)}`,
@@ -269,8 +288,6 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
   override async switchOrganization(organization: Organization, sessionId?: string): Promise<TokenResponse | Response> {
     return this.withLoading(async () => {
       try {
-        const configData = await this.asgardeo.getConfigData();
-
         if (!organization.id) {
           throw new AsgardeoRuntimeError(
             'Organization ID is required for switching organizations',
@@ -280,7 +297,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
           );
         }
 
-        const exchangeConfig = {
+        const exchangeConfig: TokenExchangeRequestConfig = {
           attachToken: false,
           data: {
             client_id: '{{clientId}}',
@@ -294,7 +311,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
           signInRequired: true,
         };
 
-        return (await this.asgardeo.exchangeToken(exchangeConfig, (user: User) => {})) as TokenResponse | Response;
+        return await this._spaClient.exchangeToken(exchangeConfig) as TokenResponse | Response;
       } catch (error) {
         throw new AsgardeoRuntimeError(
           `Failed to switch organization: ${error.message || error}`,
@@ -307,19 +324,19 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
   }
 
   override isLoading(): boolean {
-    return this._isLoading || this.asgardeo.isLoading();
+    return this._isLoading;
   }
 
-  async isInitialized(): Promise<boolean> {
-    return this.asgardeo.isInitialized();
+  override async isInitialized(): Promise<boolean> {
+    return this._spaClient.isInitialized();
   }
 
   override async isSignedIn(): Promise<boolean> {
-    return await this.asgardeo.isSignedIn();
+    return (await this._spaClient.isSignedIn()) ?? false;
   }
 
   override getConfiguration(): T {
-    return this.asgardeo.getConfigData() as unknown as T;
+    return (this._spaClient.getConfigData() ?? this._reactConfig) as unknown as T;
   }
 
   override async exchangeToken(
@@ -327,7 +344,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
     sessionId?: string,
   ): Promise<TokenResponse | Response> {
     return this.withLoading(async () => {
-      return this.asgardeo.exchangeToken(config, (user: User) => {}) as unknown as TokenResponse | Response;
+      return this._spaClient.exchangeToken(config) as unknown as TokenResponse | Response;
     });
   }
 
@@ -347,9 +364,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
       const arg1 = args[0];
       const arg2 = args[1];
 
-      const config: AsgardeoReactConfig | undefined = (await this.asgardeo.getConfigData()) as
-        | AsgardeoReactConfig
-        | undefined;
+      const config: AsgardeoReactConfig | undefined = this.getConfiguration() as AsgardeoReactConfig | undefined;
 
       const platformFromStorage = sessionStorage.getItem('asgardeo_platform');
       const isV2Platform = (config && config.platform === Platform.AsgardeoV2) || platformFromStorage === 'AsgardeoV2';
@@ -386,12 +401,16 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
         });
       }
 
-      return (await this.asgardeo.signIn(arg1 as any)) as unknown as Promise<User>;
+      const user = await this._spaClient.signIn(arg1 as any);
+      if (!user) {
+        throw new Error('Sign in failed. Please try again.');
+      }
+      return user;
     });
   }
 
   override async signInSilently(options?: SignInOptions): Promise<User | boolean> {
-    return this.asgardeo.signInSilently(options as Record<string, string | boolean>);
+    return (await this._spaClient.signInSilently(options as Record<string, string | boolean>)) ?? false;
   }
 
   override signOut(options?: SignOutOptions, afterSignOut?: (afterSignOutUrl: string) => void): Promise<string>;
@@ -405,18 +424,18 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
       throw new Error('The second argument must be a function.');
     }
 
-    const config: AsgardeoReactConfig = (await this.asgardeo.getConfigData()) as AsgardeoReactConfig;
+    const config: AsgardeoReactConfig = this.getConfiguration() as AsgardeoReactConfig;
 
     // TEMPORARY: Handle Asgardeo V2 sign-out differently until the sign-out flow is implemented in the platform.
     // Tracker: https://github.com/asgardeo/javascript/issues/212#issuecomment-3435713699
     if (config.platform === Platform.AsgardeoV2) {
-      this.asgardeo.clearSession();
+      this._spaClient.clearSession();
       args[1]?.(config.afterSignOutUrl || '');
 
       return Promise.resolve(config.afterSignOutUrl || '');
     }
 
-    const response: boolean = await this.asgardeo.signOut(args[1]);
+    const response = await this._spaClient.signOut();
 
     return Promise.resolve(String(response));
   }
@@ -424,7 +443,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
   override async signUp(options?: SignUpOptions): Promise<void>;
   override async signUp(payload: EmbeddedFlowExecuteRequestPayload): Promise<EmbeddedFlowExecuteResponse>;
   override async signUp(...args: any[]): Promise<void | EmbeddedFlowExecuteResponse> {
-    const config: AsgardeoReactConfig = (await this.asgardeo.getConfigData()) as AsgardeoReactConfig;
+    const config: AsgardeoReactConfig = this.getConfiguration() as AsgardeoReactConfig;
     const firstArg = args[0];
     const baseUrl: string = config?.baseUrl;
 
@@ -449,19 +468,27 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
   }
 
   async request(requestConfig?: HttpRequestConfig): Promise<HttpResponse<any>> {
-    return this.asgardeo.httpRequest(requestConfig);
+    const response = await this._spaClient.httpRequest(requestConfig);
+    if (!response) {
+      throw new Error('HTTP request failed');
+    }
+    return response;
   }
 
   async requestAll(requestConfigs?: HttpRequestConfig[]): Promise<HttpResponse<any>[]> {
-    return this.asgardeo.httpRequestAll(requestConfigs);
+    const responses = await this._spaClient.httpRequestAll(requestConfigs);
+    if (!responses) {
+      throw new Error('HTTP requests failed');
+    }
+    return responses;
   }
 
   override async getAccessToken(sessionId?: string): Promise<string> {
-    return this.asgardeo.getAccessToken(sessionId);
+    return this._spaClient.getAccessToken(sessionId);
   }
 
   override clearSession(sessionId?: string): void {
-    this.asgardeo.clearSession(sessionId);
+    this._spaClient.clearSession(sessionId);
   }
 }
 
