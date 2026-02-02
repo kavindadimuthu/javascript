@@ -48,18 +48,7 @@ import UserProvider from '../User/UserProvider';
 /**
  * Props interface of {@link AsgardeoProvider}
  */
-export type AsgardeoProviderProps = AsgardeoReactConfig & {
-  /**
-   * Optional parent instance ID to retrieve access token from for organization token exchange.
-   * Used in parent-sub organization scenarios to automatically fetch the parent's access token.
-   */
-  parentInstanceId?: number;
-  /**
-   * Organization ID for sub-organization scenarios.
-   * When provided with parentInstanceId, triggers automatic organization token exchange.
-   */
-  organizationId?: string;
-};
+export type AsgardeoProviderProps = AsgardeoReactConfig;
 
 const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   afterSignInUrl = window.location.origin,
@@ -76,8 +65,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   signInOptions,
   syncSession,
   instanceId = 0,
-  parentInstanceId,
-  organizationId,
+  exchangeOrganization,
   ...rest
 }: PropsWithChildren<AsgardeoProviderProps>): ReactElement => {
   const reRenderCheckRef: RefObject<boolean> = useRef(false);
@@ -105,6 +93,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     signInUrl,
     signInOptions,
     syncSession,
+    exchangeOrganization,
     ...rest,
   });
   const [isUpdatingSession, setIsUpdatingSession] = useState<boolean>(false);
@@ -179,57 +168,33 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       }
       
       // Handle organization token exchange for parent-sub org scenarios
-      if (organizationId && parentInstanceId !== undefined) {
+      if (exchangeOrganization?.switchToOrganizationId && exchangeOrganization?.switchFromInstanceId !== undefined) {
         try {
           setIsUpdatingSession(true);
           setIsLoadingSync(true);
 
-          // Get parent access token from the specified parent instance
-          let tokenForExchange: string;
-          
-          try {
-            // Get access token from the specified parent instance
-            const parentInstance = new AsgardeoReactClient(parentInstanceId);
-            const isParentSignedIn = await parentInstance.isSignedIn();
-            
-            if (!isParentSignedIn) {
-              throw new Error(`Parent instance ${parentInstanceId} is not signed in. Cannot perform organization token exchange.`);
-            }
-            
-            tokenForExchange = await parentInstance.getAccessToken();
-          } catch (error) {
-            throw new Error(`Cannot retrieve parent access token from instance ${parentInstanceId}: ${error instanceof Error ? error.message : String(error)}`);
-          }
-
-          const initializedConfig = await asgardeo.getConfiguration();
-          const tokenEndpoint = `${initializedConfig.baseUrl}/oauth2/token`;
-
+          // Use template tags instead of hardcoded values
+          // The replaceCustomGrantTemplateTags method will replace these with actual values from parent instance
           const subOrgToken = await asgardeo.exchangeToken({
             attachToken: false,
             data: {
-              client_id: clientId,
+              client_id: '{{clientId}}',
               grant_type: 'organization_switch',
-              scope: scopes || 'address email openid profile',
-              switching_organization: organizationId,
-              token: tokenForExchange,
+              scope: '{{scopes}}',
+              switching_organization: exchangeOrganization.switchToOrganizationId,
+              token: '{{accessToken}}',
             },
             id: 'organization-switch',
             returnsSession: true,
             signInRequired: false,
-            tokenEndpoint,
           });
-
-          console.log('Flag 4.6: Token exchange successful, updating session...');
 
           // Verify the exchange was successful before updating session
           if (subOrgToken && await asgardeo.isSignedIn()) {
             await updateSession();
-            console.log('Flag 4.7: Session updated successfully for organization:', organizationId);
-          } else {
-            console.error('Flag 4.8: Token exchange completed but user is not signed in');
           }
         } catch (error) {
-          console.error('Flag 4.9: Organization token exchange failed:', error);
+          console.error('Organization token exchange failed:', error);
           throw new AsgardeoRuntimeError(
             `Organization token exchange failed: ${error instanceof Error ? error.message : String(JSON.stringify(error))}`,
             'asgardeo-organizationTokenExchange-Error',
@@ -672,8 +637,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       platform: config?.platform,
       switchOrganization,
       instanceId,
-      parentInstanceId,
-      organizationId,
+      exchangeOrganization,
     }),
     [
       applicationId,
@@ -703,8 +667,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       clearSession,
       reInitialize,
       instanceId,
-      parentInstanceId,
-      organizationId,
+      exchangeOrganization,
     ],
   );
 

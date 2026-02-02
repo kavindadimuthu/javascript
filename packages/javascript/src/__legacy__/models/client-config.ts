@@ -55,6 +55,18 @@ export interface DefaultAuthClientConfig {
    */
   sendCookiesInRequests?: boolean;
   sendIdTokenInLogoutRequest?: boolean;
+  exchangeOrganization?: {
+    /**
+     * Optional parent instance ID to retrieve access token from for organization token exchange.
+     * Used in parent-sub organization scenarios to automatically fetch the parent's access token.
+     */
+    switchFromInstanceId?: string | number;
+    /**
+     * Organization ID for sub-organization scenarios.
+     * When provided with switchFromInstanceId, triggers automatic organization token exchange.
+     */
+    switchToOrganizationId?: string;
+  };
 }
 
 export interface WellKnownAuthClientConfig extends DefaultAuthClientConfig {

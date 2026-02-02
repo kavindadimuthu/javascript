@@ -225,6 +225,23 @@ export interface BaseConfig<T = unknown> extends WithPreferences {
   syncSession?: boolean;
 
   /**
+   * Optional config to enable automatic token exchange for organization switching.
+   * This requires both `switchFromInstanceId` and `organizationId` to be provided in the config.
+   */
+  exchangeOrganization?: {
+    /**
+     * Optional parent instance ID to retrieve access token from for organization token exchange.
+     * Used in parent-sub organization scenarios to automatically fetch the parent's access token.
+     */
+    switchFromInstanceId?: number;
+    /**
+     * Organization ID for sub-organization scenarios.
+     * When provided with switchFromInstanceId, triggers automatic organization token exchange.
+     */
+    switchToOrganizationId?: string;
+  };
+
+  /**
    * Storage mechanism to use for storing tokens and session data.
    * The values should be defined at the framework layer.
    */
