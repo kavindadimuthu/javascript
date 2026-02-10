@@ -60,6 +60,7 @@ const getAuthorizeRequestUrlParams = (
     codeChallenge?: string;
     codeChallengeMethod?: string;
     prompt?: string;
+    instanceId?: string;
   } & ExtendedAuthorizeRequestUrlParams,
   pkceOptions: {key: string},
   customParams: Record<string, string | number | boolean>,
@@ -105,6 +106,11 @@ const getAuthorizeRequestUrlParams = (
         authorizeRequestParams.set(key, value.toString());
       }
     }
+  }
+
+  if (options.instanceId) {
+    const AUTH_INSTANCE_PREFIX = "instance_";
+    customParams[OIDCRequestConstants.Params.STATE] = AUTH_INSTANCE_PREFIX + options.instanceId;
   }
 
   authorizeRequestParams.set(

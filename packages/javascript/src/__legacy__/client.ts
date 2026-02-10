@@ -245,8 +245,6 @@ export class AsgardeoAuthClient<T> {
         authRequestConfig['client_secret'] = configData.clientSecret;
       }
 
-      authRequestConfig['state'] = 'instance_' + this.getInstanceId() + '-' + configData.clientId; 
-
       const authorizeRequestParams: Map<string, string> = getAuthorizeRequestUrlParams(
         {
           redirectUri: configData.afterSignInUrl,
@@ -256,6 +254,7 @@ export class AsgardeoAuthClient<T> {
           codeChallengeMethod: PKCEConstants.DEFAULT_CODE_CHALLENGE_METHOD,
           codeChallenge,
           prompt: configData.prompt,
+          instanceId: this.getInstanceId().toString(),
         },
         {key: pkceKey},
         authRequestConfig,
