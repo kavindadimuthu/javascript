@@ -270,6 +270,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
     return this.withLoading(async () => {
       try {
         const configData = await this.asgardeo.getConfigData();
+        const sourceInstanceId = configData?.organizationChain?.sourceInstanceId;
 
         if (!organization.id) {
           throw new AsgardeoRuntimeError(
@@ -291,7 +292,7 @@ class AsgardeoReactClient<T extends AsgardeoReactConfig = AsgardeoReactConfig> e
           },
           id: 'organization-switch',
           returnsSession: true,
-          signInRequired: true,
+          signInRequired: sourceInstanceId !== undefined ? false : true ,
         };
 
         return (await this.asgardeo.exchangeToken(exchangeConfig, (user: User) => {})) as TokenResponse | Response;

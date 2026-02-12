@@ -65,7 +65,8 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   signInOptions,
   syncSession,
   instanceId = 0,
-  exchangeOrganization,
+  organizationChain,
+  extensions, // Add this
   ...rest
 }: PropsWithChildren<AsgardeoProviderProps>): ReactElement => {
   const reRenderCheckRef: RefObject<boolean> = useRef(false);
@@ -93,7 +94,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     signInUrl,
     signInOptions,
     syncSession,
-    exchangeOrganization,
+    organizationChain,
     ...rest,
   });
   const [isUpdatingSession, setIsUpdatingSession] = useState<boolean>(false);
@@ -125,6 +126,14 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       }
       if (initializedConfig?.baseUrl) {
         sessionStorage.setItem('asgardeo_base_url', initializedConfig.baseUrl);
+      }
+
+      // Call extension hook
+      if (extensions?.onAfterInitialize) {
+        await extensions.onAfterInitialize({
+          isSignedIn: await asgardeo.isSignedIn(),
+          config: initializedConfig,
+        });
       }
     })();
   }, []);
@@ -166,46 +175,13 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
         await updateSession();
         return;
       }
-      
-      // Handle organization token exchange for parent-sub org scenarios
-      if (exchangeOrganization?.switchToOrganizationId && exchangeOrganization?.switchFromInstanceId !== undefined) {
-        try {
-          setIsUpdatingSession(true);
-          setIsLoadingSync(true);
 
-          // Use template tags instead of hardcoded values
-          // The replaceCustomGrantTemplateTags method will replace these with actual values from parent instance
-          const subOrgToken = await asgardeo.exchangeToken({
-            attachToken: false,
-            data: {
-              client_id: '{{clientId}}',
-              grant_type: 'organization_switch',
-              scope: '{{scopes}}',
-              switching_organization: exchangeOrganization.switchToOrganizationId,
-              token: '{{accessToken}}',
-            },
-            id: 'organization-switch',
-            returnsSession: true,
-            signInRequired: false,
-          });
-
-          // Verify the exchange was successful before updating session
-          if (subOrgToken && await asgardeo.isSignedIn()) {
-            await updateSession();
-          }
-        } catch (error) {
-          console.error('Organization token exchange failed:', error);
-          throw new AsgardeoRuntimeError(
-            `Organization token exchange failed: ${error instanceof Error ? error.message : String(JSON.stringify(error))}`,
-            'asgardeo-organizationTokenExchange-Error',
-            'react',
-            'An error occurred while exchanging the parent access token for organization token.',
-          );
-        } finally {
-          setIsUpdatingSession(false);
-          setIsLoadingSync(asgardeo.isLoading());
+      // Call beforeSignIn extension hook
+      if (extensions?.onBeforeSignIn) {
+        const shouldContinue = await extensions.onBeforeSignIn();
+        if (shouldContinue === false) {
+          return; // Extension handled the sign-in
         }
-        return;
       }
 
       const currentUrl: URL = new URL(window.location.href);
@@ -614,6 +590,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       signUpUrl,
       afterSignInUrl,
       baseUrl,
+      clientId,
       clearSession,
       getAccessToken,
       isInitialized: isInitializedSync,
@@ -637,7 +614,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       platform: config?.platform,
       switchOrganization,
       instanceId,
-      exchangeOrganization,
+      organizationChain,
     }),
     [
       applicationId,
@@ -646,6 +623,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       signUpUrl,
       afterSignInUrl,
       baseUrl,
+      clientId,
       isInitializedSync,
       isLoadingSync,
       isSignedInSync,
@@ -667,7 +645,7 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
       clearSession,
       reInitialize,
       instanceId,
-      exchangeOrganization,
+      organizationChain,
     ],
   );
 

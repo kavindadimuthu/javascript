@@ -34,8 +34,8 @@ export * from './contexts/User/UserProvider';
 export {default as useUser} from './contexts/User/useUser';
 export * from './contexts/User/useUser';
 
-export {default as OrganizationContext} from './contexts/Organization/OrganizationContext';
-export * from './contexts/Organization/OrganizationContext';
+// export {default as OrganizationContext} from './contexts/Organization/OrganizationContext';
+// export * from './contexts/Organization/OrganizationContext';
 
 export {default as OrganizationProvider} from './contexts/Organization/OrganizationProvider';
 export * from './contexts/Organization/OrganizationProvider';
@@ -117,6 +117,9 @@ export * from './components/control/SignedOut';
 
 export {default as Loading} from './components/control/Loading';
 export * from './components/control/Loading';
+
+export {default as OrganizationContext} from './components/control/OrganizationContext';
+export * from './components/control/OrganizationContext';
 
 export {default as BaseSignIn} from './components/presentation/auth/SignIn/BaseSignIn';
 export * from './components/presentation/auth/SignIn/BaseSignIn';

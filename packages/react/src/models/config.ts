@@ -17,6 +17,7 @@
  */
 
 import {AsgardeoBrowserConfig} from '@asgardeo/browser';
+import { AsgardeoProviderExtensions } from './extensions';
 
 export interface AsgardeoReactConfig extends AsgardeoBrowserConfig {
   /**
@@ -25,4 +26,9 @@ export interface AsgardeoReactConfig extends AsgardeoBrowserConfig {
    * Defaults to 0 for backward compatibility.
    */
   instanceId?: number;
+  /**
+   * Optional extensions for customizing provider behavior. 
+   * These allow you to hook into various stages of the authentication lifecycle.
+   */
+  extensions?: AsgardeoProviderExtensions;
 }

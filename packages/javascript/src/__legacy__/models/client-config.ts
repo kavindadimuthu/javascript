@@ -55,17 +55,17 @@ export interface DefaultAuthClientConfig {
    */
   sendCookiesInRequests?: boolean;
   sendIdTokenInLogoutRequest?: boolean;
-  exchangeOrganization?: {
+  organizationChain?: {
     /**
-     * Optional parent instance ID to retrieve access token from for organization token exchange.
-     * Used in parent-sub organization scenarios to automatically fetch the parent's access token.
+     * Instance ID of the source organization context to retrieve access token from for organization token exchange.
+     * Used in linked organization scenarios to automatically fetch the source organization's access token.
      */
-    switchFromInstanceId?: string | number;
+    sourceInstanceId?: string | number;
     /**
-     * Organization ID for sub-organization scenarios.
-     * When provided with switchFromInstanceId, triggers automatic organization token exchange.
+     * Organization ID for the target organization.
+     * When provided with sourceInstanceId, triggers automatic organization token exchange.
      */
-    switchToOrganizationId?: string;
+    targetOrganizationId?: string;
   };
 }
 

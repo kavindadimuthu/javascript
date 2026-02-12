@@ -220,19 +220,27 @@ export class AuthenticationHelper<T> {
   public async replaceCustomGrantTemplateTags(text: string, userId?: string): Promise<string> {
     const configData: StrictAuthClientConfig = await this._config();
 
-    const switchFromInstanceId = configData.exchangeOrganization?.switchFromInstanceId ?? null;
+    const sourceInstanceId = configData.organizationChain?.sourceInstanceId ?? null;
 
     let sessionData: SessionData;
 
-    if (switchFromInstanceId) {
+    if (sourceInstanceId) {
       const clientId = configData.clientId;
-      let instanceId: string;
+      let instanceKey: string;
       if (clientId) {
-        instanceId = `instance_${switchFromInstanceId}-${clientId}`;
+        instanceKey = `instance_${sourceInstanceId}-${clientId}`;
       } else {
-        instanceId = `instance_${switchFromInstanceId}`;
+        instanceKey = `instance_${sourceInstanceId}`;
       }
-      sessionData = await this._storageManager.getSessionData(userId, instanceId);
+      sessionData = await this._storageManager.getSessionData(userId, instanceKey);
+
+      if (!sessionData.access_token) {
+        throw new AsgardeoAuthException(
+          'JS-AUTH_HELPER-RCGTT-NE01',
+          'No session data found for source instance.',
+          'Failed to retrieve session data from the source organization context.',
+        );
+      }
     } else {
       sessionData = await this._storageManager.getSessionData(userId);
     }
