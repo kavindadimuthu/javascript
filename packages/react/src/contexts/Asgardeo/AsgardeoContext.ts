@@ -38,6 +38,7 @@ import {AsgardeoReactConfig} from '../../models/config';
 export type AsgardeoContextProps = {
   organizationHandle: string | undefined;
   applicationId: string | undefined;
+  clientId: string | undefined;
   signInUrl: string | undefined;
   signUpUrl: string | undefined;
   afterSignInUrl: string | undefined;
@@ -160,6 +161,7 @@ export type AsgardeoContextProps = {
 const AsgardeoContext: Context<AsgardeoContextProps | null> = createContext<null | AsgardeoContextProps>({
   organizationHandle: undefined,
   applicationId: undefined,
+  clientId: undefined,
   signInUrl: undefined,
   signUpUrl: undefined,
   afterSignInUrl: undefined,

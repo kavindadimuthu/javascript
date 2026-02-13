@@ -21,13 +21,11 @@ import AsgardeoProvider, { AsgardeoProviderProps } from "../../contexts/Asgardeo
 import useAsgardeo from "../../contexts/Asgardeo/useAsgardeo";
 import { Organization } from "packages/javascript/dist";
 
-interface OrganizationContextProps extends Omit<AsgardeoProviderProps, 'organizationChain'> {
+interface OrganizationContextProps extends Omit<AsgardeoProviderProps, 'organizationChain' | 'baseUrl'> {
   /**
-   * Optional instance ID for multi-auth context support.
-   * Use this when you need multiple authentication contexts in the same application.
-   * Defaults to 0 for backward compatibility.
+   * Instance ID for this organization context. Must be unique across the app if multiple contexts are used.
    */
-  instanceId?: number;
+  instanceId: number;
   /**
    * ID of the organization to authenticate with
    */
@@ -37,6 +35,10 @@ interface OrganizationContextProps extends Omit<AsgardeoProviderProps, 'organiza
    * Instance ID of the source organization provider to chain from
    */
   sourceInstanceId: number;
+  /**
+   * Optional base URL for the organization context. If not provided, it will default to the source provider's base URL.
+   */
+  baseUrl?: string;
 }
 
 interface OrganizationContextHandlerProps {
@@ -138,13 +140,17 @@ const OrganizationContext: FC<PropsWithChildren<OrganizationContextProps>> = ({
   ...rest
 }) => {
   // Get the source provider's signed-in status
-  const { isSignedIn: isSourceSignedIn } = useAsgardeo();
+  const { 
+    isSignedIn: isSourceSignedIn, 
+    baseUrl: sourceBaseUrl, 
+    clientId: sourceClientId
+  } = useAsgardeo();
 
   return (
     <AsgardeoProvider
       instanceId={instanceId}
-      baseUrl={baseUrl}
-      clientId={clientId}
+      baseUrl={baseUrl || sourceBaseUrl}
+      clientId={clientId || sourceClientId}
       afterSignInUrl={afterSignInUrl}
       afterSignOutUrl={afterSignOutUrl}
       scopes={scopes}

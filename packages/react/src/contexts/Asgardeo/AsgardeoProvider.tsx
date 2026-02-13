@@ -585,12 +585,12 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
   const value = useMemo(
     () => ({
       applicationId,
+      clientId,
       organizationHandle: config?.organizationHandle,
       signInUrl,
       signUpUrl,
       afterSignInUrl,
       baseUrl,
-      clientId,
       clearSession,
       getAccessToken,
       isInitialized: isInitializedSync,
@@ -618,12 +618,12 @@ const AsgardeoProvider: FC<PropsWithChildren<AsgardeoProviderProps>> = ({
     }),
     [
       applicationId,
+      clientId,
       config?.organizationHandle,
       signInUrl,
       signUpUrl,
       afterSignInUrl,
       baseUrl,
-      clientId,
       isInitializedSync,
       isLoadingSync,
       isSignedInSync,
