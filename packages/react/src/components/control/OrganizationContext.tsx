@@ -32,9 +32,9 @@ interface OrganizationContextProps extends Omit<AsgardeoProviderProps, 'organiza
   targetOrganizationId: string;
 
   /**
-   * Instance ID of the source organization provider to chain from
+   * Optional source instance ID. If not provided, immediate parent provider is used as source.
    */
-  sourceInstanceId: number;
+  sourceInstanceId?: number;
   /**
    * Optional base URL for the organization context. If not provided, it will default to the source provider's base URL.
    */
@@ -141,7 +141,8 @@ const OrganizationContext: FC<PropsWithChildren<OrganizationContextProps>> = ({
 }) => {
   // Get the source provider's signed-in status
   const { 
-    isSignedIn: isSourceSignedIn, 
+    isSignedIn: isSourceSignedIn,
+    instanceId: sourceInstanceIdFromContext, 
     baseUrl: sourceBaseUrl, 
     clientId: sourceClientId
   } = useAsgardeo();
@@ -155,7 +156,7 @@ const OrganizationContext: FC<PropsWithChildren<OrganizationContextProps>> = ({
       afterSignOutUrl={afterSignOutUrl}
       scopes={scopes}
       organizationChain={{
-        sourceInstanceId: sourceInstanceId,
+        sourceInstanceId: sourceInstanceId || sourceInstanceIdFromContext,
         targetOrganizationId: targetOrganizationId,
       }}
       extensions={extensions}
