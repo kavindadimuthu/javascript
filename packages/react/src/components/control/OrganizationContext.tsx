@@ -19,7 +19,7 @@
 import { FC, PropsWithChildren, useEffect, useRef } from "react";
 import AsgardeoProvider, { AsgardeoProviderProps } from "../../contexts/Asgardeo/AsgardeoProvider";
 import useAsgardeo from "../../contexts/Asgardeo/useAsgardeo";
-import { Organization } from "packages/javascript/dist";
+import { Organization } from "@asgardeo/browser";
 
 interface OrganizationContextProps extends Omit<AsgardeoProviderProps, 'organizationChain' | 'baseUrl'> {
   /**
