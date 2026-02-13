@@ -121,15 +121,10 @@ const OrganizationContextHandler: FC<OrganizationContextHandlerProps> = ({
     performOrganizationSwitch();
   }, [isInitialized, isSignedIn, isLoading, isSourceSignedIn, targetOrganizationId, switchOrganization]);
 
-    return <>{children}</>;
-}
+  return <>{children}</>;
+};
 
-/**
- * Wrapper component that monitors the source provider's signed-in status
- * and passes it to the OrganizationContextHandler.
- * This component uses the useAsgardeo hook to access the source provider's context.
- */
-const SourceProviderWatcher: FC<PropsWithChildren<OrganizationContextProps>> = ({
+const OrganizationContext: FC<PropsWithChildren<OrganizationContextProps>> = ({
   instanceId,
   baseUrl,
   clientId,
@@ -142,7 +137,7 @@ const SourceProviderWatcher: FC<PropsWithChildren<OrganizationContextProps>> = (
   extensions,
   ...rest
 }) => {
-  // This useAsgardeo hook call gets the source provider's context
+  // Get the source provider's signed-in status
   const { isSignedIn: isSourceSignedIn } = useAsgardeo();
 
   return (
@@ -168,10 +163,6 @@ const SourceProviderWatcher: FC<PropsWithChildren<OrganizationContextProps>> = (
       </OrganizationContextHandler>
     </AsgardeoProvider>
   );
-};
-
-const OrganizationContext: FC<PropsWithChildren<OrganizationContextProps>> = (props) => {
-  return <SourceProviderWatcher {...props} />;
 };
 
 export default OrganizationContext;
