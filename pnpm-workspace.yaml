@@ -6,6 +6,7 @@ packages:
   - 'samples/*'
   - '!samples/__legacy__/*'
   - '!samples/teamspace-nextjs'
+  - '!samples/passport-asgardeo-sample'
 
 catalog:
   '@eslint/js': '9.25.0'
