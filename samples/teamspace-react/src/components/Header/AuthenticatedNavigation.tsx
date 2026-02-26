@@ -9,6 +9,7 @@ interface AuthenticatedNavigationProps {
 export default function AuthenticatedNavigation({className = ''}: AuthenticatedNavigationProps) {
   const navigationItems = [
     {label: 'Dashboard', href: '/dashboard'},
+    {label: 'Organizations', href: '/organizations'},
     {label: 'Projects', href: '/projects'},
     {label: 'Teams', href: '/teams'},
   ];
