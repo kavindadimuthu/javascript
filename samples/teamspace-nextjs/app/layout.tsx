@@ -18,7 +18,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AsgardeoProvider>
+          <AsgardeoProvider preferences={{theme:{inheritFromBranding: false}}}>
             <div className="min-h-screen bg-background">{children}</div>
           </AsgardeoProvider>
         </ThemeProvider>

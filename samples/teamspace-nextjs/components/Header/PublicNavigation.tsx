@@ -17,6 +17,7 @@ export default function PublicNavigation({className = ''}: PublicNavigationProps
     {label: 'Features', href: '#features'},
     {label: 'Testimonials', href: '#testimonials'},
     {label: 'Pricing', href: '#pricing'},
+    {label: 'Multi-Instance', href: '/multi-instance'},
   ];
 
   return (

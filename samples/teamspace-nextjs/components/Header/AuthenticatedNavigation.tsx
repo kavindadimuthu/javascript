@@ -9,6 +9,7 @@ export default function AuthenticatedNavigation({className = ''}: AuthenticatedN
     {label: 'Dashboard', href: '/dashboard'},
     {label: 'Projects', href: '/projects'},
     {label: 'Teams', href: '/teams'},
+    {label: 'Multi-Instance', href: '/multi-instance'},
   ];
 
   const isMobileMenu = className.includes('flex-col');
