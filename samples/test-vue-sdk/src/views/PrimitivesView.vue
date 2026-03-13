@@ -46,7 +46,7 @@ const passwordValue = ref('');
 const passwordValue2 = ref('');
 
 const selectValue = ref('');
-const multiSelectValue = ref([]);
+const multiSelectValue = ref<string>('');
 const selectOptions: SelectOption[] = [
   { label: 'Option 1', value: 'option1' },
   { label: 'Option 2', value: 'option2' },
@@ -163,7 +163,7 @@ const cardFormEmail = ref('');
                 required />
               <TextField v-model="textFieldValue3" label="With Helper Text" placeholder="Enter email"
                 helper-text="We'll never share your email" />
-              <TextField v-model="textFieldErrorValue" label="Field with Error" placeholder="This has an error" error
+              <TextField v-model="textFieldErrorValue" label="Field with Error" placeholder="This has an error" error="This field has an error"
                 helper-text="This field has an error" />
             </div>
           </div>
@@ -183,7 +183,7 @@ const cardFormEmail = ref('');
               <Select v-model="selectValue" label="Select Option" :options="selectOptions"
                 placeholder="Choose an option" />
               <Select v-model="multiSelectValue" label="Multi Select" :options="selectOptions"
-                placeholder="Choose multiple options" multiple />
+                placeholder="Choose multiple options" />
             </div>
           </div>
 
