@@ -200,7 +200,7 @@ const refreshSession = async () => {
               <SignUpButton>
                 <template #default="{ isLoading }">
                   <span v-if="isLoading">Creating account...</span>
-                  <span v-else">Join Now</span>
+                  <span v-else>Join Now</span>
                 </template>
               </SignUpButton>
             </div>
