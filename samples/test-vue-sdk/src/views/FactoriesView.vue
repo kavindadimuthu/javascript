@@ -71,11 +71,10 @@ const handleContactSubmit = async () => {
     <!-- Field Factory Overview -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Field Factory</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          The FieldFactory component dynamically generates form fields based on configuration objects. 
-          This is useful for building dynamic forms, user onboarding flows, and custom field layouts.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Field Factory</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">The FieldFactory component dynamically generates form fields based on configuration objects. This is useful for building dynamic forms, user onboarding flows, and custom field layouts.</Typography>
+        </div>
         
         <Alert variant="info" title="Dynamic Form Generation">
           FieldFactory can create various field types including text, password, email, select, checkbox, 
@@ -87,10 +86,10 @@ const handleContactSubmit = async () => {
     <!-- Basic Usage Example -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Basic Usage Example</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Example of how to use FieldFactory in your application.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Basic Usage Example</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">Example of how to use FieldFactory in your application.</Typography>
+        </div>
         
         <div class="bg-gray-100 p-4 rounded-lg">
           <Typography variant="h4" class="mb-3">Code Example</Typography>
@@ -115,7 +114,9 @@ const fieldConfig: FieldConfig = {
     <!-- Field Types Documentation -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Available Field Types</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Available Field Types</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-3">Supported Field Types</Typography>
@@ -165,11 +166,10 @@ const fieldConfig: FieldConfig = {
     <!-- Configuration Structure -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Field Configuration Structure</Typography>
-        <div class="space-y-4">
-          <Typography variant="body1" class="text-gray-600">
-            The FieldConfig interface defines the structure for field configurations.
-          </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Field Configuration Structure</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">The FieldConfig interface defines the structure for field configurations.</Typography>
+        </div>
           
           <div class="bg-gray-100 p-4 rounded-lg">
             <Typography variant="h4" class="mb-3">FieldConfig Interface</Typography>
@@ -194,17 +194,16 @@ const fieldConfig: FieldConfig = {
   }&gt;; // For select fields
 }</code></pre>
           </div>
-        </div>
       </div>
     </Card>
 
     <!-- Manual Field Examples -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Manual Field Examples</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Since FieldFactory may have typing issues, here are manual examples using the primitive components directly.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Manual Field Examples</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">Since FieldFactory may have typing issues, here are manual examples using the primitive components directly.</Typography>
+        </div>
         
         <div class="space-y-6">
           <div>
@@ -302,10 +301,10 @@ const fieldConfig: FieldConfig = {
     <!-- Helper Functions -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Helper Functions</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          The FieldFactory exports helper functions for field creation and validation.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Helper Functions</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">The FieldFactory exports helper functions for field creation and validation.</Typography>
+        </div>
         
         <div class="space-y-4">
           <div>

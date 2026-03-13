@@ -76,7 +76,9 @@ const cardFormEmail = ref('');
     <!-- Buttons -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Buttons</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Buttons</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Button Variants</Typography>
@@ -135,7 +137,9 @@ const cardFormEmail = ref('');
     <!-- Typography -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Typography</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Typography</Typography>
+        </div>
         <div class="space-y-3">
           <Typography variant="h1">Heading 1</Typography>
           <Typography variant="h2">Heading 2</Typography>
@@ -153,7 +157,9 @@ const cardFormEmail = ref('');
     <!-- Form Fields -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Form Fields</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Form Fields</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Text Field</Typography>
@@ -217,7 +223,9 @@ const cardFormEmail = ref('');
     <!-- Cards -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Cards</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Cards</Typography>
+        </div>
         <div class="grid gap-4 md:grid-cols-2">
           <Card>
             <Typography variant="h4" class="mb-2">Basic Card</Typography>
@@ -241,7 +249,9 @@ const cardFormEmail = ref('');
     <!-- Alerts -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Alerts</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Alerts</Typography>
+        </div>
         <div class="space-y-3">
           <Alert severity="info">
             This is an informational alert with some helpful content.
@@ -262,7 +272,9 @@ const cardFormEmail = ref('');
     <!-- Other Components -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Other Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Other Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Divider</Typography>
@@ -307,7 +319,9 @@ const cardFormEmail = ref('');
     <!-- Form Values Display -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Current Form Values</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Current Form Values</Typography>
+        </div>
         <pre class="bg-gray-100 p-3 rounded text-sm overflow-auto">{{
           JSON.stringify({
             textFieldValue,

@@ -40,7 +40,9 @@ const toggleManualLoading = () => {
     <!-- Conditional Rendering -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Conditional Rendering Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Conditional Rendering Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">SignedIn Component</Typography>
@@ -139,7 +141,9 @@ const toggleManualLoading = () => {
     <!-- Nested Conditional Rendering -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Nested Conditional Rendering</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Nested Conditional Rendering</Typography>
+        </div>
         <div class="space-y-4">
           <div class="p-4 border border-gray-200 rounded-lg">
             <Typography variant="h4" class="mb-3">Complex Authentication Flow</Typography>
@@ -219,7 +223,9 @@ const toggleManualLoading = () => {
     <!-- Conditional Content Examples -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Practical Examples</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Practical Examples</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-3">Navigation Menu Example</Typography>
@@ -303,7 +309,9 @@ const toggleManualLoading = () => {
     <!-- Authentication State Display -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Current Authentication State</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Current Authentication State</Typography>
+        </div>
         <div class="bg-gray-50 p-4 rounded-lg">
           <div class="grid md:grid-cols-3 gap-4 text-sm">
             <div class="text-center">

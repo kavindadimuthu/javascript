@@ -66,10 +66,10 @@ const handleEmailSignIn = async () => {
     <!-- Social Login Adapters -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Social Login Adapters</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          These adapters provide pre-configured social login buttons that work with popular identity providers.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Social Login Adapters</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">These adapters provide pre-configured social login buttons that work with popular identity providers.</Typography>
+        </div>
         
         <div class="space-y-4">
           <div>
@@ -180,10 +180,10 @@ const handleEmailSignIn = async () => {
     <!-- All Social Buttons Together -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Social Login Options</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Complete social login selection with all available providers.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Social Login Options</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">Complete social login selection with all available providers.</Typography>
+        </div>
         
         <div class="space-y-4">
           <div>
@@ -222,10 +222,10 @@ const handleEmailSignIn = async () => {
     <!-- Event Handling Examples -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Event Handling</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Demonstrate event handling and error catching with social login buttons.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Event Handling</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">Demonstrate event handling and error catching with social login buttons.</Typography>
+        </div>
         
         <div class="space-y-4">
           <div>
@@ -292,7 +292,9 @@ const handleEmailSignIn = async () => {
     <!-- Integration Examples -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Integration Examples</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Integration Examples</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-3">Sign In Form with Social Options</Typography>

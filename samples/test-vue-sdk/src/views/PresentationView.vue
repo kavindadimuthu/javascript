@@ -78,7 +78,9 @@ const handleInviteUser = (inviteUser: Function) => {
     <!-- User Components -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">User Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">User Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">User Component</Typography>
@@ -166,7 +168,9 @@ const handleInviteUser = (inviteUser: Function) => {
     <!-- Organization Components -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Organization Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Organization Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Organization Component</Typography>
@@ -310,7 +314,9 @@ const handleInviteUser = (inviteUser: Function) => {
     <!-- Authentication Flow Components -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Authentication Flow Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Authentication Flow Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Sign In Component</Typography>
@@ -374,7 +380,9 @@ const handleInviteUser = (inviteUser: Function) => {
     <!-- Invitation Components -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Invitation Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Invitation Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Invite User</Typography>
@@ -425,7 +433,9 @@ const handleInviteUser = (inviteUser: Function) => {
     <!-- Utility Components -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Utility Components</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Utility Components</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Language Switcher</Typography>

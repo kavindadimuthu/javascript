@@ -52,10 +52,10 @@ const goToHomePage = () => {
     <!-- Callback Component -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Authentication Flow Components</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Components that handle authentication flows and callback processes.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Authentication Flow Components</Typography>
+          <Typography variant="body1" class="text-slate-500 mt-1">Components that handle authentication flows and callback processes.</Typography>
+        </div>
 
         <div class="space-y-4">
           <div>
@@ -204,7 +204,9 @@ const goToHomePage = () => {
     <!-- Authentication Flow Documentation -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Authentication Flow Overview</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Authentication Flow Overview</Typography>
+        </div>
         <div class="space-y-4">
           <Typography variant="body1" class="text-gray-600">
             Understanding the complete authentication flow and how the Callback component fits in.
@@ -266,7 +268,9 @@ const goToHomePage = () => {
     <!-- Usage Examples -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Implementation Examples</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Implementation Examples</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-3">1. Basic Callback Page</Typography>

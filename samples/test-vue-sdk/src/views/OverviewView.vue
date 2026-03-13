@@ -193,7 +193,9 @@ async function handleSignInSilently() {
         <!-- Configuration Panel -->
         <Card>
           <div class="space-y-4">
-            <Typography variant="h3">Provider Configuration</Typography>
+            <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+              <Typography variant="h3">Provider Configuration</Typography>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div v-for="(value, key) in { baseUrl, clientId, afterSignInUrl, signInUrl, signUpUrl, organizationHandle, platform, storage }" :key="key" class="space-y-1">
                 <Typography variant="overline">{{ key }}</Typography>
@@ -240,7 +242,9 @@ async function handleSignInSilently() {
         <!-- Configuration Panel -->
         <Card>
           <div class="space-y-4">
-            <Typography variant="h3">Provider Configuration</Typography>
+            <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+              <Typography variant="h3">Provider Configuration</Typography>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div v-for="(value, key) in { baseUrl, clientId, afterSignInUrl, signInUrl, signUpUrl, organizationHandle, platform, storage }" :key="key" class="space-y-1">
                 <Typography variant="overline">{{ key }}</Typography>
@@ -255,9 +259,9 @@ async function handleSignInSilently() {
         <!-- Token Operations -->
         <Card>
           <div class="space-y-4">
-            <div>
+            <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
               <Typography variant="h3">Token Operations</Typography>
-              <Typography variant="body2">Retrieve and manage authentication tokens</Typography>
+              <Typography variant="body2" class="text-slate-500 mt-1">Retrieve and manage authentication tokens</Typography>
             </div>
 
             <div class="flex gap-2 flex-wrap">
@@ -304,9 +308,9 @@ async function handleSignInSilently() {
         <!-- HTTP Request Panel -->
         <Card>
           <div class="space-y-4">
-            <div>
+            <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
               <Typography variant="h3">Authenticated HTTP Request</Typography>
-              <Typography variant="body2">Make authenticated API calls with auto-injected tokens</Typography>
+              <Typography variant="body2" class="text-slate-500 mt-1">Make authenticated API calls with auto-injected tokens</Typography>
             </div>
 
             <div class="flex gap-2 flex-wrap items-end">
@@ -331,9 +335,9 @@ async function handleSignInSilently() {
         <!-- Silent Sign In Panel -->
         <Card>
           <div class="space-y-4">
-            <div>
+            <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
               <Typography variant="h3">Silent Sign In</Typography>
-              <Typography variant="body2">Refresh session without user interaction</Typography>
+              <Typography variant="body2" class="text-slate-500 mt-1">Refresh session without user interaction</Typography>
             </div>
 
             <Button variant="outline" @click="handleSignInSilently">Attempt Silent Sign In</Button>

@@ -110,7 +110,9 @@ const refreshSession = async () => {
     <!-- Sign In Buttons -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Sign In Buttons</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Sign In Buttons</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Regular Sign In Button</Typography>
@@ -149,7 +151,9 @@ const refreshSession = async () => {
     <!-- Sign Out Buttons -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Sign Out Buttons</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Sign Out Buttons</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Regular Sign Out Button</Typography>
@@ -185,7 +189,9 @@ const refreshSession = async () => {
     <!-- Sign Up Buttons -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Sign Up Buttons</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Sign Up Buttons</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Regular Sign Up Button</Typography>
@@ -221,7 +227,9 @@ const refreshSession = async () => {
     <!-- Custom Action Buttons -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Custom Action Buttons</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Custom Action Buttons</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">Manual Sign In Actions</Typography>
@@ -256,7 +264,9 @@ const refreshSession = async () => {
     <!-- Action Results -->
     <Card v-if="actionResult || actionError">
       <div class="space-y-4">
-        <Typography variant="h3">Action Results</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Action Results</Typography>
+        </div>
         <div v-if="actionError" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
           <div class="font-medium mb-1">Error:</div>
           <div class="text-sm">{{ actionError }}</div>

@@ -286,10 +286,12 @@ const getFlowInfo = async () => {
     <!-- useAsgardeo Composable -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">useAsgardeo Composable</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          The main composable that provides authentication state, configuration, and actions.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">useAsgardeo Composable</Typography>
+          <Typography variant="body1" class="text-gray-600">
+            The main composable that provides authentication state, configuration, and actions.
+          </Typography>
+        </div>
         
         <div class="space-y-4">
           <div>
@@ -362,10 +364,12 @@ const getFlowInfo = async () => {
     <!-- useUser Composable -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">useUser Composable</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Provides user profile information and user-related operations.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">useUser Composable</Typography>
+          <Typography variant="body1" class="text-gray-600">
+            Provides user profile information and user-related operations.
+          </Typography>
+        </div>
         
         <div class="space-y-4">
           <div>
@@ -410,10 +414,12 @@ const getFlowInfo = async () => {
     <!-- useOrganization Composable -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">useOrganization Composable</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Manages organization context and provides organization-related operations.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">useOrganization Composable</Typography>
+          <Typography variant="body1" class="text-gray-600">
+            Manages organization context and provides organization-related operations.
+          </Typography>
+        </div>
         
         <div class="space-y-4">
           <div>
@@ -460,10 +466,12 @@ const getFlowInfo = async () => {
     <!-- useBranding & useTheme Composables -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">useBranding & useTheme Composables</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Handle branding and theme customization for the application.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">useBranding & useTheme Composables</Typography>
+          <Typography variant="body1" class="text-gray-600">
+            Handle branding and theme customization for the application.
+          </Typography>
+        </div>
         
         <div class="space-y-4">
           <div class="grid md:grid-cols-2 gap-6">
@@ -506,10 +514,12 @@ const getFlowInfo = async () => {
     <!-- useI18n & useFlow Composables -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">useI18n & useFlow Composables</Typography>
-        <Typography variant="body1" class="text-gray-600">
-          Internationalization and flow management composables.
-        </Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">useI18n & useFlow Composables</Typography>
+          <Typography variant="body1" class="text-gray-600">
+            Internationalization and flow management composables.
+          </Typography>
+        </div>
         
         <div class="space-y-4">
           <div class="grid md:grid-cols-2 gap-6">
@@ -557,7 +567,9 @@ const getFlowInfo = async () => {
     <!-- Composable Usage Examples -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">Composable Usage Examples</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Composable Usage Examples</Typography>
+        </div>
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-3">Code Examples</Typography>
@@ -632,7 +644,9 @@ await changeLanguage('es');</code></pre>
     <!-- All Composables Summary -->
     <Card>
       <div class="space-y-4">
-        <Typography variant="h3">All Available Composables</Typography>
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">All Available Composables</Typography>
+        </div>
         <div class="grid md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <div class="p-3 border rounded-lg">
