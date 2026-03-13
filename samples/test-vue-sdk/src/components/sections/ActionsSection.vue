@@ -101,6 +101,12 @@ const refreshSession = async () => {
 
 <template>
   <div class="space-y-6">
+    <!-- Section Header -->
+    <div class="border-b border-slate-200 pb-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Action Components</h2>
+      <p class="text-gray-600">Sign in/out buttons and interactive actions</p>
+    </div>
+
     <!-- Sign In Buttons -->
     <Card>
       <div class="space-y-4">

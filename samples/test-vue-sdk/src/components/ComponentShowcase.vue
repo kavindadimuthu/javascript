@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { XIcon } from '@asgardeo/vue';
 
 // Import section components
 import OverviewSection from './sections/OverviewSection.vue';
-import OverviewAuthControls from './sections/OverviewAuthControls.vue';
 import ActionsSection from './sections/ActionsSection.vue';
 import PrimitivesSection from './sections/PrimitivesSection.vue';
 import PresentationSection from './sections/PresentationSection.vue';
@@ -17,19 +16,17 @@ import ComposablesSection from './sections/ComposablesSection.vue';
 const sidebarOpen = ref(false);
 const activeSection = ref('overview');
 
-const sections = [
-  { id: 'overview', title: 'Overview', description: 'SDK status and configuration overview' },
-  { id: 'actions', title: 'Action Components', description: 'Sign in/out buttons and interactive actions' },
-  { id: 'primitives', title: 'Primitive Components', description: 'Basic UI components like buttons, inputs, and cards' },
-  { id: 'presentation', title: 'Presentation Components', description: 'Complete user interface components' },
-  { id: 'control', title: 'Control Components', description: 'Conditional rendering based on auth state' },
-  { id: 'adapters', title: 'Social Login Adapters', description: 'Social media login buttons' },
-  { id: 'auth-flow', title: 'Auth Flow Components', description: 'Authentication flow handlers' },
-  { id: 'factories', title: 'Field Factory', description: 'Dynamic field generation' },
-  { id: 'composables', title: 'Composables Demo', description: 'Vue composables for SDK functionality' },
+const sectionsList = [
+  { id: 'overview', title: 'Overview' },
+  { id: 'actions', title: 'Action Components' },
+  { id: 'primitives', title: 'Primitive Components' },
+  { id: 'presentation', title: 'Presentation Components' },
+  { id: 'control', title: 'Control Components' },
+  { id: 'adapters', title: 'Social Login Adapters' },
+  { id: 'auth-flow', title: 'Auth Flow Components' },
+  { id: 'factories', title: 'Field Factory' },
+  { id: 'composables', title: 'Composables Demo' },
 ];
-
-const currentSection = computed(() => sections.find(s => s.id === activeSection.value));
 </script>
 
 <template>
@@ -45,7 +42,7 @@ const currentSection = computed(() => sections.find(s => s.id === activeSection.
       <nav class="mt-4">
         <div class="px-2 space-y-1">
           <button
-            v-for="section in sections"
+            v-for="section in sectionsList"
             :key="section.id"
             @click="activeSection = section.id"
             class="w-full text-left block px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -69,54 +66,16 @@ const currentSection = computed(() => sections.find(s => s.id === activeSection.
     <!-- Main Content -->
     <div class="md:ml-64">
       <div class="p-6">
-        <!-- Header -->
-        <div class="mb-8">
-          <div class="flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ currentSection?.title }}</h2>
-              <p class="text-gray-600">{{ currentSection?.description }}</p>
-            </div>
-            <!-- Auth Controls for Overview Section -->
-            <OverviewAuthControls v-if="activeSection === 'overview'" />
-          </div>
-        </div>
-
         <!-- Component Sections -->
-        <div v-if="activeSection === 'overview'" class="space-y-6">
-          <OverviewSection />
-        </div>
-
-        <div v-if="activeSection === 'actions'" class="space-y-6">
-          <ActionsSection />
-        </div>
-
-        <div v-if="activeSection === 'primitives'" class="space-y-6">
-          <PrimitivesSection />
-        </div>
-
-        <div v-if="activeSection === 'presentation'" class="space-y-6">
-          <PresentationSection />
-        </div>
-
-        <div v-if="activeSection === 'control'" class="space-y-6">
-          <ControlSection />
-        </div>
-
-        <div v-if="activeSection === 'adapters'" class="space-y-6">
-          <AdaptersSection />
-        </div>
-
-        <div v-if="activeSection === 'auth-flow'" class="space-y-6">
-          <AuthFlowSection />
-        </div>
-
-        <div v-if="activeSection === 'factories'" class="space-y-6">
-          <FactoriesSection />
-        </div>
-
-        <div v-if="activeSection === 'composables'" class="space-y-6">
-          <ComposablesSection />
-        </div>
+        <OverviewSection v-if="activeSection === 'overview'" />
+        <ActionsSection v-if="activeSection === 'actions'" />
+        <PrimitivesSection v-if="activeSection === 'primitives'" />
+        <PresentationSection v-if="activeSection === 'presentation'" />
+        <ControlSection v-if="activeSection === 'control'" />
+        <AdaptersSection v-if="activeSection === 'adapters'" />
+        <AuthFlowSection v-if="activeSection === 'auth-flow'" />
+        <FactoriesSection v-if="activeSection === 'factories'" />
+        <ComposablesSection v-if="activeSection === 'composables'" />
       </div>
     </div>
 

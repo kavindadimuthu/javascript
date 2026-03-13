@@ -277,6 +277,12 @@ const getFlowInfo = async () => {
 
 <template>
   <div class="space-y-6">
+    <!-- Section Header -->
+    <div class="border-b border-slate-200 pb-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Composables Demo</h2>
+      <p class="text-gray-600">Vue composables for SDK functionality</p>
+    </div>
+
     <!-- useAsgardeo Composable -->
     <Card>
       <div class="space-y-4">
