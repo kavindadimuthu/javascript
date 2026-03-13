@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ComponentShowcase from './components/ComponentShowcase.vue';
 import { AsgardeoProvider } from '@asgardeo/vue';
+import Sidebar from './components/Sidebar.vue';
 </script>
 
 <template>
@@ -10,6 +10,13 @@ import { AsgardeoProvider } from '@asgardeo/vue';
     after-sign-in-url="http://localhost:5173"
     after-sign-out-url="http://localhost:5173"
   >
-    <ComponentShowcase />
+    <div class="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div class="md:ml-64">
+        <div class="p-6">
+          <RouterView />
+        </div>
+      </div>
+    </div>
   </AsgardeoProvider>
 </template>
