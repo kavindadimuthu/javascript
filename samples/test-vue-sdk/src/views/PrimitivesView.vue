@@ -243,16 +243,16 @@ const cardFormEmail = ref('');
       <div class="space-y-4">
         <Typography variant="h3">Alerts</Typography>
         <div class="space-y-3">
-          <Alert variant="info" title="Information">
+          <Alert severity="info">
             This is an informational alert with some helpful content.
           </Alert>
-          <Alert variant="success" title="Success">
+          <Alert severity="success">
             Your operation completed successfully!
           </Alert>
-          <Alert variant="warning" title="Warning">
+          <Alert severity="warning">
             Please review this information carefully.
           </Alert>
-          <Alert variant="error" title="Error">
+          <Alert severity="error">
             Something went wrong. Please try again.
           </Alert>
         </div>
