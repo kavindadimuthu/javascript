@@ -1,3 +1,46 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import {
+  Card,
+  Typography,
+  Button,
+  Alert,
+  Loading,
+  Spinner,
+  Callback,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  CheckIcon,
+  XIcon,
+} from '@asgardeo/vue';
+
+// Callback state simulation
+const callbackState = ref<'idle' | 'loading' | 'success' | 'error'>('idle');
+const callbackError = ref<string | null>(null);
+
+const simulateCallbackState = (state: typeof callbackState.value) => {
+  callbackState.value = state;
+  
+  if (state === 'error') {
+    callbackError.value = 'Invalid authorization code received from identity provider';
+  } else {
+    callbackError.value = null;
+  }
+};
+
+const retryAuthentication = () => {
+  callbackState.value = 'loading';
+  setTimeout(() => {
+    callbackState.value = 'success';
+  }, 2000);
+};
+
+const goToHomePage = () => {
+  callbackState.value = 'idle';
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Callback Component -->
@@ -322,46 +365,3 @@ const handleAuthError = (error) =&gt; {
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import {
-  Card,
-  Typography,
-  Button,
-  Alert,
-  Loading,
-  Spinner,
-  Callback,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  CheckIcon,
-  XIcon,
-} from '@asgardeo/vue';
-
-// Callback state simulation
-const callbackState = ref<'idle' | 'loading' | 'success' | 'error'>('idle');
-const callbackError = ref<string | null>(null);
-
-const simulateCallbackState = (state: typeof callbackState.value) => {
-  callbackState.value = state;
-  
-  if (state === 'error') {
-    callbackError.value = 'Invalid authorization code received from identity provider';
-  } else {
-    callbackError.value = null;
-  }
-};
-
-const retryAuthentication = () => {
-  callbackState.value = 'loading';
-  setTimeout(() => {
-    callbackState.value = 'success';
-  }, 2000);
-};
-
-const goToHomePage = () => {
-  callbackState.value = 'idle';
-};
-</script>

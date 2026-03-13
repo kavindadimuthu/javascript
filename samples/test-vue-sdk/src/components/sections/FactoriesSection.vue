@@ -1,3 +1,65 @@
+<script setup lang="ts">
+import { ref, reactive } from 'vue';
+import {
+  Card,
+  Typography,
+  Button,
+  TextField,
+  PasswordField,
+  Select,
+  Checkbox,
+  Alert,
+  type SelectOption,
+} from '@asgardeo/vue';
+
+// Form data
+const formData = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  agreeToTerms: false,
+});
+
+const contactData = reactive({
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+});
+
+// Loading states
+const submitting = ref(false);
+const contactSubmitting = ref(false);
+
+// Options
+const subjectOptions: SelectOption[] = [
+  { label: 'General Inquiry', value: 'general' },
+  { label: 'Technical Support', value: 'support' },
+  { label: 'Business Partnership', value: 'business' },
+  { label: 'Other', value: 'other' },
+];
+
+// Handlers
+const handleFormSubmit = async () => {
+  submitting.value = true;
+  // Simulate form submission
+  setTimeout(() => {
+    submitting.value = false;
+    console.log('Registration form submitted:', formData);
+  }, 1000);
+};
+
+const handleContactSubmit = async () => {
+  contactSubmitting.value = true;
+  // Simulate form submission
+  setTimeout(() => {
+    contactSubmitting.value = false;
+    console.log('Contact form submitted:', contactData);
+  }, 1000);
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Field Factory Overview -->
@@ -285,65 +347,3 @@ if (!validationResult.isValid) {
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, reactive } from 'vue';
-import {
-  Card,
-  Typography,
-  Button,
-  TextField,
-  PasswordField,
-  Select,
-  Checkbox,
-  Alert,
-  type SelectOption,
-} from '@asgardeo/vue';
-
-// Form data
-const formData = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  agreeToTerms: false,
-});
-
-const contactData = reactive({
-  name: '',
-  email: '',
-  subject: '',
-  message: '',
-});
-
-// Loading states
-const submitting = ref(false);
-const contactSubmitting = ref(false);
-
-// Options
-const subjectOptions: SelectOption[] = [
-  { label: 'General Inquiry', value: 'general' },
-  { label: 'Technical Support', value: 'support' },
-  { label: 'Business Partnership', value: 'business' },
-  { label: 'Other', value: 'other' },
-];
-
-// Handlers
-const handleFormSubmit = async () => {
-  submitting.value = true;
-  // Simulate form submission
-  setTimeout(() => {
-    submitting.value = false;
-    console.log('Registration form submitted:', formData);
-  }, 1000);
-};
-
-const handleContactSubmit = async () => {
-  contactSubmitting.value = true;
-  // Simulate form submission
-  setTimeout(() => {
-    contactSubmitting.value = false;
-    console.log('Contact form submitted:', contactData);
-  }, 1000);
-};
-</script>

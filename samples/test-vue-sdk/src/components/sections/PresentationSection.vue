@@ -1,3 +1,72 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import {
+  Card,
+  Typography,
+  Button,
+  TextField,
+  PasswordField,
+  Alert,
+  UserComponent,
+  BaseUser,
+  UserProfileComponent,
+  BaseUserProfile,
+  UserDropdown,
+  BaseUserDropdown,
+  OrganizationComponent,
+  BaseOrganization,
+  OrganizationList,
+  BaseOrganizationList,
+  OrganizationProfile,
+  OrganizationSwitcher,
+  BaseOrganizationSwitcher,
+  CreateOrganization,
+  BaseCreateOrganization,
+  SignIn,
+  BaseSignIn,
+  SignUp,
+  InviteUser,
+  BaseInviteUser,
+  AcceptInvite,
+  LanguageSwitcher,
+  BaseLanguageSwitcher,
+  SignedIn,
+  SignedOut,
+  ChevronDownIcon,
+  BuildingIcon,
+} from '@asgardeo/vue';
+
+// Custom Sign In
+const customSignInEmail = ref('');
+const customSignInPassword = ref('');
+
+// Organization Creation
+const newOrgName = ref('');
+const newOrgDescription = ref('');
+
+const handleCreateOrg = (createOrganization: Function) => {
+  if (newOrgName.value.trim()) {
+    createOrganization({
+      name: newOrgName.value,
+      description: newOrgDescription.value || undefined,
+    });
+  }
+};
+
+// User Invitation
+const inviteEmail = ref('');
+const inviteRole = ref('');
+
+const handleInviteUser = (inviteUser: Function) => {
+  if (inviteEmail.value.trim()) {
+    inviteUser({
+      email: inviteEmail.value,
+      role: inviteRole.value || 'member',
+    });
+  }
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- User Components -->
@@ -380,72 +449,3 @@
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import {
-  Card,
-  Typography,
-  Button,
-  TextField,
-  PasswordField,
-  Alert,
-  UserComponent,
-  BaseUser,
-  UserProfileComponent,
-  BaseUserProfile,
-  UserDropdown,
-  BaseUserDropdown,
-  OrganizationComponent,
-  BaseOrganization,
-  OrganizationList,
-  BaseOrganizationList,
-  OrganizationProfile,
-  OrganizationSwitcher,
-  BaseOrganizationSwitcher,
-  CreateOrganization,
-  BaseCreateOrganization,
-  SignIn,
-  BaseSignIn,
-  SignUp,
-  InviteUser,
-  BaseInviteUser,
-  AcceptInvite,
-  LanguageSwitcher,
-  BaseLanguageSwitcher,
-  SignedIn,
-  SignedOut,
-  ChevronDownIcon,
-  BuildingIcon,
-} from '@asgardeo/vue';
-
-// Custom Sign In
-const customSignInEmail = ref('');
-const customSignInPassword = ref('');
-
-// Organization Creation
-const newOrgName = ref('');
-const newOrgDescription = ref('');
-
-const handleCreateOrg = (createOrganization: Function) => {
-  if (newOrgName.value.trim()) {
-    createOrganization({
-      name: newOrgName.value,
-      description: newOrgDescription.value || undefined,
-    });
-  }
-};
-
-// User Invitation
-const inviteEmail = ref('');
-const inviteRole = ref('');
-
-const handleInviteUser = (inviteUser: Function) => {
-  if (inviteEmail.value.trim()) {
-    inviteUser({
-      email: inviteEmail.value,
-      role: inviteRole.value || 'member',
-    });
-  }
-};
-</script>

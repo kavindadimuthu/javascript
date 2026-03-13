@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import { ref, h } from 'vue';
+import {
+  Card,
+  Typography,
+  Button,
+  TextField,
+  PasswordField,
+  Select,
+  Checkbox,
+  DatePicker,
+  OtpField,
+  Alert,
+  Divider,
+  Logo,
+  Spinner,
+  UserIcon,
+  EyeIcon,
+  EyeOffIcon,
+  ChevronDownIcon,
+  CheckIcon,
+  XIcon,
+  PlusIcon,
+  LogOutIcon,
+  ArrowLeftRightIcon,
+  BuildingIcon,
+  GlobeIcon,
+  type SelectOption,
+} from '@asgardeo/vue';
+
+// Button state
+const buttonLoading = ref(false);
+const toggleButtonLoading = () => {
+  buttonLoading.value = true;
+  setTimeout(() => {
+    buttonLoading.value = false;
+  }, 2000);
+};
+
+// Form values
+const textFieldValue = ref('');
+const textFieldValue2 = ref('');
+const textFieldValue3 = ref('');
+const textFieldErrorValue = ref('Error value');
+const passwordValue = ref('');
+const passwordValue2 = ref('');
+
+const selectValue = ref('');
+const multiSelectValue = ref([]);
+const selectOptions: SelectOption[] = [
+  { label: 'Option 1', value: 'option1' },
+  { label: 'Option 2', value: 'option2' },
+  { label: 'Option 3', value: 'option3' },
+  { label: 'Disabled Option', value: 'disabled', disabled: true },
+];
+
+const checkboxValue = ref(false);
+const checkboxValue2 = ref(false);
+const checkboxValue3 = ref(true);
+
+const dateValue = ref('');
+const otpValue = ref('');
+
+const cardFormName = ref('');
+const cardFormEmail = ref('');
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Buttons -->
@@ -85,67 +152,32 @@
           <div>
             <Typography variant="h4" class="mb-2">Text Field</Typography>
             <div class="space-y-3 max-w-md">
-              <TextField 
-                v-model="textFieldValue" 
-                label="Basic Text Field"
-                placeholder="Enter some text..."
-              />
-              <TextField 
-                v-model="textFieldValue2" 
-                label="Required Field"
-                placeholder="This field is required"
-                required
-              />
-              <TextField 
-                v-model="textFieldValue3" 
-                label="With Helper Text"
-                placeholder="Enter email"
-                helper-text="We'll never share your email"
-              />
-              <TextField 
-                v-model="textFieldErrorValue" 
-                label="Field with Error"
-                placeholder="This has an error"
-                error
-                helper-text="This field has an error"
-              />
+              <TextField v-model="textFieldValue" label="Basic Text Field" placeholder="Enter some text..." />
+              <TextField v-model="textFieldValue2" label="Required Field" placeholder="This field is required"
+                required />
+              <TextField v-model="textFieldValue3" label="With Helper Text" placeholder="Enter email"
+                helper-text="We'll never share your email" />
+              <TextField v-model="textFieldErrorValue" label="Field with Error" placeholder="This has an error" error
+                helper-text="This field has an error" />
             </div>
           </div>
 
           <div>
             <Typography variant="h4" class="mb-2">Password Field</Typography>
             <div class="space-y-3 max-w-md">
-              <PasswordField 
-                v-model="passwordValue" 
-                label="Password"
-                placeholder="Enter your password"
-              />
-              <PasswordField 
-                v-model="passwordValue2" 
-                label="Confirm Password"
-                placeholder="Confirm your password"
-                required
-                helper-text="Must match your password"
-              />
+              <PasswordField v-model="passwordValue" label="Password" placeholder="Enter your password" />
+              <PasswordField v-model="passwordValue2" label="Confirm Password" placeholder="Confirm your password"
+                required helper-text="Must match your password" />
             </div>
           </div>
 
           <div>
             <Typography variant="h4" class="mb-2">Select Field</Typography>
             <div class="space-y-3 max-w-md">
-              <Select 
-                v-model="selectValue" 
-                label="Select Option"
-                :options="selectOptions"
-                placeholder="Choose an option"
-              />
-              <Select 
-                v-model="multiSelectValue" 
-                label="Multi Select"
-                :options="selectOptions"
-                placeholder="Choose multiple options"
-                multiple
-              />
+              <Select v-model="selectValue" label="Select Option" :options="selectOptions"
+                placeholder="Choose an option" />
+              <Select v-model="multiSelectValue" label="Multi Select" :options="selectOptions"
+                placeholder="Choose multiple options" multiple />
             </div>
           </div>
 
@@ -154,34 +186,22 @@
             <div class="space-y-3">
               <Checkbox v-model="checkboxValue" label="Basic Checkbox" />
               <Checkbox v-model="checkboxValue2" label="Required Checkbox" required />
-              <Checkbox
-                v-model="checkboxValue3" 
-                label="Checkbox with helper text"
-                helper-text="This provides additional context"
-              />
+              <Checkbox v-model="checkboxValue3" label="Checkbox with helper text"
+                helper-text="This provides additional context" />
             </div>
           </div>
 
           <div>
             <Typography variant="h4" class="mb-2">Date Picker</Typography>
             <div class="space-y-3 max-w-md">
-              <DatePicker 
-                v-model="dateValue" 
-                label="Birth Date"
-                placeholder="Select your birth date"
-              />
+              <DatePicker v-model="dateValue" label="Birth Date" placeholder="Select your birth date" />
             </div>
           </div>
 
           <div>
             <Typography variant="h4" class="mb-2">OTP Field</Typography>
             <div class="space-y-3 max-w-md">
-              <OtpField 
-                v-model="otpValue" 
-                :length="6"
-                label="Enter OTP"
-                placeholder="000000"
-              />
+              <OtpField v-model="otpValue" :length="6" label="Enter OTP" placeholder="000000" />
             </div>
           </div>
         </div>
@@ -199,7 +219,7 @@
               This is a basic card component that can contain any content.
             </Typography>
           </Card>
-          
+
           <Card>
             <Typography variant="h4" class="mb-2">Card with Form</Typography>
             <div class="space-y-3">
@@ -305,70 +325,3 @@
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, h } from 'vue';
-import {
-  Card,
-  Typography,
-  Button,
-  TextField,
-  PasswordField,
-  Select,
-  Checkbox,
-  DatePicker,
-  OtpField,
-  Alert,
-  Divider,
-  Logo,
-  Spinner,
-  UserIcon,
-  EyeIcon,
-  EyeOffIcon,
-  ChevronDownIcon,
-  CheckIcon,
-  XIcon,
-  PlusIcon,
-  LogOutIcon,
-  ArrowLeftRightIcon,
-  BuildingIcon,
-  GlobeIcon,
-  type SelectOption,
-} from '@asgardeo/vue';
-
-// Button state
-const buttonLoading = ref(false);
-const toggleButtonLoading = () => {
-  buttonLoading.value = true;
-  setTimeout(() => {
-    buttonLoading.value = false;
-  }, 2000);
-};
-
-// Form values
-const textFieldValue = ref('');
-const textFieldValue2 = ref('');
-const textFieldValue3 = ref('');
-const textFieldErrorValue = ref('Error value');
-const passwordValue = ref('');
-const passwordValue2 = ref('');
-
-const selectValue = ref('');
-const multiSelectValue = ref([]);
-const selectOptions: SelectOption[] = [
-  { label: 'Option 1', value: 'option1' },
-  { label: 'Option 2', value: 'option2' },
-  { label: 'Option 3', value: 'option3' },
-  { label: 'Disabled Option', value: 'disabled', disabled: true },
-];
-
-const checkboxValue = ref(false);
-const checkboxValue2 = ref(false);
-const checkboxValue3 = ref(true);
-
-const dateValue = ref('');
-const otpValue = ref('');
-
-const cardFormName = ref('');
-const cardFormEmail = ref('');
-</script>

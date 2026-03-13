@@ -1,3 +1,104 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import {
+  useAsgardeo,
+  Card,
+  Typography,
+  Button,
+  SignInButton,
+  BaseSignInButton,
+  SignOutButton,
+  BaseSignOutButton,
+  SignUpButton,
+  BaseSignUpButton,
+} from '@asgardeo/vue';
+
+const {
+  signIn,
+  signOut,
+  signUp,
+  signInSilently,
+  clearSession,
+} = useAsgardeo();
+
+// Loading states
+const customLoading = ref(false);
+const manualSignInLoading = ref(false);
+const redirectLoading = ref(false);
+const silentLoading = ref(false);
+const refreshLoading = ref(false);
+
+// Action results
+const actionResult = ref<any>(null);
+const actionError = ref<string | null>(null);
+
+// Manual sign in handlers
+const handleManualSignIn = async () => {
+  manualSignInLoading.value = true;
+  actionError.value = null;
+  actionResult.value = null;
+  
+  try {
+    const result = await signIn();
+    actionResult.value = result;
+  } catch (error: any) {
+    actionError.value = error?.message || String(error);
+  } finally {
+    manualSignInLoading.value = false;
+  }
+};
+
+const handleSignInWithRedirect = async () => {
+  redirectLoading.value = true;
+  actionError.value = null;
+  actionResult.value = null;
+  
+  try {
+    // Sign in with custom options
+    const result = await signIn({ 
+      prompt: 'login', 
+      state: 'custom-state',
+      // Add any other sign-in options
+    });
+    actionResult.value = result;
+  } catch (error: any) {
+    actionError.value = error?.message || String(error);
+  } finally {
+    redirectLoading.value = false;
+  }
+};
+
+const handleSignInSilently = async () => {
+  silentLoading.value = true;
+  actionError.value = null;
+  actionResult.value = null;
+  
+  try {
+    const result = await signInSilently();
+    actionResult.value = result;
+  } catch (error: any) {
+    actionError.value = error?.message || String(error);
+  } finally {
+    silentLoading.value = false;
+  }
+};
+
+const refreshSession = async () => {
+  refreshLoading.value = true;
+  actionError.value = null;
+  actionResult.value = null;
+  
+  try {
+    const result = await signInSilently();
+    actionResult.value = { message: 'Session refreshed', data: result };
+  } catch (error: any) {
+    actionError.value = error?.message || String(error);
+  } finally {
+    refreshLoading.value = false;
+  }
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Sign In Buttons -->
@@ -162,104 +263,3 @@
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import {
-  useAsgardeo,
-  Card,
-  Typography,
-  Button,
-  SignInButton,
-  BaseSignInButton,
-  SignOutButton,
-  BaseSignOutButton,
-  SignUpButton,
-  BaseSignUpButton,
-} from '@asgardeo/vue';
-
-const {
-  signIn,
-  signOut,
-  signUp,
-  signInSilently,
-  clearSession,
-} = useAsgardeo();
-
-// Loading states
-const customLoading = ref(false);
-const manualSignInLoading = ref(false);
-const redirectLoading = ref(false);
-const silentLoading = ref(false);
-const refreshLoading = ref(false);
-
-// Action results
-const actionResult = ref<any>(null);
-const actionError = ref<string | null>(null);
-
-// Manual sign in handlers
-const handleManualSignIn = async () => {
-  manualSignInLoading.value = true;
-  actionError.value = null;
-  actionResult.value = null;
-  
-  try {
-    const result = await signIn();
-    actionResult.value = result;
-  } catch (error: any) {
-    actionError.value = error?.message || String(error);
-  } finally {
-    manualSignInLoading.value = false;
-  }
-};
-
-const handleSignInWithRedirect = async () => {
-  redirectLoading.value = true;
-  actionError.value = null;
-  actionResult.value = null;
-  
-  try {
-    // Sign in with custom options
-    const result = await signIn({ 
-      prompt: 'login', 
-      state: 'custom-state',
-      // Add any other sign-in options
-    });
-    actionResult.value = result;
-  } catch (error: any) {
-    actionError.value = error?.message || String(error);
-  } finally {
-    redirectLoading.value = false;
-  }
-};
-
-const handleSignInSilently = async () => {
-  silentLoading.value = true;
-  actionError.value = null;
-  actionResult.value = null;
-  
-  try {
-    const result = await signInSilently();
-    actionResult.value = result;
-  } catch (error: any) {
-    actionError.value = error?.message || String(error);
-  } finally {
-    silentLoading.value = false;
-  }
-};
-
-const refreshSession = async () => {
-  refreshLoading.value = true;
-  actionError.value = null;
-  actionResult.value = null;
-  
-  try {
-    const result = await signInSilently();
-    actionResult.value = { message: 'Session refreshed', data: result };
-  } catch (error: any) {
-    actionError.value = error?.message || String(error);
-  } finally {
-    refreshLoading.value = false;
-  }
-};
-</script>

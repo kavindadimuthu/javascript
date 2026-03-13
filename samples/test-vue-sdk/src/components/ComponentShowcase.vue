@@ -1,3 +1,37 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { XIcon } from '@asgardeo/vue';
+
+// Import section components
+import OverviewSection from './sections/OverviewSection.vue';
+import OverviewAuthControls from './sections/OverviewAuthControls.vue';
+import ActionsSection from './sections/ActionsSection.vue';
+import PrimitivesSection from './sections/PrimitivesSection.vue';
+import PresentationSection from './sections/PresentationSection.vue';
+import ControlSection from './sections/ControlSection.vue';
+import AdaptersSection from './sections/AdaptersSection.vue';
+import AuthFlowSection from './sections/AuthFlowSection.vue';
+import FactoriesSection from './sections/FactoriesSection.vue';
+import ComposablesSection from './sections/ComposablesSection.vue';
+
+const sidebarOpen = ref(false);
+const activeSection = ref('overview');
+
+const sections = [
+  { id: 'overview', title: 'Overview', description: 'SDK status and configuration overview' },
+  { id: 'actions', title: 'Action Components', description: 'Sign in/out buttons and interactive actions' },
+  { id: 'primitives', title: 'Primitive Components', description: 'Basic UI components like buttons, inputs, and cards' },
+  { id: 'presentation', title: 'Presentation Components', description: 'Complete user interface components' },
+  { id: 'control', title: 'Control Components', description: 'Conditional rendering based on auth state' },
+  { id: 'adapters', title: 'Social Login Adapters', description: 'Social media login buttons' },
+  { id: 'auth-flow', title: 'Auth Flow Components', description: 'Authentication flow handlers' },
+  { id: 'factories', title: 'Field Factory', description: 'Dynamic field generation' },
+  { id: 'composables', title: 'Composables Demo', description: 'Vue composables for SDK functionality' },
+];
+
+const currentSection = computed(() => sections.find(s => s.id === activeSection.value));
+</script>
+
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Navigation Sidebar -->
@@ -37,8 +71,14 @@
       <div class="p-6">
         <!-- Header -->
         <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ currentSection?.title }}</h2>
-          <p class="text-gray-600">{{ currentSection?.description }}</p>
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ currentSection?.title }}</h2>
+              <p class="text-gray-600">{{ currentSection?.description }}</p>
+            </div>
+            <!-- Auth Controls for Overview Section -->
+            <OverviewAuthControls v-if="activeSection === 'overview'" />
+          </div>
         </div>
 
         <!-- Component Sections -->
@@ -84,36 +124,3 @@
     <div v-if="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-30 bg-black opacity-25 md:hidden"></div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { XIcon } from '@asgardeo/vue';
-
-// Import section components
-import OverviewSection from './sections/OverviewSection.vue';
-import ActionsSection from './sections/ActionsSection.vue';
-import PrimitivesSection from './sections/PrimitivesSection.vue';
-import PresentationSection from './sections/PresentationSection.vue';
-import ControlSection from './sections/ControlSection.vue';
-import AdaptersSection from './sections/AdaptersSection.vue';
-import AuthFlowSection from './sections/AuthFlowSection.vue';
-import FactoriesSection from './sections/FactoriesSection.vue';
-import ComposablesSection from './sections/ComposablesSection.vue';
-
-const sidebarOpen = ref(false);
-const activeSection = ref('overview');
-
-const sections = [
-  { id: 'overview', title: 'Overview', description: 'SDK status and configuration overview' },
-  { id: 'actions', title: 'Action Components', description: 'Sign in/out buttons and interactive actions' },
-  { id: 'primitives', title: 'Primitive Components', description: 'Basic UI components like buttons, inputs, and cards' },
-  { id: 'presentation', title: 'Presentation Components', description: 'Complete user interface components' },
-  { id: 'control', title: 'Control Components', description: 'Conditional rendering based on auth state' },
-  { id: 'adapters', title: 'Social Login Adapters', description: 'Social media login buttons' },
-  { id: 'auth-flow', title: 'Auth Flow Components', description: 'Authentication flow handlers' },
-  { id: 'factories', title: 'Field Factory', description: 'Dynamic field generation' },
-  { id: 'composables', title: 'Composables Demo', description: 'Vue composables for SDK functionality' },
-];
-
-const currentSection = computed(() => sections.find(s => s.id === activeSection.value));
-</script>

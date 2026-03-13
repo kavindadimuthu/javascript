@@ -1,3 +1,280 @@
+<script setup lang="ts">
+import { ref, reactive } from 'vue';
+import {
+  useAsgardeo,
+  useUser,
+  useOrganization,
+  useBranding,
+  useTheme,
+  useI18n,
+  useFlow,
+  Card,
+  Typography,
+  Button,
+  Alert,
+  SignedIn,
+  SignedOut,
+} from '@asgardeo/vue';
+
+// Main useAsgardeo composable
+const {
+  isSignedIn,
+  isLoading,
+  isInitialized,
+  user,
+  organization,
+  signIn,
+  signOut,
+  signUp,
+  signInSilently,
+  getAccessToken,
+  getIdToken,
+  clearSession,
+} = useAsgardeo();
+
+// User composable
+const userComposable = useUser();
+// Use the user from useAsgardeo instead since userComposable might not have user property
+// const userInfo = userComposable.user;
+
+// Organization composable
+const organizationComposable = useOrganization();
+
+// Branding composable
+const brandingComposable = useBranding();
+
+// Theme composable
+const themeComposable = useTheme();
+
+// I18n composable
+const { t } = useI18n();
+const currentLanguage = ref('en');
+
+// Flow composable
+const flowComposable = useFlow();
+
+// Action loading states
+const actionLoading = reactive({
+  signIn: false,
+  signOut: false,
+  signUp: false,
+  signInSilently: false,
+  getAccessToken: false,
+  getIdToken: false,
+  clearSession: false,
+});
+
+// Action results
+const actionResults = ref<Array<{ timestamp: string; action: string; result: string }>>([]);
+
+const addActionResult = (action: string, result: any) => {
+  actionResults.value.push({
+    timestamp: new Date().toLocaleTimeString(),
+    action,
+    result: typeof result === 'object' ? JSON.stringify(result) : String(result),
+  });
+};
+
+const clearActionResults = () => {
+  actionResults.value = [];
+};
+
+// Test functions for useAsgardeo
+const testSignIn = async () => {
+  actionLoading.signIn = true;
+  try {
+    const result = await signIn();
+    addActionResult('signIn', result || 'Success');
+  } catch (error: any) {
+    addActionResult('signIn', `Error: ${error.message}`);
+  } finally {
+    actionLoading.signIn = false;
+  }
+};
+
+const testSignOut = async () => {
+  actionLoading.signOut = true;
+  try {
+    await signOut();
+    addActionResult('signOut', 'Success');
+  } catch (error: any) {
+    addActionResult('signOut', `Error: ${error.message}`);
+  } finally {
+    actionLoading.signOut = false;
+  }
+};
+
+const testSignUp = async () => {
+  actionLoading.signUp = true;
+  try {
+    const result = await signUp();
+    addActionResult('signUp', result || 'Success');
+  } catch (error: any) {
+    addActionResult('signUp', `Error: ${error.message}`);
+  } finally {
+    actionLoading.signUp = false;
+  }
+};
+
+const testSignInSilently = async () => {
+  actionLoading.signInSilently = true;
+  try {
+    const result = await signInSilently();
+    addActionResult('signInSilently', result || 'Success');
+  } catch (error: any) {
+    addActionResult('signInSilently', `Error: ${error.message}`);
+  } finally {
+    actionLoading.signInSilently = false;
+  }
+};
+
+const testGetAccessToken = async () => {
+  actionLoading.getAccessToken = true;
+  try {
+    const token = await getAccessToken();
+    addActionResult('getAccessToken', token ? 'Token received' : 'No token');
+  } catch (error: any) {
+    addActionResult('getAccessToken', `Error: ${error.message}`);
+  } finally {
+    actionLoading.getAccessToken = false;
+  }
+};
+
+const testGetIdToken = async () => {
+  actionLoading.getIdToken = true;
+  try {
+    const token = await getIdToken();
+    addActionResult('getIdToken', token ? 'Token received' : 'No token');
+  } catch (error: any) {
+    addActionResult('getIdToken', `Error: ${error.message}`);
+  } finally {
+    actionLoading.getIdToken = false;
+  }
+};
+
+const testClearSession = async () => {
+  actionLoading.clearSession = true;
+  try {
+    await clearSession();
+    addActionResult('clearSession', 'Session cleared');
+  } catch (error: any) {
+    addActionResult('clearSession', `Error: ${error.message}`);
+  } finally {
+    actionLoading.clearSession = false;
+  }
+};
+
+// User operations
+const userLoading = reactive({
+  refresh: false,
+  update: false,
+});
+
+const refreshUserInfo = async () => {
+  userLoading.refresh = true;
+  // Simulate user refresh
+  setTimeout(() => {
+    userLoading.refresh = false;
+  }, 1000);
+};
+
+const updateUserProfile = async () => {
+  userLoading.update = true;
+  // Simulate profile update
+  setTimeout(() => {
+    userLoading.update = false;
+  }, 1000);
+};
+
+// Organization operations
+const organizationLoading = reactive({
+  getAll: false,
+  switch: false,
+  create: false,
+});
+
+const organizationResults = reactive({
+  allOrganizations: null as any,
+});
+
+const getAllOrganizations = async () => {
+  organizationLoading.getAll = true;
+  // Simulate API call
+  setTimeout(() => {
+    organizationResults.allOrganizations = [
+      { id: 'org-1', name: 'Organization 1' },
+      { id: 'org-2', name: 'Organization 2' },
+    ];
+    organizationLoading.getAll = false;
+  }, 1000);
+};
+
+const switchOrganization = async () => {
+  organizationLoading.switch = true;
+  // Simulate organization switch
+  setTimeout(() => {
+    organizationLoading.switch = false;
+  }, 1000);
+};
+
+const createOrganization = async () => {
+  organizationLoading.create = true;
+  // Simulate organization creation
+  setTimeout(() => {
+    organizationLoading.create = false;
+  }, 1000);
+};
+
+// Branding operations
+const brandingLoading = ref(false);
+const brandingInfo = ref<any>(null);
+
+const getBrandingInfo = async () => {
+  brandingLoading.value = true;
+  // Simulate branding API call
+  setTimeout(() => {
+    brandingInfo.value = {
+      logo: 'https://example.com/logo.png',
+      primaryColor: '#007bff',
+      theme: 'light',
+    };
+    brandingLoading.value = false;
+  }, 1000);
+};
+
+// Theme operations
+const currentTheme = ref('light');
+
+const setTheme = (theme: string) => {
+  currentTheme.value = theme;
+  // Here you would typically call the theme composable method
+};
+
+// Language operations
+const changeLanguageLocal = (lang: string) => {
+  currentLanguage.value = lang;
+  // Here you would typically call the i18n composable method
+  console.log('Language changed to:', lang);
+};
+
+// Flow operations
+const flowLoading = ref(false);
+const flowInfo = ref<any>(null);
+
+const getFlowInfo = async () => {
+  flowLoading.value = true;
+  // Simulate flow API call
+  setTimeout(() => {
+    flowInfo.value = {
+      currentFlow: 'authentication',
+      step: 1,
+      totalSteps: 3,
+    };
+    flowLoading.value = false;
+  }, 1000);
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- useAsgardeo Composable -->
@@ -392,280 +669,3 @@ await changeLanguage('es');</code></pre>
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, reactive } from 'vue';
-import {
-  useAsgardeo,
-  useUser,
-  useOrganization,
-  useBranding,
-  useTheme,
-  useI18n,
-  useFlow,
-  Card,
-  Typography,
-  Button,
-  Alert,
-  SignedIn,
-  SignedOut,
-} from '@asgardeo/vue';
-
-// Main useAsgardeo composable
-const {
-  isSignedIn,
-  isLoading,
-  isInitialized,
-  user,
-  organization,
-  signIn,
-  signOut,
-  signUp,
-  signInSilently,
-  getAccessToken,
-  getIdToken,
-  clearSession,
-} = useAsgardeo();
-
-// User composable
-const userComposable = useUser();
-// Use the user from useAsgardeo instead since userComposable might not have user property
-// const userInfo = userComposable.user;
-
-// Organization composable
-const organizationComposable = useOrganization();
-
-// Branding composable
-const brandingComposable = useBranding();
-
-// Theme composable
-const themeComposable = useTheme();
-
-// I18n composable
-const { t } = useI18n();
-const currentLanguage = ref('en');
-
-// Flow composable
-const flowComposable = useFlow();
-
-// Action loading states
-const actionLoading = reactive({
-  signIn: false,
-  signOut: false,
-  signUp: false,
-  signInSilently: false,
-  getAccessToken: false,
-  getIdToken: false,
-  clearSession: false,
-});
-
-// Action results
-const actionResults = ref<Array<{ timestamp: string; action: string; result: string }>>([]);
-
-const addActionResult = (action: string, result: any) => {
-  actionResults.value.push({
-    timestamp: new Date().toLocaleTimeString(),
-    action,
-    result: typeof result === 'object' ? JSON.stringify(result) : String(result),
-  });
-};
-
-const clearActionResults = () => {
-  actionResults.value = [];
-};
-
-// Test functions for useAsgardeo
-const testSignIn = async () => {
-  actionLoading.signIn = true;
-  try {
-    const result = await signIn();
-    addActionResult('signIn', result || 'Success');
-  } catch (error: any) {
-    addActionResult('signIn', `Error: ${error.message}`);
-  } finally {
-    actionLoading.signIn = false;
-  }
-};
-
-const testSignOut = async () => {
-  actionLoading.signOut = true;
-  try {
-    await signOut();
-    addActionResult('signOut', 'Success');
-  } catch (error: any) {
-    addActionResult('signOut', `Error: ${error.message}`);
-  } finally {
-    actionLoading.signOut = false;
-  }
-};
-
-const testSignUp = async () => {
-  actionLoading.signUp = true;
-  try {
-    const result = await signUp();
-    addActionResult('signUp', result || 'Success');
-  } catch (error: any) {
-    addActionResult('signUp', `Error: ${error.message}`);
-  } finally {
-    actionLoading.signUp = false;
-  }
-};
-
-const testSignInSilently = async () => {
-  actionLoading.signInSilently = true;
-  try {
-    const result = await signInSilently();
-    addActionResult('signInSilently', result || 'Success');
-  } catch (error: any) {
-    addActionResult('signInSilently', `Error: ${error.message}`);
-  } finally {
-    actionLoading.signInSilently = false;
-  }
-};
-
-const testGetAccessToken = async () => {
-  actionLoading.getAccessToken = true;
-  try {
-    const token = await getAccessToken();
-    addActionResult('getAccessToken', token ? 'Token received' : 'No token');
-  } catch (error: any) {
-    addActionResult('getAccessToken', `Error: ${error.message}`);
-  } finally {
-    actionLoading.getAccessToken = false;
-  }
-};
-
-const testGetIdToken = async () => {
-  actionLoading.getIdToken = true;
-  try {
-    const token = await getIdToken();
-    addActionResult('getIdToken', token ? 'Token received' : 'No token');
-  } catch (error: any) {
-    addActionResult('getIdToken', `Error: ${error.message}`);
-  } finally {
-    actionLoading.getIdToken = false;
-  }
-};
-
-const testClearSession = async () => {
-  actionLoading.clearSession = true;
-  try {
-    await clearSession();
-    addActionResult('clearSession', 'Session cleared');
-  } catch (error: any) {
-    addActionResult('clearSession', `Error: ${error.message}`);
-  } finally {
-    actionLoading.clearSession = false;
-  }
-};
-
-// User operations
-const userLoading = reactive({
-  refresh: false,
-  update: false,
-});
-
-const refreshUserInfo = async () => {
-  userLoading.refresh = true;
-  // Simulate user refresh
-  setTimeout(() => {
-    userLoading.refresh = false;
-  }, 1000);
-};
-
-const updateUserProfile = async () => {
-  userLoading.update = true;
-  // Simulate profile update
-  setTimeout(() => {
-    userLoading.update = false;
-  }, 1000);
-};
-
-// Organization operations
-const organizationLoading = reactive({
-  getAll: false,
-  switch: false,
-  create: false,
-});
-
-const organizationResults = reactive({
-  allOrganizations: null as any,
-});
-
-const getAllOrganizations = async () => {
-  organizationLoading.getAll = true;
-  // Simulate API call
-  setTimeout(() => {
-    organizationResults.allOrganizations = [
-      { id: 'org-1', name: 'Organization 1' },
-      { id: 'org-2', name: 'Organization 2' },
-    ];
-    organizationLoading.getAll = false;
-  }, 1000);
-};
-
-const switchOrganization = async () => {
-  organizationLoading.switch = true;
-  // Simulate organization switch
-  setTimeout(() => {
-    organizationLoading.switch = false;
-  }, 1000);
-};
-
-const createOrganization = async () => {
-  organizationLoading.create = true;
-  // Simulate organization creation
-  setTimeout(() => {
-    organizationLoading.create = false;
-  }, 1000);
-};
-
-// Branding operations
-const brandingLoading = ref(false);
-const brandingInfo = ref<any>(null);
-
-const getBrandingInfo = async () => {
-  brandingLoading.value = true;
-  // Simulate branding API call
-  setTimeout(() => {
-    brandingInfo.value = {
-      logo: 'https://example.com/logo.png',
-      primaryColor: '#007bff',
-      theme: 'light',
-    };
-    brandingLoading.value = false;
-  }, 1000);
-};
-
-// Theme operations
-const currentTheme = ref('light');
-
-const setTheme = (theme: string) => {
-  currentTheme.value = theme;
-  // Here you would typically call the theme composable method
-};
-
-// Language operations
-const changeLanguageLocal = (lang: string) => {
-  currentLanguage.value = lang;
-  // Here you would typically call the i18n composable method
-  console.log('Language changed to:', lang);
-};
-
-// Flow operations
-const flowLoading = ref(false);
-const flowInfo = ref<any>(null);
-
-const getFlowInfo = async () => {
-  flowLoading.value = true;
-  // Simulate flow API call
-  setTimeout(() => {
-    flowInfo.value = {
-      currentFlow: 'authentication',
-      step: 1,
-      totalSteps: 3,
-    };
-    flowLoading.value = false;
-  }, 1000);
-};
-</script>

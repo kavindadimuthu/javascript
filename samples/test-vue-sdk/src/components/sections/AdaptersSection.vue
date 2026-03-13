@@ -1,3 +1,60 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import {
+  Card,
+  Typography,
+  Button,
+  TextField,
+  PasswordField,
+  Alert,
+  Divider,
+  GoogleButton,
+  GitHubButton,
+  MicrosoftButton,
+  FacebookButton,
+  SignedIn,
+  SignedOut,
+} from '@asgardeo/vue';
+
+// Event tracking
+const events = ref<Array<{ timestamp: string; message: string }>>([]);
+
+const addEvent = (message: string) => {
+  events.value.push({
+    timestamp: new Date().toLocaleTimeString(),
+    message,
+  });
+};
+
+const handleSocialLogin = (provider: string) => {
+  addEvent(`🚀 ${provider} login attempted`);
+};
+
+const handleSocialError = (error: Error) => {
+  addEvent(`❌ Login error: ${error.message}`);
+};
+
+const clearEvents = () => {
+  events.value = [];
+};
+
+// Email sign in form
+const signInEmail = ref('');
+const signInPassword = ref('');
+const emailSignInLoading = ref(false);
+
+const handleEmailSignIn = async () => {
+  emailSignInLoading.value = true;
+  addEvent(`📧 Email sign in attempted for: ${signInEmail.value}`);
+  
+  // Simulate API call
+  setTimeout(() => {
+    emailSignInLoading.value = false;
+    addEvent(`✅ Email sign in completed`);
+  }, 2000);
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Social Login Adapters -->
@@ -296,60 +353,3 @@
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import {
-  Card,
-  Typography,
-  Button,
-  TextField,
-  PasswordField,
-  Alert,
-  Divider,
-  GoogleButton,
-  GitHubButton,
-  MicrosoftButton,
-  FacebookButton,
-  SignedIn,
-  SignedOut,
-} from '@asgardeo/vue';
-
-// Event tracking
-const events = ref<Array<{ timestamp: string; message: string }>>([]);
-
-const addEvent = (message: string) => {
-  events.value.push({
-    timestamp: new Date().toLocaleTimeString(),
-    message,
-  });
-};
-
-const handleSocialLogin = (provider: string) => {
-  addEvent(`🚀 ${provider} login attempted`);
-};
-
-const handleSocialError = (error: Error) => {
-  addEvent(`❌ Login error: ${error.message}`);
-};
-
-const clearEvents = () => {
-  events.value = [];
-};
-
-// Email sign in form
-const signInEmail = ref('');
-const signInPassword = ref('');
-const emailSignInLoading = ref(false);
-
-const handleEmailSignIn = async () => {
-  emailSignInLoading.value = true;
-  addEvent(`📧 Email sign in attempted for: ${signInEmail.value}`);
-  
-  // Simulate API call
-  setTimeout(() => {
-    emailSignInLoading.value = false;
-    addEvent(`✅ Email sign in completed`);
-  }, 2000);
-};
-</script>

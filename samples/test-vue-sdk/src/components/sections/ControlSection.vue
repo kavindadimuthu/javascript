@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import {
+  useAsgardeo,
+  Card,
+  Typography,
+  Button,
+  Alert,
+  SignedIn,
+  SignedOut,
+  Loading,
+  Spinner,
+  SignInButton,
+  SignUpButton,
+  SignOutButton,
+  UserDropdown,
+  Logo,
+} from '@asgardeo/vue';
+
+const { isSignedIn, isLoading, isInitialized } = useAsgardeo();
+
+const manualLoading = ref(false);
+
+const toggleManualLoading = () => {
+  manualLoading.value = true;
+  setTimeout(() => {
+    manualLoading.value = false;
+  }, 3000);
+};
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Conditional Rendering -->
@@ -293,34 +324,3 @@
     </Card>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import {
-  useAsgardeo,
-  Card,
-  Typography,
-  Button,
-  Alert,
-  SignedIn,
-  SignedOut,
-  Loading,
-  Spinner,
-  SignInButton,
-  SignUpButton,
-  SignOutButton,
-  UserDropdown,
-  Logo,
-} from '@asgardeo/vue';
-
-const { isSignedIn, isLoading, isInitialized } = useAsgardeo();
-
-const manualLoading = ref(false);
-
-const toggleManualLoading = () => {
-  manualLoading.value = true;
-  setTimeout(() => {
-    manualLoading.value = false;
-  }, 3000);
-};
-</script>
