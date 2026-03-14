@@ -26,7 +26,14 @@ import {
   BaseLanguageSwitcher,
   ChevronDownIcon,
   BuildingIcon,
+  useAsgardeo,
+  useUser,
+  useOrganization,
 } from '@asgardeo/vue';
+
+const { user } = useAsgardeo();
+const { flattenedProfile, schemas } = useUser();
+const { myOrganizations, currentOrganization, isLoading: orgLoading } = useOrganization();
 
 const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.value ?? '';
 </script>
@@ -48,7 +55,22 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
         <div class="space-y-4">
           <div>
             <Typography variant="h4" class="mb-2">User Component</Typography>
-            <UserComponent />
+            <UserComponent>
+              <template #default="{ user: slotUser }">
+                <div class="flex items-center gap-3 p-3 border border-gray-200 rounded">
+                  <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
+                    {{ (slotUser?.givenName || slotUser?.username || 'U')[0].toUpperCase() }}
+                  </div>
+                  <div>
+                    <p class="font-medium">{{ slotUser?.givenName }} {{ slotUser?.familyName }}</p>
+                    <p class="text-sm text-gray-500">{{ slotUser?.email || slotUser?.username }}</p>
+                  </div>
+                </div>
+              </template>
+              <template #fallback>
+                <p class="text-gray-400 text-sm">No user signed in.</p>
+              </template>
+            </UserComponent>
           </div>
 
           <div>
@@ -75,19 +97,24 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
 
           <div>
             <Typography variant="h4" class="mb-2">Base User Profile (Unstyled)</Typography>
-            <BaseUserProfile class="space-y-4 p-4 border border-gray-200 rounded">
+            <BaseUserProfile
+              class="space-y-4 p-4 border border-gray-200 rounded"
+              :flattened-profile="flattenedProfile"
+              :schemas="schemas ?? []"
+            >
               <template #default="{ profile, isLoading, error }">
                 <div v-if="isLoading" class="text-center py-4">Loading user profile...</div>
                 <div v-else-if="error" class="text-red-600">Error: {{ error }}</div>
                 <div v-else-if="profile" class="space-y-3">
                   <h3 class="text-lg font-semibold">Custom User Profile</h3>
                   <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div><strong>Name:</strong> {{ profile.name?.givenName }} {{ profile.name?.familyName }}</div>
-                    <div><strong>Email:</strong> {{ profile.email }}</div>
-                    <div><strong>Username:</strong> {{ profile.username }}</div>
-                    <div><strong>ID:</strong> {{ profile.sub || profile.id }}</div>
+                    <div><strong>Name:</strong> {{ profile?.givenName }} {{ profile?.familyName }}</div>
+                    <div><strong>Email:</strong> {{ profile?.email }}</div>
+                    <div><strong>Username:</strong> {{ profile?.username }}</div>
+                    <div><strong>ID:</strong> {{ profile?.sub || profile?.id }}</div>
                   </div>
                 </div>
+                <div v-else class="text-gray-400 text-sm">No profile data available.</div>
               </template>
             </BaseUserProfile>
           </div>
@@ -100,18 +127,20 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
           <div>
             <Typography variant="h4" class="mb-2">Custom User Dropdown</Typography>
             <BaseUserDropdown class="relative inline-block">
-              <template #default="{ user, isOpen, toggle }">
-                <button @click="toggle" class="flex items-center gap-2 p-2 border rounded hover:bg-gray-50">
-                  <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    {{ (user?.name?.givenName || user?.displayName || 'U')[0]?.toUpperCase?.() || 'U' }}
+              <template #default="{ user: slotUser, isOpen, toggle }">
+                <div class="relative inline-block">
+                  <button @click="toggle" class="flex items-center gap-2 p-2 border rounded hover:bg-gray-50">
+                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      {{ (slotUser?.givenName || slotUser?.displayName || 'U')[0]?.toUpperCase?.() || 'U' }}
+                    </div>
+                    <span class="text-sm">{{ slotUser?.givenName || slotUser?.displayName || 'User' }}</span>
+                    <ChevronDownIcon class="h-4 w-4" :class="{ 'rotate-180': isOpen }" />
+                  </button>
+                  <div v-if="isOpen" class="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-lg py-1 z-50 min-w-36">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-50">Profile Settings</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-50">Account Settings</a>
                   </div>
-                  <span class="text-sm">{{ user?.name?.givenName || user?.displayName || 'User' }}</span>
-                  <ChevronDownIcon class="h-4 w-4" :class="{ 'rotate-180': isOpen }" />
-                </button>
-              </template>
-              <template #items>
-                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-50">Profile Settings</a>
-                <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-50">Account Settings</a>
+                </div>
               </template>
             </BaseUserDropdown>
           </div>
@@ -156,7 +185,11 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
 
           <div>
             <Typography variant="h4" class="mb-2">Custom Organization List</Typography>
-            <BaseOrganizationList class="space-y-2">
+            <BaseOrganizationList
+              class="space-y-2"
+              :organizations="myOrganizations"
+              :is-loading="orgLoading"
+            >
               <template #default="{ organizations, isLoading }">
                 <div v-if="isLoading" class="text-center py-4">Loading organizations...</div>
                 <div v-else-if="organizations?.length" class="grid gap-2">
@@ -191,13 +224,18 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
 
           <div>
             <Typography variant="h4" class="mb-2">Custom Organization Switcher</Typography>
-            <BaseOrganizationSwitcher class="relative inline-block">
-              <template #default="{ currentOrganization, organizations, isOpen, toggle, handleSelect }">
+            <BaseOrganizationSwitcher
+              class="relative inline-block"
+              :current-organization="currentOrganization"
+              :organizations="myOrganizations"
+              :is-loading="orgLoading"
+            >
+              <template #default="{ currentOrganization: currentOrg, organizations, isOpen, toggle, handleSelect }">
                 <div>
                   <button @click="toggle" class="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 min-w-48">
                     <BuildingIcon class="h-4 w-4 text-gray-400" />
                     <span class="text-sm flex-1 text-left">
-                      {{ currentOrganization?.name || 'Select Organization' }}
+                      {{ currentOrg?.name || 'Select Organization' }}
                     </span>
                     <ChevronDownIcon class="h-4 w-4 text-gray-400" :class="{ 'rotate-180': isOpen }" />
                   </button>
@@ -207,7 +245,7 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
                       :key="org.id"
                       @click="handleSelect(org)"
                       class="px-3 py-2 hover:bg-gray-50 cursor-pointer flex items-center gap-2"
-                      :class="{ 'bg-blue-50': org.id === currentOrganization?.id }"
+                      :class="{ 'bg-blue-50': org.id === currentOrg?.id }"
                     >
                       <div class="w-6 h-6 bg-blue-600 rounded text-white flex items-center justify-center font-bold text-xs">
                         {{ org.name?.[0]?.toUpperCase() || 'O' }}
