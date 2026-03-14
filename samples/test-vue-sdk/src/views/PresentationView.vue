@@ -3,14 +3,10 @@ import {
   Card,
   Typography,
   Alert,
-  UserComponent,
-  BaseUser,
   UserProfileComponent,
   BaseUserProfile,
   UserDropdown,
   BaseUserDropdown,
-  OrganizationComponent,
-  BaseOrganization,
   OrganizationList,
   BaseOrganizationList,
   OrganizationProfile,
@@ -26,12 +22,10 @@ import {
   BaseLanguageSwitcher,
   ChevronDownIcon,
   BuildingIcon,
-  useAsgardeo,
   useUser,
   useOrganization,
 } from '@asgardeo/vue';
 
-const { user } = useAsgardeo();
 const { flattenedProfile, schemas } = useUser();
 const { myOrganizations, currentOrganization, isLoading: orgLoading } = useOrganization();
 
@@ -46,50 +40,13 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
       <p class="text-gray-600">Complete user interface components</p>
     </div>
 
-    <!-- User Components -->
+    <!-- User Interface Components -->
     <Card>
       <div class="space-y-4">
         <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
           <Typography variant="h3">User Components</Typography>
         </div>
         <div class="space-y-4">
-          <div>
-            <Typography variant="h4" class="mb-2">User Component</Typography>
-            <UserComponent>
-              <template #default="{ user: slotUser }">
-                <div class="flex items-center gap-3 p-3 border border-gray-200 rounded">
-                  <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {{ (slotUser?.givenName || slotUser?.username || 'U')[0].toUpperCase() }}
-                  </div>
-                  <div>
-                    <p class="font-medium">{{ slotUser?.givenName }} {{ slotUser?.familyName }}</p>
-                    <p class="text-sm text-gray-500">{{ slotUser?.email || slotUser?.username }}</p>
-                  </div>
-                </div>
-              </template>
-              <template #fallback>
-                <p class="text-gray-400 text-sm">No user signed in.</p>
-              </template>
-            </UserComponent>
-          </div>
-
-          <div>
-            <Typography variant="h4" class="mb-2">Base User Component (Unstyled)</Typography>
-            <BaseUser class="p-4 border border-gray-200 rounded">
-              <template #default="{ user }">
-                <div class="flex items-center">
-                  <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {{ (user?.name?.givenName || user?.username || 'U')[0].toUpperCase() }}
-                  </div>
-                  <div class="ml-3">
-                    <p class="font-medium">{{ user?.name?.givenName }} {{ user?.name?.familyName }}</p>
-                    <p class="text-sm text-gray-500">{{ user?.email || user?.username }}</p>
-                  </div>
-                </div>
-              </template>
-            </BaseUser>
-          </div>
-
           <div>
             <Typography variant="h4" class="mb-2">User Profile Component</Typography>
             <UserProfileComponent />
@@ -99,7 +56,7 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
             <Typography variant="h4" class="mb-2">Base User Profile (Unstyled)</Typography>
             <BaseUserProfile
               class="space-y-4 p-4 border border-gray-200 rounded"
-              :flattened-profile="flattenedProfile"
+              :flattened-profile="flattenedProfile ?? undefined"
               :schemas="schemas ?? []"
             >
               <template #default="{ profile, isLoading, error }">
@@ -156,29 +113,6 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
         </div>
         <div class="space-y-4">
           <div>
-            <Typography variant="h4" class="mb-2">Organization Component</Typography>
-            <OrganizationComponent />
-          </div>
-
-          <div>
-            <Typography variant="h4" class="mb-2">Base Organization (Unstyled)</Typography>
-            <BaseOrganization class="p-4 border border-gray-200 rounded">
-              <template #default="{ organization }">
-                <div v-if="organization" class="flex items-center gap-3">
-                  <div class="w-10 h-10 bg-blue-600 rounded text-white flex items-center justify-center font-bold">
-                    {{ organization.name?.[0]?.toUpperCase() || 'O' }}
-                  </div>
-                  <div>
-                    <p class="font-medium">{{ organization.name }}</p>
-                    <p class="text-sm text-gray-500">{{ organization.id }}</p>
-                  </div>
-                </div>
-                <div v-else class="text-gray-500">No organization selected</div>
-              </template>
-            </BaseOrganization>
-          </div>
-
-          <div>
             <Typography variant="h4" class="mb-2">Organization List</Typography>
             <OrganizationList />
           </div>
@@ -226,7 +160,7 @@ const getInputValue = (e: Event): string => (e.target as HTMLInputElement)?.valu
             <Typography variant="h4" class="mb-2">Custom Organization Switcher</Typography>
             <BaseOrganizationSwitcher
               class="relative inline-block"
-              :current-organization="currentOrganization"
+              :current-organization="currentOrganization ?? undefined"
               :organizations="myOrganizations"
               :is-loading="orgLoading"
             >

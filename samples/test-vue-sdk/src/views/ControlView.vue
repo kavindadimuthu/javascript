@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import {
   useAsgardeo,
+  useOrganization,
   Card,
   Typography,
   Button,
@@ -10,6 +11,8 @@ import {
   SignedOut,
   Loading,
   Spinner,
+  UserComponent,
+  OrganizationComponent,
   SignInButton,
   SignUpButton,
   SignOutButton,
@@ -18,6 +21,7 @@ import {
 } from '@asgardeo/vue';
 
 const { isSignedIn, isLoading, isInitialized } = useAsgardeo();
+const { myOrganizations } = useOrganization();
 
 const manualLoading = ref(false);
 
@@ -36,6 +40,61 @@ const toggleManualLoading = () => {
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Control Components</h2>
       <p class="text-gray-600">Conditional rendering based on auth state</p>
     </div>
+
+    <!-- Data Access Components -->
+    <Card>
+      <div class="space-y-4">
+        <div class="-mx-6 -mt-6 px-6 py-4 bg-gradient-to-br from-slate-50 to-indigo-50 border-b-2 border-slate-200 rounded-t-lg">
+          <Typography variant="h3">Data Access Components</Typography>
+          <p class="text-sm text-gray-500 mt-1">Control components that fetch context data and expose it via scoped slots.</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <Typography variant="h4" class="mb-2">User Component</Typography>
+            <div class="p-4 border border-gray-200 rounded-lg">
+              <UserComponent>
+                <template #default="{ user }">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {{ (user?.givenName || user?.username || 'U')[0].toUpperCase() }}
+                    </div>
+                    <div>
+                      <p class="font-medium">{{ user?.givenName }} {{ user?.familyName }}</p>
+                      <p class="text-sm text-gray-500">{{ user?.email || user?.username }}</p>
+                    </div>
+                  </div>
+                </template>
+                <template #fallback>
+                  <p class="text-gray-400 text-sm">No user signed in.</p>
+                </template>
+              </UserComponent>
+            </div>
+          </div>
+
+          <div>
+            <Typography variant="h4" class="mb-2">Organization Component</Typography>
+            <div class="p-4 border border-gray-200 rounded-lg">
+              <OrganizationComponent>
+                <template #default="{ organization }">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded text-white flex items-center justify-center font-bold">
+                      {{ organization.name?.[0]?.toUpperCase() || 'O' }}
+                    </div>
+                    <div>
+                      <p class="font-medium">{{ organization.name }}</p>
+                      <p class="text-sm text-gray-500">{{ organization.id }}</p>
+                    </div>
+                  </div>
+                </template>
+                <template #fallback>
+                  <p class="text-gray-400 text-sm">No organization selected.</p>
+                </template>
+              </OrganizationComponent>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
 
     <!-- Conditional Rendering -->
     <Card>
