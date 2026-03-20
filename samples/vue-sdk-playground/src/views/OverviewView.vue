@@ -27,10 +27,17 @@ const statusCards = [
 
 // ── Config copy ──
 const copiedKey = ref<string | null>(null);
-async function copyValue(key: string, value: string) {
-  await navigator.clipboard.writeText(value);
-  copiedKey.value = key;
+async function copyValue(key: unknown, value: unknown) {
+  const keyStr = String(key ?? '');
+  const valueStr = String(value ?? '');
+  await navigator.clipboard.writeText(valueStr);
+  copiedKey.value = keyStr;
   setTimeout(() => { copiedKey.value = null; }, 2000);
+}
+
+// ── Profile field accessor ──
+function getProfileField(field: string): unknown {
+  return (flattenedProfile.value as any)?.[field] ?? '—';
 }
 
 // ── Token fetching ──
@@ -133,7 +140,7 @@ const quickLinks = [
               v-if="value"
               type="button"
               class="shrink-0 text-xs text-indigo-600 hover:text-indigo-800 transition-colors"
-              @click="copyValue(key as string, value as string)"
+              @click="copyValue(key, value)"
             >
               {{ copiedKey === key ? 'Copied!' : 'Copy' }}
             </button>
@@ -149,7 +156,7 @@ const quickLinks = [
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 mb-4">
           <div v-for="field in ['userName', 'givenName', 'familyName', 'email']" :key="field" class="flex gap-2">
             <dt class="text-sm text-gray-500 w-28 shrink-0">{{ field }}</dt>
-            <dd class="font-mono text-sm text-gray-800 break-all">{{ (flattenedProfile as any)?.[field] ?? '—' }}</dd>
+            <dd class="font-mono text-sm text-gray-800 break-all">{{ getProfileField(field) }}</dd>
           </div>
         </dl>
         <div class="flex gap-2 flex-wrap mb-3">
