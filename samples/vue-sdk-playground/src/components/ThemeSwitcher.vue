@@ -1,0 +1,41 @@
+<script setup lang="ts">
+import { useThemeSwitch, type ThemeConfig } from '@/composables/useThemeSwitch';
+
+const { currentTheme, setTheme, themes } = useThemeSwitch();
+
+function iconPath(icon: ThemeConfig['icon']): string {
+  switch (icon) {
+    case 'sun':
+      return 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z';
+    case 'moon':
+      return 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z';
+    case 'monitor':
+      return 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z';
+    default:
+      return '';
+  }
+}
+</script>
+
+<template>
+  <div class="flex items-center gap-1 rounded-lg bg-surface-muted p-1">
+    <button
+      v-for="theme in themes"
+      :key="theme.id"
+      type="button"
+      class="flex items-center justify-center rounded-md p-1.5 transition-colors"
+      :class="
+        currentTheme === theme.id
+          ? 'bg-surface-secondary text-accent-600 shadow-sm'
+          : 'text-on-surface-muted hover:text-on-surface-secondary'
+      "
+      :title="theme.label"
+      :aria-label="`Switch to ${theme.label} theme`"
+      @click="setTheme(theme.id)"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" :d="iconPath(theme.icon)" />
+      </svg>
+    </button>
+  </div>
+</template>

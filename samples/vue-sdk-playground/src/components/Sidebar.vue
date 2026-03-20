@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { XIcon } from '@asgardeo/vue';
+import ThemeSwitcher from './ThemeSwitcher.vue';
 
 const sidebarOpen = ref(false);
 const route = useRoute();
@@ -31,9 +32,12 @@ const navigate = (path: string) => {
     >
       <div class="flex items-center justify-between h-16 px-4 bg-gray-900">
         <h1 class="text-lg font-semibold text-white">Vue SDK Demo</h1>
-        <button @click="sidebarOpen = false" class="md:hidden text-white">
-          <XIcon class="h-6 w-6" />
-        </button>
+        <div class="flex items-center gap-2">
+          <ThemeSwitcher />
+          <button @click="sidebarOpen = false" class="md:hidden text-white">
+            <XIcon class="h-6 w-6" />
+          </button>
+        </div>
       </div>
       <nav class="mt-4">
         <div class="px-2 space-y-1">
