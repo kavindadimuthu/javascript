@@ -1,16 +1,20 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   result?: unknown
   isLoading?: boolean
-  error?: string
+  loading?: boolean
+  error?: string | null
 }>(), {
   isLoading: false,
+  loading: false,
 })
+
+const showSpinner = () => props.isLoading || props.loading
 </script>
 
 <template>
   <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 font-mono text-sm min-h-[100px]">
-    <div v-if="isLoading" class="flex items-center justify-center h-full min-h-[76px]">
+    <div v-if="showSpinner()" class="flex items-center justify-center h-full min-h-[76px]">
       <svg class="animate-spin h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />

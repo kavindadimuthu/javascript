@@ -17,8 +17,8 @@ const signInEvents = ref<LogEvent[]>([]);
 const signOutEvents = ref<LogEvent[]>([]);
 const signUpEvents = ref<LogEvent[]>([]);
 
-function log(target: typeof signInEvents, type: string, data?: unknown) {
-  target.value.unshift({ timestamp: new Date().toLocaleTimeString(), type, data });
+function log(target: LogEvent[], type: string, data?: unknown) {
+  target.unshift({ timestamp: new Date().toLocaleTimeString(), type, data });
 }
 </script>
 
