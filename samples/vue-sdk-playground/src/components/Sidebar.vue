@@ -27,19 +27,19 @@ const navigate = (path: string) => {
   <div>
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-bg shadow-lg transform transition-transform duration-300 ease-in-out"
+      class="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-bg shadow-lg transform transition-transform duration-300 ease-in-out flex flex-col"
       :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full md:translate-x-0': !sidebarOpen }"
     >
-      <div class="flex items-center justify-between h-16 px-4 bg-sidebar-header-bg">
+      <!-- Header -->
+      <div class="flex items-center justify-between h-16 px-4 bg-sidebar-header-bg shrink-0">
         <h1 class="text-lg font-semibold text-sidebar-active-text">Vue SDK Demo</h1>
-        <div class="flex items-center gap-2">
-          <ThemeSwitcher />
-          <button @click="sidebarOpen = false" class="md:hidden text-sidebar-active-text">
-            <XIcon class="h-6 w-6" />
-          </button>
-        </div>
+        <button @click="sidebarOpen = false" class="md:hidden text-sidebar-active-text">
+          <XIcon class="h-6 w-6" />
+        </button>
       </div>
-      <nav class="mt-4">
+      
+      <!-- Navigation - scrollable content -->
+      <nav class="mt-4 flex-1 overflow-y-auto">
         <div class="px-2 space-y-1">
           <button
             v-for="item in navItems"
@@ -68,6 +68,11 @@ const navigate = (path: string) => {
           </button>
         </div>
       </nav>
+      
+      <!-- Theme Switcher at bottom -->
+      <div class="border-t border-sidebar-hover-bg p-4 shrink-0">
+        <ThemeSwitcher />
+      </div>
     </div>
 
     <!-- Mobile menu toggle button -->
