@@ -97,7 +97,7 @@ const quickLinks = [
     </div>
 
     <!-- 3. SDK Status Dashboard -->
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div
         v-for="card in statusCards"
         :key="card.label"
@@ -146,7 +146,7 @@ const quickLinks = [
     <!-- 5. User Info Panel (signed in only) -->
     <SignedIn>
       <SectionCard title="Current User">
-        <dl class="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 mb-4">
           <div v-for="field in ['userName', 'givenName', 'familyName', 'email']" :key="field" class="flex gap-2">
             <dt class="text-sm text-gray-500 w-28 shrink-0">{{ field }}</dt>
             <dd class="font-mono text-sm text-gray-800 break-all">{{ (flattenedProfile as any)?.[field] ?? '—' }}</dd>
@@ -175,7 +175,7 @@ const quickLinks = [
     </SignedIn>
 
     <!-- 6. Quick Links -->
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <RouterLink
         v-for="link in quickLinks"
         :key="link.path"
