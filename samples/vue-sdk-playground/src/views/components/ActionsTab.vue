@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue';
 import {
   SignInButton,
@@ -30,19 +30,19 @@ function log(target: LogEvent[], type: string, data?: unknown) {
       <div class="grid md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Default</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Default</p>
             <SignInButton @click="log(signInEvents, 'info', 'SignInButton clicked')" @error="log(signInEvents, 'error', $event)" />
           </div>
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Custom Slot</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Custom Slot</p>
             <SignInButton v-slot="{ isLoading }" @click="log(signInEvents, 'info', 'custom slot clicked')" @error="log(signInEvents, 'error', $event)">
               {{ isLoading ? 'Signing in...' : 'Custom Sign In' }}
             </SignInButton>
           </div>
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Base (Unstyled)</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Base (Unstyled)</p>
             <BaseSignInButton
-              class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-md text-sm font-medium hover:bg-indigo-200 transition-colors"
+              class="px-4 py-2 bg-accent-100 text-accent-800 rounded-md text-sm font-medium hover:bg-accent-50 transition-colors"
               @click="log(signInEvents, 'info', 'BaseSignInButton clicked')"
             >
               Custom styled sign in
@@ -50,10 +50,10 @@ function log(target: LogEvent[], type: string, data?: unknown) {
           </div>
         </div>
         <div class="space-y-2">
-          <p class="text-xs text-gray-500">
-            <code class="bg-gray-100 px-1 rounded font-mono">&lt;SignInButton&gt;</code> renders a pre-styled button that triggers the SDK sign-in flow.
-            Use <code class="bg-gray-100 px-1 rounded font-mono">v-slot</code> to access <code class="bg-gray-100 px-1 rounded font-mono">isLoading</code> for custom content.
-            <code class="bg-gray-100 px-1 rounded font-mono">&lt;BaseSignInButton&gt;</code> is completely unstyled — apply your own classes.
+          <p class="text-xs text-on-surface-muted">
+            <code class="bg-surface-muted px-1 rounded font-mono">&lt;SignInButton&gt;</code> renders a pre-styled button that triggers the SDK sign-in flow.
+            Use <code class="bg-surface-muted px-1 rounded font-mono">v-slot</code> to access <code class="bg-surface-muted px-1 rounded font-mono">isLoading</code> for custom content.
+            <code class="bg-surface-muted px-1 rounded font-mono">&lt;BaseSignInButton&gt;</code> is completely unstyled — apply your own classes.
           </p>
           <EventLog :events="signInEvents" />
         </div>
@@ -65,19 +65,19 @@ function log(target: LogEvent[], type: string, data?: unknown) {
       <div class="grid md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Default</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Default</p>
             <SignOutButton @click="log(signOutEvents, 'info', 'SignOutButton clicked')" @error="log(signOutEvents, 'error', $event)" />
           </div>
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Custom Slot</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Custom Slot</p>
             <SignOutButton v-slot="{ isLoading }" @click="log(signOutEvents, 'info', 'custom slot clicked')" @error="log(signOutEvents, 'error', $event)">
               {{ isLoading ? 'Signing out...' : 'Custom Sign Out' }}
             </SignOutButton>
           </div>
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Base (Unstyled)</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Base (Unstyled)</p>
             <BaseSignOutButton
-              class="px-4 py-2 bg-red-100 text-red-700 rounded-md text-sm font-medium hover:bg-red-200 transition-colors"
+              class="px-4 py-2 bg-status-error-bg text-status-error-text rounded-md text-sm font-medium transition-colors"
               @click="log(signOutEvents, 'info', 'BaseSignOutButton clicked')"
             >
               Custom styled sign out
@@ -85,10 +85,10 @@ function log(target: LogEvent[], type: string, data?: unknown) {
           </div>
         </div>
         <div class="space-y-2">
-          <p class="text-xs text-gray-500">
-            <code class="bg-gray-100 px-1 rounded font-mono">&lt;SignOutButton&gt;</code> triggers the SDK sign-out flow and clears the session.
-            Use <code class="bg-gray-100 px-1 rounded font-mono">v-slot</code> to show a loading state during sign-out.
-            <code class="bg-gray-100 px-1 rounded font-mono">&lt;BaseSignOutButton&gt;</code> provides the same behaviour without any styling.
+          <p class="text-xs text-on-surface-muted">
+            <code class="bg-surface-muted px-1 rounded font-mono">&lt;SignOutButton&gt;</code> triggers the SDK sign-out flow and clears the session.
+            Use <code class="bg-surface-muted px-1 rounded font-mono">v-slot</code> to show a loading state during sign-out.
+            <code class="bg-surface-muted px-1 rounded font-mono">&lt;BaseSignOutButton&gt;</code> provides the same behaviour without any styling.
           </p>
           <EventLog :events="signOutEvents" />
         </div>
@@ -100,19 +100,19 @@ function log(target: LogEvent[], type: string, data?: unknown) {
       <div class="grid md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Default</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Default</p>
             <SignUpButton @click="log(signUpEvents, 'info', 'SignUpButton clicked')" @error="log(signUpEvents, 'error', $event)" />
           </div>
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Custom Slot</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Custom Slot</p>
             <SignUpButton v-slot="{ isLoading }" @click="log(signUpEvents, 'info', 'custom slot clicked')" @error="log(signUpEvents, 'error', $event)">
               {{ isLoading ? 'Redirecting...' : 'Custom Sign Up' }}
             </SignUpButton>
           </div>
           <div>
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Base (Unstyled)</p>
+            <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Base (Unstyled)</p>
             <BaseSignUpButton
-              class="px-4 py-2 bg-green-100 text-green-700 rounded-md text-sm font-medium hover:bg-green-200 transition-colors"
+              class="px-4 py-2 bg-status-success-bg text-status-success-text rounded-md text-sm font-medium transition-colors"
               @click="log(signUpEvents, 'info', 'BaseSignUpButton clicked')"
             >
               Custom styled sign up
@@ -120,10 +120,10 @@ function log(target: LogEvent[], type: string, data?: unknown) {
           </div>
         </div>
         <div class="space-y-2">
-          <p class="text-xs text-gray-500">
-            <code class="bg-gray-100 px-1 rounded font-mono">&lt;SignUpButton&gt;</code> redirects the user to the Asgardeo registration page.
-            Use <code class="bg-gray-100 px-1 rounded font-mono">v-slot</code> to customise content based on loading state.
-            <code class="bg-gray-100 px-1 rounded font-mono">&lt;BaseSignUpButton&gt;</code> is fully unstyled for complete design freedom.
+          <p class="text-xs text-on-surface-muted">
+            <code class="bg-surface-muted px-1 rounded font-mono">&lt;SignUpButton&gt;</code> redirects the user to the Asgardeo registration page.
+            Use <code class="bg-surface-muted px-1 rounded font-mono">v-slot</code> to customise content based on loading state.
+            <code class="bg-surface-muted px-1 rounded font-mono">&lt;BaseSignUpButton&gt;</code> is fully unstyled for complete design freedom.
           </p>
           <EventLog :events="signUpEvents" />
         </div>

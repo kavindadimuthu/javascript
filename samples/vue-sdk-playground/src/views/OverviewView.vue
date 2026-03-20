@@ -96,7 +96,7 @@ const quickLinks = [
         <SignUpButton />
       </SignedOut>
       <SignedIn>
-        <span class="text-gray-700 font-medium">
+        <span class="text-on-surface font-medium">
           Welcome, {{ flattenedProfile?.givenName ?? flattenedProfile?.userName ?? 'User' }}
         </span>
         <SignOutButton />
@@ -108,23 +108,23 @@ const quickLinks = [
       <div
         v-for="card in statusCards"
         :key="card.label"
-        class="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+        class="bg-surface-secondary rounded-lg shadow-sm border border-border p-4"
       >
-        <p class="text-sm text-gray-500 mb-2">{{ card.label }}</p>
+        <p class="text-sm text-on-surface-muted mb-2">{{ card.label }}</p>
         <div class="flex items-center gap-2">
           <!-- green check -->
-          <svg v-if="card.getValue()" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg v-if="card.getValue()" class="h-5 w-5 text-status-success-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
           <!-- red x (for Authenticated when false) -->
-          <svg v-else-if="card.label === 'Authenticated'" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg v-else-if="card.label === 'Authenticated'" class="h-5 w-5 text-status-error-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
           <!-- yellow clock (for Initialized/Ready when false) -->
-          <svg v-else class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg v-else class="h-5 w-5 text-status-warning-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span class="font-mono text-sm text-gray-800">{{ card.getValue() }}</span>
+          <span class="font-mono text-sm text-on-surface">{{ card.getValue() }}</span>
         </div>
       </div>
     </div>
@@ -133,13 +133,13 @@ const quickLinks = [
     <SectionCard title="Configuration">
       <dl class="space-y-3">
         <div v-for="[key, value] in [['baseUrl', baseUrl], ['clientId', clientId]]" :key="key" class="flex items-start gap-4">
-          <dt class="w-24 shrink-0 text-sm text-gray-500 pt-0.5">{{ key }}</dt>
+          <dt class="w-24 shrink-0 text-sm text-on-surface-muted pt-0.5">{{ key }}</dt>
           <dd class="flex items-center gap-2 min-w-0">
-            <span class="font-mono text-sm text-gray-800 break-all">{{ value ?? '—' }}</span>
+            <span class="font-mono text-sm text-on-surface break-all">{{ value ?? '—' }}</span>
             <button
               v-if="value"
               type="button"
-              class="shrink-0 text-xs text-indigo-600 hover:text-indigo-800 transition-colors"
+              class="shrink-0 text-xs text-accent-600 hover:text-accent-800 transition-colors"
               @click="copyValue(key, value)"
             >
               {{ copiedKey === key ? 'Copied!' : 'Copy' }}
@@ -147,7 +147,7 @@ const quickLinks = [
           </dd>
         </div>
       </dl>
-      <p class="mt-4 text-xs text-gray-400">Edit configuration in <code class="bg-gray-100 px-1 py-0.5 rounded">App.vue</code>'s <code class="bg-gray-100 px-1 py-0.5 rounded">&lt;AsgardeoProvider&gt;</code> props.</p>
+      <p class="mt-4 text-xs text-on-surface-muted">Edit configuration in <code class="bg-surface-muted px-1 py-0.5 rounded">App.vue</code>'s <code class="bg-surface-muted px-1 py-0.5 rounded">&lt;AsgardeoProvider&gt;</code> props.</p>
     </SectionCard>
 
     <!-- 5. User Info Panel (signed in only) -->
@@ -155,14 +155,14 @@ const quickLinks = [
       <SectionCard title="Current User">
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 mb-4">
           <div v-for="field in ['userName', 'givenName', 'familyName', 'email']" :key="field" class="flex gap-2">
-            <dt class="text-sm text-gray-500 w-28 shrink-0">{{ field }}</dt>
-            <dd class="font-mono text-sm text-gray-800 break-all">{{ getProfileField(field) }}</dd>
+            <dt class="text-sm text-on-surface-muted w-28 shrink-0">{{ field }}</dt>
+            <dd class="font-mono text-sm text-on-surface break-all">{{ getProfileField(field) }}</dd>
           </div>
         </dl>
         <div class="flex gap-2 flex-wrap mb-3">
           <button
             type="button"
-            class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            class="px-3 py-1.5 text-sm bg-accent-600 text-on-surface-inverse rounded-md hover:bg-accent-700 transition-colors disabled:opacity-50"
             :disabled="isTokenLoading"
             @click="fetchAccessToken"
           >
@@ -170,7 +170,7 @@ const quickLinks = [
           </button>
           <button
             type="button"
-            class="px-3 py-1.5 text-sm bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+            class="px-3 py-1.5 text-sm bg-surface-secondary border border-border-hover text-on-surface rounded-md hover:bg-surface-muted transition-colors disabled:opacity-50"
             :disabled="isTokenLoading"
             @click="fetchDecodedIdToken"
           >
@@ -187,15 +187,15 @@ const quickLinks = [
         v-for="link in quickLinks"
         :key="link.path"
         :to="link.path"
-        class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 flex flex-col gap-2 hover:shadow-md transition-shadow"
+        class="bg-surface-secondary rounded-lg shadow-sm border border-border p-5 flex flex-col gap-2 hover:shadow-md transition-shadow"
       >
         <div class="flex items-center justify-between">
-          <span class="font-semibold text-gray-900">{{ link.title }}</span>
-          <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <span class="font-semibold text-on-surface">{{ link.title }}</span>
+          <svg class="h-4 w-4 text-on-surface-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </div>
-        <p class="text-sm text-gray-500">{{ link.description }}</p>
+        <p class="text-sm text-on-surface-muted">{{ link.description }}</p>
       </RouterLink>
     </div>
   </div>

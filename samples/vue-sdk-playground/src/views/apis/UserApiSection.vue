@@ -79,19 +79,19 @@ async function runUpdateProfile() {
 
     <!-- Reactive State -->
     <SectionCard title="Reactive State">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Live snapshots from <code class="font-mono">useUser()</code>. Click
         <strong class="font-semibold">Show</strong> to render the current value in a result panel.
       </p>
       <div class="flex gap-2 flex-wrap mb-3">
         <button
-          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+          class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all"
           @click="showProfile"
         >
           Show profile
         </button>
         <button
-          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+          class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all"
           @click="showSchemas"
         >
           Show schemas
@@ -103,37 +103,37 @@ async function runUpdateProfile() {
 
     <!-- flattenedProfile live table -->
     <SectionCard title="flattenedProfile">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         A flattened map of common SCIM2 attributes — updates reactively when
         <code class="font-mono">revalidateProfile()</code> completes.
       </p>
       <div v-if="flattenedProfile" class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b border-gray-200 text-left">
-              <th class="pb-2 pr-6 font-medium text-gray-500">Key</th>
-              <th class="pb-2 font-medium text-gray-500">Value</th>
+            <tr class="border-b border-border text-left">
+              <th class="pb-2 pr-6 font-medium text-on-surface-muted">Key</th>
+              <th class="pb-2 font-medium text-on-surface-muted">Value</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-border-divider">
             <tr v-for="(val, key) in flattenedProfile" :key="String(key)">
-              <td class="py-2 pr-6 font-mono text-xs text-gray-600">{{ key }}</td>
-              <td class="py-2 font-mono text-xs text-gray-700 break-all">{{ JSON.stringify(val) }}</td>
+              <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">{{ key }}</td>
+              <td class="py-2 font-mono text-xs text-on-surface break-all">{{ JSON.stringify(val) }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p v-else class="text-xs text-gray-400 italic">Not available — sign in first.</p>
+      <p v-else class="text-xs text-on-surface-muted italic">Not available — sign in first.</p>
     </SectionCard>
 
     <!-- revalidateProfile -->
     <SectionCard title="revalidateProfile()">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Forces a fresh fetch of the user profile from the server and updates
         <code class="font-mono">profile</code> and <code class="font-mono">flattenedProfile</code>.
       </p>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all disabled:opacity-50"
         :disabled="revalidateLoading"
         @click="runRevalidate"
       >
@@ -144,7 +144,7 @@ async function runUpdateProfile() {
 
     <!-- updateProfile -->
     <SectionCard title="updateProfile()">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Sends a SCIM2 <code class="font-mono">PatchOp</code> request to update the user profile.
         Edit the JSON payload below and click <strong class="font-semibold">updateProfile()</strong>.
       </p>
@@ -152,10 +152,10 @@ async function runUpdateProfile() {
         v-model="updatePayload"
         rows="8"
         spellcheck="false"
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+        class="w-full rounded-lg border border-border-hover bg-surface-secondary px-3 py-2 text-xs font-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-accent-500 mb-3"
       />
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all disabled:opacity-50"
         :disabled="updateLoading"
         @click="runUpdateProfile"
       >

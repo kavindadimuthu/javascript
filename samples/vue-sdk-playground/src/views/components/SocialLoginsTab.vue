@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue';
 import {
   GoogleButton,
@@ -74,7 +74,7 @@ const demoPassword = ref('');
       <div class="flex justify-center">
         <Card class="w-full max-w-sm">
           <div class="space-y-3 p-1">
-            <p class="text-sm font-semibold text-gray-700 text-center mb-1">Sign in with</p>
+            <p class="text-sm font-semibold text-on-surface text-center mb-1">Sign in with</p>
             <GoogleButton class="w-full" @click="logEvent('panel-google')" />
             <GitHubButton class="w-full" @click="logEvent('panel-github')" />
             <MicrosoftButton class="w-full" @click="logEvent('panel-microsoft')" />

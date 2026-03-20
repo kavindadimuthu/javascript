@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { reactive } from 'vue';
 import {
   SignedIn,
@@ -37,7 +37,7 @@ const roleOptions = [
 
     <!-- ── User Components ── -->
     <div>
-      <h2 class="text-base font-semibold text-gray-800 uppercase tracking-wide mb-4 pb-2 border-b border-gray-100">
+      <h2 class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
         User Components
       </h2>
       <div class="space-y-6">
@@ -51,13 +51,13 @@ const roleOptions = [
             <template #default>
               <div class="flex flex-col gap-4">
                 <UserProfile />
-                <p class="text-xs text-gray-500">
-                  Add <code class="bg-gray-100 px-1 rounded font-mono">:editable="true"</code> to enable inline profile field editing.
+                <p class="text-xs text-on-surface-muted">
+                  Add <code class="bg-surface-muted px-1 rounded font-mono">:editable="true"</code> to enable inline profile field editing.
                 </p>
               </div>
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the UserProfile component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the UserProfile component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -71,20 +71,20 @@ const roleOptions = [
             <template #default>
               <BaseUserProfile>
                 <template #default="{ profile, isLoading }">
-                  <div v-if="isLoading" class="text-sm text-gray-400 italic">Loading profile…</div>
-                  <div v-else class="rounded-lg border border-indigo-100 bg-indigo-50 p-4 space-y-1">
-                    <p class="text-sm font-semibold text-indigo-800">
+                  <div v-if="isLoading" class="text-sm text-on-surface-muted italic">Loading profile…</div>
+                  <div v-else class="rounded-lg border border-accent-100 bg-accent-50 p-4 space-y-1">
+                    <p class="text-sm font-semibold text-accent-800">
                       {{ profile?.givenName ?? profile?.username ?? 'User' }}
                       <span v-if="profile?.familyName" class="ml-1">{{ profile.familyName }}</span>
                     </p>
-                    <p v-if="profile?.email" class="text-xs text-indigo-600">{{ profile.email }}</p>
+                    <p v-if="profile?.email" class="text-xs text-accent-600">{{ profile.email }}</p>
                     <ResultPanel :result="profile" />
                   </div>
                 </template>
               </BaseUserProfile>
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the BaseUserProfile component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the BaseUserProfile component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -98,11 +98,11 @@ const roleOptions = [
             <template #default>
               <div class="flex items-center gap-4">
                 <UserDropdown />
-                <p class="text-xs text-gray-500">Click the avatar to open the dropdown.</p>
+                <p class="text-xs text-on-surface-muted">Click the avatar to open the dropdown.</p>
               </div>
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the UserDropdown component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the UserDropdown component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -112,7 +112,7 @@ const roleOptions = [
 
     <!-- ── Organization Components ── -->
     <div>
-      <h2 class="text-base font-semibold text-gray-800 uppercase tracking-wide mb-4 pb-2 border-b border-gray-100">
+      <h2 class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
         Organization Components
       </h2>
       <div class="space-y-6">
@@ -127,7 +127,7 @@ const roleOptions = [
               <OrganizationList />
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the OrganizationList component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the OrganizationList component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -141,11 +141,11 @@ const roleOptions = [
             <template #default>
               <div class="flex items-center gap-4">
                 <OrganizationSwitcher />
-                <p class="text-xs text-gray-500">Select an organization to switch context.</p>
+                <p class="text-xs text-on-surface-muted">Select an organization to switch context.</p>
               </div>
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the OrganizationSwitcher component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the OrganizationSwitcher component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -160,7 +160,7 @@ const roleOptions = [
               <OrganizationProfile />
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the OrganizationProfile component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the OrganizationProfile component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -175,7 +175,7 @@ const roleOptions = [
               <CreateOrganization />
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the CreateOrganization component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the CreateOrganization component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -190,7 +190,7 @@ const roleOptions = [
               <InviteUser />
             </template>
             <template #fallback>
-              <p class="text-sm text-gray-500 italic">Sign in to see the InviteUser component.</p>
+              <p class="text-sm text-on-surface-muted italic">Sign in to see the InviteUser component.</p>
             </template>
           </SignedIn>
         </SectionCard>
@@ -200,7 +200,7 @@ const roleOptions = [
 
     <!-- ── Utility Components ── -->
     <div>
-      <h2 class="text-base font-semibold text-gray-800 uppercase tracking-wide mb-4 pb-2 border-b border-gray-100">
+      <h2 class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
         Utility Components
       </h2>
       <div class="space-y-6">
@@ -212,7 +212,7 @@ const roleOptions = [
         >
           <div class="flex items-center gap-4">
             <LanguageSwitcher />
-            <p class="text-xs text-gray-500">Locales are determined by your i18n provider configuration.</p>
+            <p class="text-xs text-on-surface-muted">Locales are determined by your i18n provider configuration.</p>
           </div>
         </SectionCard>
 
@@ -269,7 +269,7 @@ const roleOptions = [
               />
             </div>
             <div class="space-y-2">
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Current form values</p>
+              <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide">Current form values</p>
               <ResultPanel :result="fieldValues" />
             </div>
           </div>
@@ -281,9 +281,9 @@ const roleOptions = [
           description="Renders the accept-invite flow. Typically shown on a dedicated /accept-invite route when a user arrives via an invitation link."
         >
           <div class="space-y-3">
-            <p class="text-xs text-gray-500">
-              Mount <code class="bg-gray-100 px-1 rounded font-mono">&lt;AcceptInvite /&gt;</code> on the route that handles
-              your invitation links (e.g. <code class="bg-gray-100 px-1 rounded font-mono">/accept-invite</code>).
+            <p class="text-xs text-on-surface-muted">
+              Mount <code class="bg-surface-muted px-1 rounded font-mono">&lt;AcceptInvite /&gt;</code> on the route that handles
+              your invitation links (e.g. <code class="bg-surface-muted px-1 rounded font-mono">/accept-invite</code>).
               The component reads the invitation token from the URL and renders the appropriate confirmation UI.
             </p>
             <AcceptInvite />

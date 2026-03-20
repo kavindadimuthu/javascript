@@ -132,7 +132,7 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
           <SectionCard title="Authentication Buttons" description="Standard and customized sign-in/out/up buttons.">
             <div class="space-y-4">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Standard Buttons</p>
+                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Standard Buttons</p>
                 <div class="flex flex-wrap gap-3">
                   <SignInButton />
                   <SignOutButton />
@@ -141,7 +141,7 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
               </div>
 
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">With Custom Slot</p>
+                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">With Custom Slot</p>
                 <div class="flex flex-wrap gap-3">
                   <SignInButton v-slot="{ isLoading }">
                     <span>{{ isLoading ? 'Signing in...' : 'Custom Sign In' }}</span>
@@ -156,15 +156,15 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
               </div>
 
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Base (Unstyled) Buttons</p>
+                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Base (Unstyled) Buttons</p>
                 <div class="flex flex-wrap gap-3">
-                  <BaseSignInButton class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded text-sm font-medium hover:bg-indigo-200 transition-colors">
+                  <BaseSignInButton class="px-3 py-1.5 bg-accent-100 text-accent-800 rounded text-sm font-medium hover:bg-accent-50 transition-colors">
                     Base Sign In
                   </BaseSignInButton>
-                  <BaseSignOutButton class="px-3 py-1.5 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200 transition-colors">
+                  <BaseSignOutButton class="px-3 py-1.5 bg-status-error-bg text-status-error-text rounded text-sm font-medium transition-colors">
                     Base Sign Out
                   </BaseSignOutButton>
-                  <BaseSignUpButton class="px-3 py-1.5 bg-green-100 text-green-700 rounded text-sm font-medium hover:bg-green-200 transition-colors">
+                  <BaseSignUpButton class="px-3 py-1.5 bg-status-success-bg text-status-success-text rounded text-sm font-medium transition-colors">
                     Base Sign Up
                   </BaseSignUpButton>
                 </div>
@@ -177,7 +177,7 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
             <div class="flex flex-wrap gap-3 mb-4">
               <button
                 type="button"
-                class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                class="px-4 py-2 bg-accent-600 text-on-surface-inverse text-sm font-medium rounded-md hover:bg-accent-700 transition-colors disabled:opacity-50"
                 :disabled="isAdvancedLoading"
                 @click="handleSignInWithPrompt"
               >
@@ -185,7 +185,7 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
               </button>
               <button
                 type="button"
-                class="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+                class="px-4 py-2 bg-surface-secondary border border-border-hover text-on-surface text-sm font-medium rounded-md hover:bg-surface-muted transition-colors disabled:opacity-50"
                 :disabled="isAdvancedLoading"
                 @click="handleSilentSignIn"
               >
@@ -214,23 +214,23 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
                 :key="s.step"
                 class="flex items-start gap-3"
               >
-                <span class="shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                <span class="shrink-0 w-6 h-6 rounded-full bg-accent-600 text-on-surface-inverse text-xs font-bold flex items-center justify-center mt-0.5">
                   {{ s.step }}
                 </span>
                 <div>
-                  <p class="text-sm font-medium text-gray-900">{{ s.title }}</p>
-                  <p class="text-xs text-gray-500">{{ s.detail }}</p>
+                  <p class="text-sm font-medium text-on-surface">{{ s.title }}</p>
+                  <p class="text-xs text-on-surface-muted">{{ s.detail }}</p>
                 </div>
               </li>
             </ol>
 
             <div class="space-y-4">
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Callback Route Setup</p>
+                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Callback Route Setup</p>
                 <CodeBlock :code="callbackSnippet" language="typescript" />
               </div>
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Route Guard Setup</p>
+                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Route Guard Setup</p>
                 <CodeBlock :code="guardSnippet" language="typescript" />
               </div>
             </div>
@@ -253,16 +253,16 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
                   @flow-change="logNativeEvent('info', 'sign-in:flowChange', $event)"
                 />
               </div>
-              <div class="space-y-3 text-sm text-gray-600">
+              <div class="space-y-3 text-sm text-on-surface-secondary">
                 <p>
-                  The <code class="bg-gray-100 px-1 py-0.5 rounded font-mono text-xs">&lt;SignIn /&gt;</code> component
+                  The <code class="bg-surface-muted px-1 py-0.5 rounded font-mono text-xs">&lt;SignIn /&gt;</code> component
                   renders a fully styled, server-driven authentication form embedded directly in your app — no redirect required.
                 </p>
                 <p>It handles multi-step flows (OTP, TOTP, passkeys) automatically as the server drives the flow.</p>
-                <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+                <p class="text-xs text-status-warning-text bg-status-warning-bg border border-border rounded px-3 py-2">
                   ⚠ Requires <code class="font-mono">applicationId</code> prop on <code class="font-mono">&lt;AsgardeoProvider&gt;</code>.
                 </p>
-                <p class="font-medium text-gray-700">Events emitted:</p>
+                <p class="font-medium text-on-surface">Events emitted:</p>
                 <ul class="list-disc list-inside space-y-1 text-xs">
                   <li><code class="font-mono">@complete</code> — authentication succeeded</li>
                   <li><code class="font-mono">@error</code> — flow error occurred</li>
@@ -282,16 +282,16 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
                   @flow-change="logNativeEvent('info', 'sign-up:flowChange', $event)"
                 />
               </div>
-              <div class="space-y-3 text-sm text-gray-600">
+              <div class="space-y-3 text-sm text-on-surface-secondary">
                 <p>
-                  The <code class="bg-gray-100 px-1 py-0.5 rounded font-mono text-xs">&lt;SignUp /&gt;</code> component
+                  The <code class="bg-surface-muted px-1 py-0.5 rounded font-mono text-xs">&lt;SignUp /&gt;</code> component
                   renders a styled self-registration form driven by the Asgardeo flow API.
                 </p>
                 <p>Supports custom fields, multi-step verification, and consent steps as configured on the server.</p>
-                <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+                <p class="text-xs text-status-warning-text bg-status-warning-bg border border-border rounded px-3 py-2">
                   ⚠ Requires <code class="font-mono">applicationId</code> prop on <code class="font-mono">&lt;AsgardeoProvider&gt;</code>.
                 </p>
-                <p class="font-medium text-gray-700">Events emitted:</p>
+                <p class="font-medium text-on-surface">Events emitted:</p>
                 <ul class="list-disc list-inside space-y-1 text-xs">
                   <li><code class="font-mono">@complete</code> — registration succeeded</li>
                   <li><code class="font-mono">@error</code> — flow error occurred</li>
@@ -306,32 +306,32 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- useFlow() -->
               <div>
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">useFlow()</p>
+                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-3">useFlow()</p>
                 <table class="w-full text-sm">
-                  <tbody class="divide-y divide-gray-100">
+                  <tbody class="divide-y divide-border-divider">
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500 w-36">currentStep</td>
-                      <td class="py-1.5 font-mono text-gray-800">{{ currentStep ?? '—' }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted w-36">currentStep</td>
+                      <td class="py-1.5 font-mono text-on-surface">{{ currentStep ?? '—' }}</td>
                     </tr>
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500">title</td>
-                      <td class="py-1.5 font-mono text-gray-800">{{ flowTitle ?? '—' }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted">title</td>
+                      <td class="py-1.5 font-mono text-on-surface">{{ flowTitle ?? '—' }}</td>
                     </tr>
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500">subtitle</td>
-                      <td class="py-1.5 font-mono text-gray-800">{{ flowSubtitle ?? '—' }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted">subtitle</td>
+                      <td class="py-1.5 font-mono text-on-surface">{{ flowSubtitle ?? '—' }}</td>
                     </tr>
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500">isLoading</td>
-                      <td class="py-1.5 font-mono" :class="flowLoading ? 'text-yellow-600' : 'text-gray-800'">{{ flowLoading }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted">isLoading</td>
+                      <td class="py-1.5 font-mono" :class="flowLoading ? 'text-status-warning-text' : 'text-on-surface'">{{ flowLoading }}</td>
                     </tr>
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500">showBackButton</td>
-                      <td class="py-1.5 font-mono text-gray-800">{{ showBackButton }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted">showBackButton</td>
+                      <td class="py-1.5 font-mono text-on-surface">{{ showBackButton }}</td>
                     </tr>
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500 align-top">messages</td>
-                      <td class="py-1.5 font-mono text-gray-800 text-xs">
+                      <td class="py-1.5 pr-4 text-on-surface-muted align-top">messages</td>
+                      <td class="py-1.5 font-mono text-on-surface text-xs">
                         <pre class="whitespace-pre-wrap">{{ JSON.stringify(messages, null, 2) }}</pre>
                       </td>
                     </tr>
@@ -342,10 +342,10 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
               <!-- useFlowMeta() -->
               <div>
                 <div class="flex items-center justify-between mb-3">
-                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">useFlowMeta()</p>
+                  <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide">useFlowMeta()</p>
                   <button
                     type="button"
-                    class="text-xs px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                    class="text-xs px-2 py-1 bg-accent-600 text-on-surface-inverse rounded hover:bg-accent-700 transition-colors disabled:opacity-50"
                     :disabled="metaLoading"
                     @click="fetchFlowMeta()"
                   >
@@ -353,18 +353,18 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
                   </button>
                 </div>
                 <table class="w-full text-sm mb-3">
-                  <tbody class="divide-y divide-gray-100">
+                  <tbody class="divide-y divide-border-divider">
                     <tr>
-                      <td class="py-1.5 pr-4 text-gray-500 w-20">isLoading</td>
-                      <td class="py-1.5 font-mono" :class="metaLoading ? 'text-yellow-600' : 'text-gray-800'">{{ metaLoading }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted w-20">isLoading</td>
+                      <td class="py-1.5 font-mono" :class="metaLoading ? 'text-status-warning-text' : 'text-on-surface'">{{ metaLoading }}</td>
                     </tr>
                     <tr v-if="metaError">
-                      <td class="py-1.5 pr-4 text-gray-500">error</td>
-                      <td class="py-1.5 font-mono text-red-600 text-xs">{{ metaError }}</td>
+                      <td class="py-1.5 pr-4 text-on-surface-muted">error</td>
+                      <td class="py-1.5 font-mono text-status-error-text text-xs">{{ metaError }}</td>
                     </tr>
                   </tbody>
                 </table>
-                <p class="text-xs text-gray-500 mb-1">meta</p>
+                <p class="text-xs text-on-surface-muted mb-1">meta</p>
                 <ResultPanel :result="meta" :isLoading="metaLoading" :error="metaError?.toString()" />
               </div>
             </div>

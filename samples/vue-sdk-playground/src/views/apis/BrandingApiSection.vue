@@ -59,39 +59,39 @@ function showTheme() { themeResult.value = theme.value }
     <SectionCard title="Reactive State">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-gray-200 text-left">
-            <th class="pb-2 pr-6 font-medium text-gray-500">Property</th>
-            <th class="pb-2 font-medium text-gray-500">Value</th>
+          <tr class="border-b border-border text-left">
+            <th class="pb-2 pr-6 font-medium text-on-surface-muted">Property</th>
+            <th class="pb-2 font-medium text-on-surface-muted">Value</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-border-divider">
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-gray-600">isLoading</td>
+            <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">isLoading</td>
             <td class="py-2">
               <span
                 :class="isLoading
-                  ? 'bg-amber-100 text-amber-700'
-                  : 'bg-gray-100 text-gray-600'"
+                  ? 'bg-status-warning-bg text-status-warning-text'
+                  : 'bg-surface-muted text-on-surface-secondary'"
                 class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
               >{{ isLoading }}</span>
             </td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-gray-600">activeTheme</td>
+            <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">activeTheme</td>
             <td class="py-2">
               <span
                 v-if="activeTheme"
                 :class="activeTheme === 'dark'
-                  ? 'bg-gray-800 text-gray-200'
-                  : 'bg-amber-100 text-amber-700'"
+                  ? 'bg-code-header-bg text-code-header-text'
+                  : 'bg-status-warning-bg text-status-warning-text'"
                 class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
               >{{ activeTheme }}</span>
-              <span v-else class="font-mono text-xs text-gray-400 italic">null</span>
+              <span v-else class="font-mono text-xs text-on-surface-muted italic">null</span>
             </td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-gray-600">error</td>
-            <td class="py-2 font-mono text-xs" :class="error ? 'text-red-500' : 'text-gray-400 italic'">
+            <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">error</td>
+            <td class="py-2 font-mono text-xs" :class="error ? 'text-status-error-text' : 'text-on-surface-muted italic'">
               {{ error ? error.message : 'null' }}
             </td>
           </tr>
@@ -101,12 +101,12 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- fetchBranding -->
     <SectionCard title="fetchBranding()">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Fetches branding preferences from the server. Deduplicated — concurrent calls share the same
         request. Use <code class="font-mono">refetch()</code> to force a fresh request.
       </p>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all disabled:opacity-50"
         :disabled="fetchBrandingLoading"
         @click="runFetchBranding"
       >
@@ -117,12 +117,12 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- refetch -->
     <SectionCard title="refetch()">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Forces a fresh branding fetch from the server, bypassing the deduplication guard in
         <code class="font-mono">fetchBranding()</code>.
       </p>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all disabled:opacity-50"
         :disabled="refetchLoading"
         @click="runRefetch"
       >
@@ -133,12 +133,12 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- brandingPreference -->
     <SectionCard title="brandingPreference">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         The current branding preference object including logo URLs, color palette, and layout settings.
         Run <code class="font-mono">fetchBranding()</code> first to populate it.
       </p>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all"
         @click="showPreference"
       >
         Show brandingPreference
@@ -148,11 +148,11 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- theme (branding-derived) -->
     <SectionCard title="theme (branding-derived)">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         The resolved theme object derived from branding preferences.
       </p>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all"
         @click="showTheme"
       >
         Show theme

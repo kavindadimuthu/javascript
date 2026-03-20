@@ -13,16 +13,16 @@ const isOpen = ref(true)
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  <div class="bg-surface-secondary rounded-lg shadow-sm border border-border p-6">
     <div class="flex items-center justify-between" :class="{ 'mb-4': !props.collapsible || isOpen }">
       <div>
-        <h2 class="text-lg font-semibold text-gray-900">{{ title }}</h2>
-        <p v-if="description" class="text-sm text-gray-500 mt-0.5">{{ description }}</p>
+        <h2 class="text-lg font-semibold text-on-surface">{{ title }}</h2>
+        <p v-if="description" class="text-sm text-on-surface-muted mt-0.5">{{ description }}</p>
       </div>
       <button
         v-if="collapsible"
         type="button"
-        class="text-gray-400 hover:text-gray-600 transition-colors"
+        class="text-on-surface-muted hover:text-on-surface-secondary transition-colors"
         @click="isOpen = !isOpen"
         :aria-expanded="isOpen"
       >

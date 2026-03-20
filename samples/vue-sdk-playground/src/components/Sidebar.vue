@@ -27,14 +27,14 @@ const navigate = (path: string) => {
   <div>
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out"
+      class="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-bg shadow-lg transform transition-transform duration-300 ease-in-out"
       :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full md:translate-x-0': !sidebarOpen }"
     >
-      <div class="flex items-center justify-between h-16 px-4 bg-gray-900">
-        <h1 class="text-lg font-semibold text-white">Vue SDK Demo</h1>
+      <div class="flex items-center justify-between h-16 px-4 bg-sidebar-header-bg">
+        <h1 class="text-lg font-semibold text-sidebar-active-text">Vue SDK Demo</h1>
         <div class="flex items-center gap-2">
           <ThemeSwitcher />
-          <button @click="sidebarOpen = false" class="md:hidden text-white">
+          <button @click="sidebarOpen = false" class="md:hidden text-sidebar-active-text">
             <XIcon class="h-6 w-6" />
           </button>
         </div>
@@ -46,7 +46,7 @@ const navigate = (path: string) => {
             :key="item.path"
             @click="navigate(item.path)"
             class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            :class="isActive(item.path) ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'"
+            :class="isActive(item.path) ? 'bg-sidebar-active-bg text-sidebar-active-text' : 'text-sidebar-text hover:bg-sidebar-hover-bg'"
           >
             <!-- Home icon -->
             <svg v-if="item.icon === 'home'" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +72,7 @@ const navigate = (path: string) => {
 
     <!-- Mobile menu toggle button -->
     <div class="fixed top-4 left-4 z-40 md:hidden">
-      <button @click="sidebarOpen = !sidebarOpen" class="bg-white p-2 rounded-md shadow-md">
+      <button @click="sidebarOpen = !sidebarOpen" class="bg-surface-secondary p-2 rounded-md shadow-md">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
@@ -83,7 +83,7 @@ const navigate = (path: string) => {
     <div
       v-if="sidebarOpen"
       @click="sidebarOpen = false"
-      class="fixed inset-0 z-30 bg-black opacity-25 md:hidden"
+      class="fixed inset-0 z-30 bg-black/25 md:hidden"
     ></div>
   </div>
 </template>

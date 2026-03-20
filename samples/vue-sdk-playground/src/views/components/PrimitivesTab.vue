@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue';
 import {
   Button,
@@ -103,7 +103,7 @@ const spinnerSize = ref<'small' | 'medium' | 'large'>('medium');
 const logoSrc = ref('https://wso2.cachefly.net/wso2/sites/images/brand/downloads/wso2-logo.png');
 const logoAlt = ref('Logo');
 
-const controlClass = 'w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-400';
+const controlClass = 'w-full rounded border border-border-hover bg-surface-secondary px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-accent-500';
 
 const icons = [
   { name: 'UserIcon', component: UserIcon },
@@ -131,7 +131,7 @@ const icons = [
     <!-- Button -->
     <SectionCard title="Button">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Button
             :variant="btnVariant"
             :color="btnColor"
@@ -144,28 +144,28 @@ const icons = [
           </Button>
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">variant
+          <label class="block text-xs text-on-surface-muted">variant
             <select v-model="btnVariant" :class="controlClass">
               <option>solid</option><option>outline</option><option>ghost</option><option>text</option>
             </select>
           </label>
-          <label class="block text-xs text-gray-500">color
+          <label class="block text-xs text-on-surface-muted">color
             <select v-model="btnColor" :class="controlClass">
               <option>primary</option><option>secondary</option><option>danger</option>
             </select>
           </label>
-          <label class="block text-xs text-gray-500">size
+          <label class="block text-xs text-on-surface-muted">size
             <select v-model="btnSize" :class="controlClass">
               <option>small</option><option>medium</option><option>large</option>
             </select>
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="btnDisabled" /> disabled
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="btnLoading" /> loading
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="btnFullWidth" /> fullWidth
           </label>
         </div>
@@ -175,7 +175,7 @@ const icons = [
     <!-- TextField -->
     <SectionCard title="TextField">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <TextField
             v-model="tfValue"
             name="demo-tf"
@@ -189,21 +189,21 @@ const icons = [
           />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">type
+          <label class="block text-xs text-on-surface-muted">type
             <select v-model="tfType" :class="controlClass">
               <option>text</option><option>email</option><option>number</option><option>tel</option><option>url</option>
             </select>
           </label>
-          <label class="block text-xs text-gray-500">placeholder
+          <label class="block text-xs text-on-surface-muted">placeholder
             <input v-model="tfPlaceholder" type="text" :class="controlClass" />
           </label>
-          <label class="block text-xs text-gray-500">error text
+          <label class="block text-xs text-on-surface-muted">error text
             <input v-model="tfError" type="text" :class="controlClass" placeholder="Leave empty for none" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="tfRequired" /> required
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="tfDisabled" /> disabled
           </label>
         </div>
@@ -213,7 +213,7 @@ const icons = [
     <!-- PasswordField -->
     <SectionCard title="PasswordField">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <PasswordField
             v-model="pfValue"
             name="demo-pf"
@@ -225,13 +225,13 @@ const icons = [
           />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">placeholder
+          <label class="block text-xs text-on-surface-muted">placeholder
             <input v-model="pfPlaceholder" type="text" :class="controlClass" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="pfRequired" /> required
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="pfDisabled" /> disabled
           </label>
         </div>
@@ -241,7 +241,7 @@ const icons = [
     <!-- Select -->
     <SectionCard title="Select">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Select
             v-model="selValue"
             name="demo-select"
@@ -254,13 +254,13 @@ const icons = [
           />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">placeholder
+          <label class="block text-xs text-on-surface-muted">placeholder
             <input v-model="selPlaceholder" type="text" :class="controlClass" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="selRequired" /> required
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="selDisabled" /> disabled
           </label>
         </div>
@@ -270,7 +270,7 @@ const icons = [
     <!-- Checkbox -->
     <SectionCard title="Checkbox">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Checkbox
             v-model="cbChecked"
             name="demo-cb"
@@ -280,13 +280,13 @@ const icons = [
           />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">label
+          <label class="block text-xs text-on-surface-muted">label
             <input v-model="cbLabel" type="text" :class="controlClass" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="cbRequired" /> required
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="cbDisabled" /> disabled
           </label>
         </div>
@@ -296,7 +296,7 @@ const icons = [
     <!-- DatePicker -->
     <SectionCard title="DatePicker">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <DatePicker
             v-model="dpValue"
             name="demo-dp"
@@ -307,13 +307,13 @@ const icons = [
           />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">label
+          <label class="block text-xs text-on-surface-muted">label
             <input v-model="dpLabel" type="text" :class="controlClass" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="dpRequired" /> required
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="dpDisabled" /> disabled
           </label>
         </div>
@@ -323,7 +323,7 @@ const icons = [
     <!-- OtpField -->
     <SectionCard title="OtpField">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <OtpField
             v-model="otpValue"
             name="demo-otp"
@@ -334,13 +334,13 @@ const icons = [
           />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">length
+          <label class="block text-xs text-on-surface-muted">length
             <input v-model.number="otpLength" type="number" min="4" max="8" :class="controlClass" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="otpRequired" /> required
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="otpDisabled" /> disabled
           </label>
         </div>
@@ -350,13 +350,13 @@ const icons = [
     <!-- Card -->
     <SectionCard title="Card">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Card :variant="cardVariant" class="w-full">
-            <p class="text-sm text-gray-700">Card content goes here. This is a sample card using the SDK's Card primitive.</p>
+            <p class="text-sm text-on-surface">Card content goes here. This is a sample card using the SDK's Card primitive.</p>
           </Card>
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">variant
+          <label class="block text-xs text-on-surface-muted">variant
             <select v-model="cardVariant" :class="controlClass">
               <option>elevated</option><option>outlined</option><option>flat</option>
             </select>
@@ -368,7 +368,7 @@ const icons = [
     <!-- Alert -->
     <SectionCard title="Alert">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Alert
             v-if="alertVisible"
             :severity="alertSeverity"
@@ -378,20 +378,20 @@ const icons = [
           >
             {{ alertText }}
           </Alert>
-          <button v-else type="button" class="text-sm text-indigo-600 underline" @click="alertVisible = true">
+          <button v-else type="button" class="text-sm text-accent-600 underline" @click="alertVisible = true">
             Reset
           </button>
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">severity
+          <label class="block text-xs text-on-surface-muted">severity
             <select v-model="alertSeverity" :class="controlClass">
               <option>success</option><option>error</option><option>warning</option><option>info</option>
             </select>
           </label>
-          <label class="block text-xs text-gray-500">text
+          <label class="block text-xs text-on-surface-muted">text
             <input v-model="alertText" type="text" :class="controlClass" />
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
             <input type="checkbox" v-model="alertDismissible" /> dismissible
           </label>
         </div>
@@ -401,11 +401,11 @@ const icons = [
     <!-- Typography -->
     <SectionCard title="Typography">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6 overflow-hidden">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6 overflow-hidden">
           <Typography :variant="typoVariant">The quick brown fox jumps over the lazy dog</Typography>
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">variant
+          <label class="block text-xs text-on-surface-muted">variant
             <select v-model="typoVariant" :class="controlClass">
               <option>h1</option><option>h2</option><option>h3</option><option>h4</option>
               <option>h5</option><option>h6</option><option>body1</option><option>body2</option>
@@ -419,11 +419,11 @@ const icons = [
     <!-- Spinner -->
     <SectionCard title="Spinner">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Spinner :size="spinnerSize" />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">size
+          <label class="block text-xs text-on-surface-muted">size
             <select v-model="spinnerSize" :class="controlClass">
               <option>small</option><option>medium</option><option>large</option>
             </select>
@@ -435,14 +435,14 @@ const icons = [
     <!-- Logo -->
     <SectionCard title="Logo">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-gray-50 rounded-lg p-6">
+        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
           <Logo :src="logoSrc" :alt="logoAlt" />
         </div>
         <div class="space-y-2">
-          <label class="block text-xs text-gray-500">src
+          <label class="block text-xs text-on-surface-muted">src
             <input v-model="logoSrc" type="url" :class="controlClass" />
           </label>
-          <label class="block text-xs text-gray-500">alt
+          <label class="block text-xs text-on-surface-muted">alt
             <input v-model="logoAlt" type="text" :class="controlClass" />
           </label>
         </div>
@@ -451,10 +451,10 @@ const icons = [
 
     <!-- Divider -->
     <SectionCard title="Divider">
-      <div class="bg-gray-50 rounded-lg p-6">
-        <p class="text-sm text-gray-600 mb-3">Content above</p>
+      <div class="bg-surface-muted rounded-lg p-6">
+        <p class="text-sm text-on-surface-secondary mb-3">Content above</p>
         <Divider />
-        <p class="text-sm text-gray-600 mt-3">Content below</p>
+        <p class="text-sm text-on-surface-secondary mt-3">Content below</p>
       </div>
     </SectionCard>
 
@@ -464,10 +464,10 @@ const icons = [
         <div
           v-for="icon in icons"
           :key="icon.name"
-          class="flex flex-col items-center gap-1.5 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+          class="flex flex-col items-center gap-1.5 p-2 rounded-lg hover:bg-surface-muted transition-colors"
         >
-          <component :is="icon.component" class="h-5 w-5 text-gray-700" />
-          <span class="text-xs text-gray-500 text-center break-all">{{ icon.name.replace('Icon', '') }}</span>
+          <component :is="icon.component" class="h-5 w-5 text-on-surface" />
+          <span class="text-xs text-on-surface-muted text-center break-all">{{ icon.name.replace('Icon', '') }}</span>
         </div>
       </div>
     </SectionCard>

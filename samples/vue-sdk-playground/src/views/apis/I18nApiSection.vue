@@ -64,23 +64,23 @@ function runInjectBundles() {
     <SectionCard title="Reactive State">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-gray-200 text-left">
-            <th class="pb-2 pr-6 font-medium text-gray-500">Property</th>
-            <th class="pb-2 font-medium text-gray-500">Value</th>
+          <tr class="border-b border-border text-left">
+            <th class="pb-2 pr-6 font-medium text-on-surface-muted">Property</th>
+            <th class="pb-2 font-medium text-on-surface-muted">Value</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-border-divider">
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-gray-600">currentLanguage</td>
-            <td class="py-2 font-mono text-xs text-gray-700">{{ currentLanguage }}</td>
+            <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">currentLanguage</td>
+            <td class="py-2 font-mono text-xs text-on-surface">{{ currentLanguage }}</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-gray-600">fallbackLanguage</td>
-            <td class="py-2 font-mono text-xs text-gray-700">{{ fallbackLanguage }}</td>
+            <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">fallbackLanguage</td>
+            <td class="py-2 font-mono text-xs text-on-surface">{{ fallbackLanguage }}</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-gray-600">bundles (keys)</td>
-            <td class="py-2 font-mono text-xs text-gray-700">
+            <td class="py-2 pr-6 font-mono text-xs text-on-surface-secondary">bundles (keys)</td>
+            <td class="py-2 font-mono text-xs text-on-surface">
               {{ Object.keys(bundles).join(', ') || '(empty)' }}
             </td>
           </tr>
@@ -90,7 +90,7 @@ function runInjectBundles() {
 
     <!-- t() — translate -->
     <SectionCard title="t() — translate">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Translates a key using the active locale. Optionally pass interpolation params as JSON.
       </p>
       <div class="space-y-2 mb-3">
@@ -98,17 +98,17 @@ function runInjectBundles() {
           v-model="translationKey"
           type="text"
           placeholder="common.welcome"
-          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full rounded-lg border border-border-hover bg-surface-secondary px-3 py-2 text-sm font-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-accent-500"
         />
         <input
           v-model="translationParams"
           type="text"
           placeholder='Optional params JSON, e.g. {"name":"Alice"}'
-          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full rounded-lg border border-border-hover bg-surface-secondary px-3 py-2 text-sm font-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-accent-500"
         />
       </div>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all disabled:opacity-50"
         :disabled="!translationKey.trim()"
         @click="runTranslate"
       >
@@ -119,7 +119,7 @@ function runInjectBundles() {
 
     <!-- setLanguage() -->
     <SectionCard title="setLanguage()">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Switches the active locale synchronously (e.g. <code class="font-mono">en-US</code>,
         <code class="font-mono">fr-FR</code>, <code class="font-mono">ja-JP</code>).
       </p>
@@ -128,10 +128,10 @@ function runInjectBundles() {
           v-model="setLangTarget"
           type="text"
           placeholder="en-US"
-          class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="flex-1 rounded-lg border border-border-hover bg-surface-secondary px-3 py-2 text-sm font-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-accent-500"
         />
         <button
-          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+          class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all disabled:opacity-50"
           :disabled="!setLangTarget.trim()"
           @click="runSetLanguage"
         >
@@ -143,11 +143,11 @@ function runInjectBundles() {
 
     <!-- bundles -->
     <SectionCard title="bundles">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         All registered i18n bundles keyed by locale string.
       </p>
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all"
         @click="showBundles"
       >
         Show bundles
@@ -157,7 +157,7 @@ function runInjectBundles() {
 
     <!-- injectBundles() -->
     <SectionCard title="injectBundles()">
-      <p class="mb-3 text-xs text-gray-500">
+      <p class="mb-3 text-xs text-on-surface-muted">
         Merges additional locale bundles into the i18n registry. Provide a JSON object keyed by
         locale string, where each value is a flat key→translation map.
       </p>
@@ -165,10 +165,10 @@ function runInjectBundles() {
         v-model="injectJson"
         rows="5"
         spellcheck="false"
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+        class="w-full rounded-lg border border-border-hover bg-surface-secondary px-3 py-2 text-xs font-mono text-on-surface focus:outline-none focus:ring-2 focus:ring-accent-500 mb-3"
       />
       <button
-        class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+        class="rounded-lg bg-accent-600 px-4 py-2 text-sm font-medium text-on-surface-inverse shadow-sm hover:bg-accent-700 active:scale-95 transition-all"
         @click="runInjectBundles"
       >
         injectBundles()

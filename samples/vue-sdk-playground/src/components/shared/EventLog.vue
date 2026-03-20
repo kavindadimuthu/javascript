@@ -4,20 +4,20 @@ defineProps<{
 }>()
 
 const typeColors: Record<string, string> = {
-  info: 'bg-blue-100 text-blue-700',
-  success: 'bg-green-100 text-green-700',
-  error: 'bg-red-100 text-red-700',
-  warning: 'bg-yellow-100 text-yellow-700',
+  info: 'bg-status-info-bg text-status-info-text',
+  success: 'bg-status-success-bg text-status-success-text',
+  error: 'bg-status-error-bg text-status-error-text',
+  warning: 'bg-status-warning-bg text-status-warning-text',
 }
 
 function badgeClass(type: string): string {
-  return typeColors[type] ?? 'bg-gray-100 text-gray-700'
+  return typeColors[type] ?? 'bg-surface-muted text-on-surface-secondary'
 }
 </script>
 
 <template>
-  <div class="overflow-y-auto max-h-[300px] border border-gray-200 rounded-lg divide-y divide-gray-100">
-    <div v-if="events.length === 0" class="p-4 text-sm text-gray-400 italic">
+  <div class="overflow-y-auto max-h-[300px] border border-border rounded-lg divide-y divide-border-divider">
+    <div v-if="events.length === 0" class="p-4 text-sm text-on-surface-muted italic">
       No events yet.
     </div>
     <div
@@ -25,14 +25,14 @@ function badgeClass(type: string): string {
       :key="index"
       class="flex items-start gap-3 px-4 py-2"
     >
-      <span class="text-gray-400 text-xs mt-0.5 shrink-0">{{ event.timestamp }}</span>
+      <span class="text-on-surface-muted text-xs mt-0.5 shrink-0">{{ event.timestamp }}</span>
       <span
         class="text-xs font-medium px-1.5 py-0.5 rounded shrink-0"
         :class="badgeClass(event.type)"
       >{{ event.type }}</span>
       <pre
         v-if="event.data !== undefined"
-        class="text-xs text-gray-600 whitespace-pre-wrap break-all min-w-0"
+        class="text-xs text-on-surface-secondary whitespace-pre-wrap break-all min-w-0"
       >{{ JSON.stringify(event.data, null, 2) }}</pre>
     </div>
   </div>

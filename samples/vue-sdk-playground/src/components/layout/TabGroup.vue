@@ -11,7 +11,7 @@ const emit = defineEmits<{
 
 <template>
   <div>
-    <div class="border-b border-gray-200">
+    <div class="border-b border-border">
       <div class="flex gap-4">
         <button
           v-for="tab in tabs"
@@ -20,8 +20,8 @@ const emit = defineEmits<{
           class="py-2 px-1 text-sm font-medium transition-colors border-b-2 -mb-px"
           :class="
             modelValue === tab.key
-              ? 'border-indigo-500 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-accent-500 text-accent-600'
+              : 'border-transparent text-on-surface-muted hover:text-on-surface-secondary hover:border-border-hover'
           "
           @click="emit('update:modelValue', tab.key)"
         >
