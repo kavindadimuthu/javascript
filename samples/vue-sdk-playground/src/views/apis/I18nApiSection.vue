@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from '@asgardeo/vue'
 import ResultPanel from '../../components/shared/ResultPanel.vue'
@@ -64,23 +64,23 @@ function runInjectBundles() {
     <SectionCard title="Reactive State">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-zinc-200 dark:border-zinc-700 text-left">
-            <th class="pb-2 pr-6 font-medium text-zinc-500 dark:text-zinc-400">Property</th>
-            <th class="pb-2 font-medium text-zinc-500 dark:text-zinc-400">Value</th>
+          <tr class="border-b border-gray-200 text-left">
+            <th class="pb-2 pr-6 font-medium text-gray-500">Property</th>
+            <th class="pb-2 font-medium text-gray-500">Value</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+        <tbody class="divide-y divide-gray-100">
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">currentLanguage</td>
-            <td class="py-2 font-mono text-xs text-zinc-700 dark:text-zinc-200">{{ currentLanguage }}</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">currentLanguage</td>
+            <td class="py-2 font-mono text-xs text-gray-700">{{ currentLanguage }}</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">fallbackLanguage</td>
-            <td class="py-2 font-mono text-xs text-zinc-700 dark:text-zinc-200">{{ fallbackLanguage }}</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">fallbackLanguage</td>
+            <td class="py-2 font-mono text-xs text-gray-700">{{ fallbackLanguage }}</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">bundles (keys)</td>
-            <td class="py-2 font-mono text-xs text-zinc-700 dark:text-zinc-200">
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">bundles (keys)</td>
+            <td class="py-2 font-mono text-xs text-gray-700">
               {{ Object.keys(bundles).join(', ') || '(empty)' }}
             </td>
           </tr>
@@ -90,7 +90,7 @@ function runInjectBundles() {
 
     <!-- t() — translate -->
     <SectionCard title="t() — translate">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Translates a key using the active locale. Optionally pass interpolation params as JSON.
       </p>
       <div class="space-y-2 mb-3">
@@ -98,13 +98,13 @@ function runInjectBundles() {
           v-model="translationKey"
           type="text"
           placeholder="common.welcome"
-          class="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <input
           v-model="translationParams"
           type="text"
           placeholder='Optional params JSON, e.g. {"name":"Alice"}'
-          class="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
       <button
@@ -119,7 +119,7 @@ function runInjectBundles() {
 
     <!-- setLanguage() -->
     <SectionCard title="setLanguage()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Switches the active locale synchronously (e.g. <code class="font-mono">en-US</code>,
         <code class="font-mono">fr-FR</code>, <code class="font-mono">ja-JP</code>).
       </p>
@@ -128,7 +128,7 @@ function runInjectBundles() {
           v-model="setLangTarget"
           type="text"
           placeholder="en-US"
-          class="flex-1 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <button
           class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
@@ -143,7 +143,7 @@ function runInjectBundles() {
 
     <!-- bundles -->
     <SectionCard title="bundles">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         All registered i18n bundles keyed by locale string.
       </p>
       <button
@@ -157,7 +157,7 @@ function runInjectBundles() {
 
     <!-- injectBundles() -->
     <SectionCard title="injectBundles()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Merges additional locale bundles into the i18n registry. Provide a JSON object keyed by
         locale string, where each value is a flat key→translation map.
       </p>
@@ -165,7 +165,7 @@ function runInjectBundles() {
         v-model="injectJson"
         rows="5"
         spellcheck="false"
-        class="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-xs font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
       />
       <button
         class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue'
 import { useBranding } from '@asgardeo/vue'
 import ResultPanel from '../../components/shared/ResultPanel.vue'
@@ -59,39 +59,39 @@ function showTheme() { themeResult.value = theme.value }
     <SectionCard title="Reactive State">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-zinc-200 dark:border-zinc-700 text-left">
-            <th class="pb-2 pr-6 font-medium text-zinc-500 dark:text-zinc-400">Property</th>
-            <th class="pb-2 font-medium text-zinc-500 dark:text-zinc-400">Value</th>
+          <tr class="border-b border-gray-200 text-left">
+            <th class="pb-2 pr-6 font-medium text-gray-500">Property</th>
+            <th class="pb-2 font-medium text-gray-500">Value</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+        <tbody class="divide-y divide-gray-100">
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">isLoading</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">isLoading</td>
             <td class="py-2">
               <span
                 :class="isLoading
-                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
-                  : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'"
+                  ? 'bg-amber-100 text-amber-700'
+                  : 'bg-gray-100 text-gray-600'"
                 class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
               >{{ isLoading }}</span>
             </td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">activeTheme</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">activeTheme</td>
             <td class="py-2">
               <span
                 v-if="activeTheme"
                 :class="activeTheme === 'dark'
-                  ? 'bg-zinc-800 text-zinc-200'
+                  ? 'bg-gray-800 text-gray-200'
                   : 'bg-amber-100 text-amber-700'"
                 class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
               >{{ activeTheme }}</span>
-              <span v-else class="font-mono text-xs text-zinc-400 italic">null</span>
+              <span v-else class="font-mono text-xs text-gray-400 italic">null</span>
             </td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">error</td>
-            <td class="py-2 font-mono text-xs" :class="error ? 'text-red-500' : 'text-zinc-400 italic'">
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">error</td>
+            <td class="py-2 font-mono text-xs" :class="error ? 'text-red-500' : 'text-gray-400 italic'">
               {{ error ? error.message : 'null' }}
             </td>
           </tr>
@@ -101,7 +101,7 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- fetchBranding -->
     <SectionCard title="fetchBranding()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Fetches branding preferences from the server. Deduplicated — concurrent calls share the same
         request. Use <code class="font-mono">refetch()</code> to force a fresh request.
       </p>
@@ -117,7 +117,7 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- refetch -->
     <SectionCard title="refetch()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Forces a fresh branding fetch from the server, bypassing the deduplication guard in
         <code class="font-mono">fetchBranding()</code>.
       </p>
@@ -133,7 +133,7 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- brandingPreference -->
     <SectionCard title="brandingPreference">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         The current branding preference object including logo URLs, color palette, and layout settings.
         Run <code class="font-mono">fetchBranding()</code> first to populate it.
       </p>
@@ -148,7 +148,7 @@ function showTheme() { themeResult.value = theme.value }
 
     <!-- theme (branding-derived) -->
     <SectionCard title="theme (branding-derived)">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         The resolved theme object derived from branding preferences.
       </p>
       <button

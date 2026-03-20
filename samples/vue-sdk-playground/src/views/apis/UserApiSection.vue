@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue'
 import { useUser } from '@asgardeo/vue'
 import ResultPanel from '../../components/shared/ResultPanel.vue'
@@ -79,7 +79,7 @@ async function runUpdateProfile() {
 
     <!-- Reactive State -->
     <SectionCard title="Reactive State">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Live snapshots from <code class="font-mono">useUser()</code>. Click
         <strong class="font-semibold">Show</strong> to render the current value in a result panel.
       </p>
@@ -103,32 +103,32 @@ async function runUpdateProfile() {
 
     <!-- flattenedProfile live table -->
     <SectionCard title="flattenedProfile">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         A flattened map of common SCIM2 attributes — updates reactively when
         <code class="font-mono">revalidateProfile()</code> completes.
       </p>
       <div v-if="flattenedProfile" class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b border-zinc-200 dark:border-zinc-700 text-left">
-              <th class="pb-2 pr-6 font-medium text-zinc-500 dark:text-zinc-400">Key</th>
-              <th class="pb-2 font-medium text-zinc-500 dark:text-zinc-400">Value</th>
+            <tr class="border-b border-gray-200 text-left">
+              <th class="pb-2 pr-6 font-medium text-gray-500">Key</th>
+              <th class="pb-2 font-medium text-gray-500">Value</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <tbody class="divide-y divide-gray-100">
             <tr v-for="(val, key) in flattenedProfile" :key="String(key)">
-              <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">{{ key }}</td>
-              <td class="py-2 font-mono text-xs text-zinc-700 dark:text-zinc-200 break-all">{{ JSON.stringify(val) }}</td>
+              <td class="py-2 pr-6 font-mono text-xs text-gray-600">{{ key }}</td>
+              <td class="py-2 font-mono text-xs text-gray-700 break-all">{{ JSON.stringify(val) }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p v-else class="text-xs text-zinc-400 italic">Not available — sign in first.</p>
+      <p v-else class="text-xs text-gray-400 italic">Not available — sign in first.</p>
     </SectionCard>
 
     <!-- revalidateProfile -->
     <SectionCard title="revalidateProfile()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Forces a fresh fetch of the user profile from the server and updates
         <code class="font-mono">profile</code> and <code class="font-mono">flattenedProfile</code>.
       </p>
@@ -144,7 +144,7 @@ async function runUpdateProfile() {
 
     <!-- updateProfile -->
     <SectionCard title="updateProfile()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Sends a SCIM2 <code class="font-mono">PatchOp</code> request to update the user profile.
         Edit the JSON payload below and click <strong class="font-semibold">updateProfile()</strong>.
       </p>
@@ -152,7 +152,7 @@ async function runUpdateProfile() {
         v-model="updatePayload"
         rows="8"
         spellcheck="false"
-        class="w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-xs font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
       />
       <button
         class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"

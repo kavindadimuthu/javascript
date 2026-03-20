@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue'
 import { useOrganization } from '@asgardeo/vue'
 import type { Organization } from '@asgardeo/vue'
@@ -107,36 +107,36 @@ async function runCreate() {
     <SectionCard title="Reactive State">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-zinc-200 dark:border-zinc-700 text-left">
-            <th class="pb-2 pr-6 font-medium text-zinc-500 dark:text-zinc-400">Property</th>
-            <th class="pb-2 font-medium text-zinc-500 dark:text-zinc-400">Value</th>
+          <tr class="border-b border-gray-200 text-left">
+            <th class="pb-2 pr-6 font-medium text-gray-500">Property</th>
+            <th class="pb-2 font-medium text-gray-500">Value</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+        <tbody class="divide-y divide-gray-100">
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">isLoading</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">isLoading</td>
             <td class="py-2">
               <span
                 :class="isLoading
-                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
-                  : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'"
+                  ? 'bg-amber-100 text-amber-700'
+                  : 'bg-gray-100 text-gray-600'"
                 class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
               >{{ isLoading }}</span>
             </td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">error</td>
-            <td class="py-2 font-mono text-xs" :class="error ? 'text-red-500' : 'text-zinc-400 italic'">
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">error</td>
+            <td class="py-2 font-mono text-xs" :class="error ? 'text-red-500' : 'text-gray-400 italic'">
               {{ error ?? 'null' }}
             </td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">myOrganizations.length</td>
-            <td class="py-2 font-mono text-xs text-zinc-700 dark:text-zinc-200">{{ myOrganizations?.length ?? 0 }}</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">myOrganizations.length</td>
+            <td class="py-2 font-mono text-xs text-gray-700">{{ myOrganizations?.length ?? 0 }}</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6 font-mono text-xs text-zinc-600 dark:text-zinc-300">currentOrganization</td>
-            <td class="py-2 font-mono text-xs text-zinc-700 dark:text-zinc-200 break-all">{{ JSON.stringify(currentOrganization) }}</td>
+            <td class="py-2 pr-6 font-mono text-xs text-gray-600">currentOrganization</td>
+            <td class="py-2 font-mono text-xs text-gray-700 break-all">{{ JSON.stringify(currentOrganization) }}</td>
           </tr>
         </tbody>
       </table>
@@ -144,7 +144,7 @@ async function runCreate() {
 
     <!-- myOrganizations + switchOrganization -->
     <SectionCard title="myOrganizations / switchOrganization()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Organizations the signed-in user belongs to. Click
         <strong class="font-semibold">Switch</strong> to call
         <code class="font-mono">switchOrganization(org)</code>.
@@ -153,9 +153,9 @@ async function runCreate() {
         <div
           v-for="(org, i) in myOrganizations"
           :key="i"
-          class="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-700 p-3"
+          class="flex items-center justify-between gap-3 rounded-lg border border-gray-200 p-3"
         >
-          <span class="font-mono text-xs text-zinc-700 dark:text-zinc-200 break-all flex-1">
+          <span class="font-mono text-xs text-gray-700 break-all flex-1">
             {{ JSON.stringify(org) }}
           </span>
           <button
@@ -167,13 +167,13 @@ async function runCreate() {
           </button>
         </div>
       </div>
-      <p v-else class="text-xs text-zinc-400 italic">No organizations found.</p>
+      <p v-else class="text-xs text-gray-400 italic">No organizations found.</p>
       <ResultPanel class="mt-3" :result="switchResult" :error="switchError" :loading="switchLoading" />
     </SectionCard>
 
     <!-- getAllOrganizations -->
     <SectionCard title="getAllOrganizations()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Fetches all organizations accessible to the current user. May differ from
         <code class="font-mono">myOrganizations</code> based on permissions.
       </p>
@@ -189,7 +189,7 @@ async function runCreate() {
 
     <!-- revalidateMyOrganizations -->
     <SectionCard title="revalidateMyOrganizations()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Re-fetches the user's own organization list and updates
         <code class="font-mono">myOrganizations</code>.
       </p>
@@ -205,37 +205,37 @@ async function runCreate() {
 
     <!-- createOrganization -->
     <SectionCard title="createOrganization()">
-      <p class="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p class="mb-3 text-xs text-gray-500">
         Creates a new child organization. Requires admin privileges.
         <code class="font-mono">createOrganization</code> may be
         <code class="font-mono">undefined</code> if unavailable in this context.
       </p>
       <div class="space-y-3 mb-3">
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">name <span class="text-red-500">*</span></label>
+          <label class="text-xs font-medium text-gray-600">name <span class="text-red-500">*</span></label>
           <input
             v-model="createName"
             type="text"
             placeholder="My Sub-Organization"
-            class="rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">description</label>
+          <label class="text-xs font-medium text-gray-600">description</label>
           <input
             v-model="createDescription"
             type="text"
             placeholder="Optional description"
-            class="rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">parentId <span class="text-red-500">*</span></label>
+          <label class="text-xs font-medium text-gray-600">parentId <span class="text-red-500">*</span></label>
           <input
             v-model="createParentId"
             type="text"
             placeholder="10084a8d-113f-4211-a0d5-..."
-            class="rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-mono text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
       </div>
@@ -246,7 +246,7 @@ async function runCreate() {
       >
         {{ createLoading ? 'Creating…' : 'createOrganization()' }}
       </button>
-      <p v-if="!createOrganization" class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+      <p v-if="!createOrganization" class="mt-2 text-xs text-amber-600">
         <code class="font-mono">createOrganization</code> is not available in this context.
       </p>
       <ResultPanel class="mt-3" :result="createResult" :error="createError" :loading="createLoading" />
