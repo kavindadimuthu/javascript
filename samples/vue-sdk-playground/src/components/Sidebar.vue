@@ -8,15 +8,10 @@ const route = useRoute();
 const router = useRouter();
 
 const navItems = [
-  { path: '/', label: 'Overview' },
-  { path: '/actions', label: 'Action Components' },
-  { path: '/primitives', label: 'Primitive Components' },
-  { path: '/presentation', label: 'Presentation Components' },
-  { path: '/control', label: 'Control Components' },
-  { path: '/adapters', label: 'Social Login Adapters' },
-  { path: '/auth-flow', label: 'Auth Flow Components' },
-  { path: '/factories', label: 'Field Factory' },
-  { path: '/composables', label: 'Composables Demo' },
+  { path: '/', label: 'Overview', icon: 'home' },
+  { path: '/auth-flows', label: 'Auth Flows', icon: 'key' },
+  { path: '/components', label: 'Components', icon: 'box' },
+  { path: '/public-apis', label: 'Public APIs', icon: 'code' },
 ];
 
 const isActive = (path: string) => route.path === path;
@@ -46,9 +41,25 @@ const navigate = (path: string) => {
             v-for="item in navItems"
             :key="item.path"
             @click="navigate(item.path)"
-            class="w-full text-left block px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             :class="isActive(item.path) ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'"
           >
+            <!-- Home icon -->
+            <svg v-if="item.icon === 'home'" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <!-- Key icon -->
+            <svg v-else-if="item.icon === 'key'" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+            <!-- Box icon -->
+            <svg v-else-if="item.icon === 'box'" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <!-- Code icon -->
+            <svg v-else-if="item.icon === 'code'" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
             {{ item.label }}
           </button>
         </div>
