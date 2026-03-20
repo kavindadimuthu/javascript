@@ -1,0 +1,23 @@
+<script setup lang="ts">
+withDefaults(defineProps<{
+  result?: unknown
+  isLoading?: boolean
+  error?: string
+}>(), {
+  isLoading: false,
+})
+</script>
+
+<template>
+  <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 font-mono text-sm min-h-[100px]">
+    <div v-if="isLoading" class="flex items-center justify-center h-full min-h-[76px]">
+      <svg class="animate-spin h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+      </svg>
+    </div>
+    <p v-else-if="error" class="text-red-600">{{ error }}</p>
+    <pre v-else-if="result !== undefined" class="whitespace-pre-wrap break-all text-gray-800">{{ JSON.stringify(result, null, 2) }}</pre>
+    <p v-else class="text-gray-400 italic">No result yet.</p>
+  </div>
+</template>
