@@ -9,5 +9,10 @@
   "stylelint.validate": ["css", "scss"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.formatOnSave": true,
-  "nxConsole.generateAiAgentRules": true
+  "nxConsole.generateAiAgentRules": true,
+  "vue.server.hybridMode": true,  // Hybrid mode lets Volar handle .vue files while the built-in TypeScript
+  "[vue]": {  // Vue - Official (Volar) settings
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "vetur.enable": false // Disable legacy Vetur to avoid conflicts with Vue - Official (Volar)
 }
