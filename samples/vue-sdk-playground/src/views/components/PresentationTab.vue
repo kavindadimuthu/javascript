@@ -13,6 +13,7 @@ import {
   LanguageSwitcher,
   FieldFactory,
   AcceptInvite,
+  FieldType,
 } from '@asgardeo/vue';
 import SectionCard from '../../components/layout/SectionCard.vue';
 import ResultPanel from '../../components/shared/ResultPanel.vue';
@@ -37,22 +38,22 @@ const roleOptions = [
 
     <!-- ── User Components ── -->
     <div>
-      <h2 class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
+      <h2
+        class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
         User Components
       </h2>
       <div class="space-y-6">
 
         <!-- UserProfile -->
-        <SectionCard
-          title="UserProfile"
-          description="Pre-built user profile card. Displays the signed-in user's info and supports inline field editing via the editable prop."
-        >
+        <SectionCard title="UserProfile"
+          description="Pre-built user profile card. Displays the signed-in user's info and supports inline field editing via the editable prop.">
           <SignedIn>
             <template #default>
               <div class="flex flex-col gap-4">
                 <UserProfile />
                 <p class="text-xs text-on-surface-muted">
-                  Add <code class="bg-surface-muted px-1 rounded font-mono">:editable="true"</code> to enable inline profile field editing.
+                  Add <code class="bg-surface-muted px-1 rounded font-mono">:editable="true"</code> to enable inline
+                  profile field editing.
                 </p>
               </div>
             </template>
@@ -63,10 +64,8 @@ const roleOptions = [
         </SectionCard>
 
         <!-- BaseUserProfile -->
-        <SectionCard
-          title="BaseUserProfile"
-          description="Unstyled base variant — use the default scoped slot to render a fully custom profile layout."
-        >
+        <SectionCard title="BaseUserProfile"
+          description="Unstyled base variant — use the default scoped slot to render a fully custom profile layout.">
           <SignedIn>
             <template #default>
               <BaseUserProfile>
@@ -90,10 +89,8 @@ const roleOptions = [
         </SectionCard>
 
         <!-- UserDropdown -->
-        <SectionCard
-          title="UserDropdown"
-          description="Avatar button that opens a dropdown with user info and a sign-out action. Typically placed in a top navigation bar."
-        >
+        <SectionCard title="UserDropdown"
+          description="Avatar button that opens a dropdown with user info and a sign-out action. Typically placed in a top navigation bar.">
           <SignedIn>
             <template #default>
               <div class="flex items-center gap-4">
@@ -112,16 +109,15 @@ const roleOptions = [
 
     <!-- ── Organization Components ── -->
     <div>
-      <h2 class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
+      <h2
+        class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
         Organization Components
       </h2>
       <div class="space-y-6">
 
         <!-- OrganizationList -->
-        <SectionCard
-          title="OrganizationList"
-          description="Displays all organizations the signed-in user belongs to. Clicking an org switches the current context."
-        >
+        <SectionCard title="OrganizationList"
+          description="Displays all organizations the signed-in user belongs to. Clicking an org switches the current context.">
           <SignedIn>
             <template #default>
               <OrganizationList />
@@ -133,10 +129,8 @@ const roleOptions = [
         </SectionCard>
 
         <!-- OrganizationSwitcher -->
-        <SectionCard
-          title="OrganizationSwitcher"
-          description="Compact dropdown for switching between organizations without leaving the current page."
-        >
+        <SectionCard title="OrganizationSwitcher"
+          description="Compact dropdown for switching between organizations without leaving the current page.">
           <SignedIn>
             <template #default>
               <div class="flex items-center gap-4">
@@ -151,10 +145,8 @@ const roleOptions = [
         </SectionCard>
 
         <!-- OrganizationProfile -->
-        <SectionCard
-          title="OrganizationProfile"
-          description="Shows the current organization's details. Requires an active organization context."
-        >
+        <SectionCard title="OrganizationProfile"
+          description="Shows the current organization's details. Requires an active organization context.">
           <SignedIn>
             <template #default>
               <OrganizationProfile />
@@ -166,10 +158,8 @@ const roleOptions = [
         </SectionCard>
 
         <!-- CreateOrganization -->
-        <SectionCard
-          title="CreateOrganization"
-          description="Form component for creating a new organization under the authenticated user's account."
-        >
+        <SectionCard title="CreateOrganization"
+          description="Form component for creating a new organization under the authenticated user's account.">
           <SignedIn>
             <template #default>
               <CreateOrganization />
@@ -181,10 +171,8 @@ const roleOptions = [
         </SectionCard>
 
         <!-- InviteUser -->
-        <SectionCard
-          title="InviteUser"
-          description="Form for inviting a user to the current organization by email address."
-        >
+        <SectionCard title="InviteUser"
+          description="Form for inviting a user to the current organization by email address.">
           <SignedIn>
             <template #default>
               <InviteUser />
@@ -200,16 +188,15 @@ const roleOptions = [
 
     <!-- ── Utility Components ── -->
     <div>
-      <h2 class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
+      <h2
+        class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
         Utility Components
       </h2>
       <div class="space-y-6">
 
         <!-- LanguageSwitcher -->
-        <SectionCard
-          title="LanguageSwitcher"
-          description="Dropdown that lists available locales from the i18n configuration and switches the active language."
-        >
+        <SectionCard title="LanguageSwitcher"
+          description="Dropdown that lists available locales from the i18n configuration and switches the active language.">
           <div class="flex items-center gap-4">
             <LanguageSwitcher />
             <p class="text-xs text-on-surface-muted">Locales are determined by your i18n provider configuration.</p>
@@ -217,56 +204,20 @@ const roleOptions = [
         </SectionCard>
 
         <!-- FieldFactory -->
-        <SectionCard
-          title="FieldFactory"
-          description="Dynamically renders a styled form field from a FieldConfig object — supports text, email, password, select, and checkbox field types."
-        >
+        <SectionCard title="FieldFactory"
+          description="Dynamically renders a styled form field from a FieldConfig object — supports text, email, password, select, and checkbox field types.">
           <div class="grid md:grid-cols-2 gap-6">
             <div class="space-y-4">
-              <FieldFactory
-                type="TEXT"
-                name="username"
-                label="Username"
-                :value="fieldValues.username"
-                :required="true"
-                placeholder="Enter your username"
-                @change="fieldValues.username = $event"
-              />
-              <FieldFactory
-                type="EMAIL"
-                name="email"
-                label="Email Address"
-                :value="fieldValues.email"
-                :required="true"
-                placeholder="you@example.com"
-                @change="fieldValues.email = $event"
-              />
-              <FieldFactory
-                type="PASSWORD"
-                name="password"
-                label="Password"
-                :value="fieldValues.password"
-                :required="true"
-                placeholder="••••••••"
-                @change="fieldValues.password = $event"
-              />
-              <FieldFactory
-                type="SELECT"
-                name="role"
-                label="Role"
-                :value="fieldValues.role"
-                :required="false"
-                :options="roleOptions"
-                @change="fieldValues.role = $event"
-              />
-              <FieldFactory
-                type="CHECKBOX"
-                name="newsletter"
-                label="Subscribe to newsletter"
-                :value="fieldValues.newsletter"
-                :required="false"
-                @change="fieldValues.newsletter = $event"
-              />
+              <FieldFactory :type="FieldType.Text" name="username" label="Username" :value="fieldValues.username"
+                :required="true" placeholder="Enter your username" @change="fieldValues.username = $event" />
+              <FieldFactory :type="FieldType.Email" name="email" label="Email Address" :value="fieldValues.email"
+                :required="true" placeholder="you@example.com" @change="fieldValues.email = $event" />
+              <FieldFactory :type="FieldType.Password" name="password" label="Password" :value="fieldValues.password"
+                :required="true" placeholder="••••••••" @change="fieldValues.password = $event" />
+              <FieldFactory :type="FieldType.Select" name="role" label="Role" :value="fieldValues.role"
+                :required="false" :options="roleOptions" @change="fieldValues.role = $event" />
+              <FieldFactory :type="FieldType.Checkbox" name="newsletter" label="Subscribe to newsletter"
+                :value="fieldValues.newsletter" :required="false" @change="fieldValues.newsletter = $event" />
             </div>
             <div class="space-y-2">
               <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide">Current form values</p>
@@ -276,13 +227,13 @@ const roleOptions = [
         </SectionCard>
 
         <!-- AcceptInvite -->
-        <SectionCard
-          title="AcceptInvite"
-          description="Renders the accept-invite flow. Typically shown on a dedicated /accept-invite route when a user arrives via an invitation link."
-        >
+        <SectionCard title="AcceptInvite"
+          description="Renders the accept-invite flow. Typically shown on a dedicated /accept-invite route when a user arrives via an invitation link.">
           <div class="space-y-3">
             <p class="text-xs text-on-surface-muted">
-              Mount <code class="bg-surface-muted px-1 rounded font-mono">&lt;AcceptInvite /&gt;</code> on the route that handles
+              Mount <code class="bg-surface-muted px-1 rounded font-mono">&lt;AcceptInvite /&gt;</code> on the route
+              that
+              handles
               your invitation links (e.g. <code class="bg-surface-muted px-1 rounded font-mono">/accept-invite</code>).
               The component reads the invitation token from the URL and renders the appropriate confirmation UI.
             </p>
