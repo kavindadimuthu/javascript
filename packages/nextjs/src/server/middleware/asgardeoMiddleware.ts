@@ -19,6 +19,7 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {AsgardeoNextConfig} from '../../models/config';
 import SessionManager, {SessionTokenPayload} from '../../utils/SessionManager';
+import {performTokenRefresh} from '../../utils/tokenRefreshUtils';
 import {
   hasValidSession as hasValidJWTSession,
   getSessionFromRequest,
@@ -131,6 +132,61 @@ const getSessionIdFromRequestMiddleware = async (request: NextRequest): Promise<
  * });
  * ```
  */
+/**
+ * Attempt a token refresh entirely within the Edge Runtime using env-var credentials.
+ *
+ * Reads the identity fields (sub, sessionId, scopes, etc.) from the provided decoded
+ * payload so that we can rebuild a new session JWT without touching the Node.js
+ * SDK singleton (which is not available in the Edge Runtime).
+ *
+ * Returns the signed new session JWT string on success, or null on any failure.
+ */
+const tryRefreshInMiddleware = async (
+  refreshToken: string,
+  decodedPayload: SessionTokenPayload,
+): Promise<string | null> => {
+  const clientId: string | undefined = process.env['NEXT_PUBLIC_ASGARDEO_CLIENT_ID'];
+  const clientSecret: string | undefined = process.env['ASGARDEO_CLIENT_SECRET'];
+  const baseUrl: string | undefined = process.env['NEXT_PUBLIC_ASGARDEO_BASE_URL'];
+
+  // If the app has not set env vars, skip the refresh in middleware.
+  // getAccessToken() (Node.js runtime) will handle the refresh on the first API call.
+  if (!clientId || !clientSecret || !baseUrl) {
+    return null;
+  }
+
+  const scopes: string | undefined = Array.isArray(decodedPayload.scopes)
+    ? decodedPayload.scopes.join(' ')
+    : (decodedPayload.scopes as string | undefined);
+
+  const refreshResult = await performTokenRefresh({
+    baseUrl,
+    clientId,
+    clientSecret,
+    refreshToken,
+    scopes,
+  });
+
+  if (!refreshResult) {
+    return null;
+  }
+
+  try {
+    return await SessionManager.createSessionToken(
+      refreshResult.accessToken,
+      decodedPayload.sub as string,
+      decodedPayload.sessionId,
+      refreshResult.scope ?? scopes ?? '',
+      decodedPayload.organizationId,
+      refreshResult.expiresIn,
+      // Prefer the rotated refresh token from the server; fall back to the original.
+      refreshResult.refreshToken ?? refreshToken,
+    );
+  } catch {
+    return null;
+  }
+};
+
 const asgardeoMiddleware =
   (
     handler?: AsgardeoMiddlewareHandler,
@@ -165,12 +221,89 @@ const asgardeoMiddleware =
       }
     }
 
-    const sessionId: string | undefined = await getSessionIdFromRequestMiddleware(request);
-    const isAuthenticated: boolean = await hasValidSession(request);
+    // ─── Session & Token Refresh ──────────────────────────────────────────────
+    //
+    // Strategy (executed only outside an active OAuth callback flow):
+    //
+    // 1. hasValidSession  → JWT signature valid AND session cookie not expired.
+    //    With the new 24-hour session cookie, this stays true even after the
+    //    short-lived access token (1 hour) expires.
+    //
+    // 2. If the session JWT is valid:
+    //    a. Check accessTokenExpiresAt. If the access token has expired or is
+    //       within REFRESH_THRESHOLD_SECONDS of expiring → proactive refresh.
+    //    b. If refresh succeeds → store new JWT; isAuthenticated stays true.
+    //    c. If refresh fails AND token is already expired → isAuthenticated = false.
+    //    d. If refresh fails BUT token is still valid (near-expiry window) →
+    //       keep isAuthenticated = true; getAccessToken() will retry later.
+    //
+    // 3. If the session JWT itself is invalid/expired (e.g. old 1-hour cookie):
+    //    Decode the cookie without verification to retrieve the refresh token.
+    //    Attempt a refresh. If it succeeds → new JWT, isAuthenticated = true.
+    //    If it fails → isAuthenticated stays false → normal redirect to sign-in.
+    //
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let isAuthenticated: boolean = await hasValidSession(request);
+    let sessionId: string | undefined = await getSessionIdFromRequestMiddleware(request);
+    let refreshedSessionJwt: string | undefined;
+
+    if (!isValidOAuthCallback) {
+      const sessionCookieName: string = SessionManager.getSessionCookieName();
+      const rawToken: string | undefined = request.cookies.get(sessionCookieName)?.value;
+
+      if (isAuthenticated && rawToken) {
+        // Session JWT is valid — check whether the access token needs refresh.
+        const session: SessionTokenPayload | undefined = await getSessionFromRequest(request);
+
+        if (session?.refreshToken && session.accessTokenExpiresAt !== undefined) {
+          const now: number = Math.floor(Date.now() / 1000);
+          const accessTokenExpired: boolean = session.accessTokenExpiresAt <= now;
+          const nearExpiry: boolean =
+            session.accessTokenExpiresAt - now < SessionManager.REFRESH_THRESHOLD_SECONDS;
+
+          if (accessTokenExpired || nearExpiry) {
+            const newJwt: string | null = await tryRefreshInMiddleware(session.refreshToken, session);
+
+            if (newJwt) {
+              refreshedSessionJwt = newJwt;
+              // sessionId stays the same — only tokens changed
+            } else if (accessTokenExpired) {
+              // Refresh failed and the access token is already expired.
+              // Treat as unauthenticated so protectRoute() can redirect to sign-in.
+              isAuthenticated = false;
+            }
+            // If near-expiry refresh failed but token is still valid, fall through.
+          }
+        }
+      } else if (!isAuthenticated && rawToken) {
+        // The session JWT is no longer valid (e.g. 1-hour cookie from an older SDK
+        // version, or the session just expired). Try to decode it without verifying
+        // the signature/expiry to recover the refresh token.
+        const decoded: SessionTokenPayload | null = SessionManager.decodeSessionToken(rawToken);
+
+        if (decoded?.refreshToken) {
+          const newJwt: string | null = await tryRefreshInMiddleware(decoded.refreshToken, decoded);
+
+          if (newJwt) {
+            refreshedSessionJwt = newJwt;
+            sessionId = decoded.sessionId;
+            isAuthenticated = true;
+          }
+        }
+      }
+    }
+
+    // ─── Build middleware context ─────────────────────────────────────────────
 
     const asgardeo: AsgardeoMiddlewareContext = {
       getSession: async (): Promise<SessionTokenPayload | undefined> => {
         try {
+          // Return the refreshed payload when available so the handler always sees
+          // up-to-date token information.
+          if (refreshedSessionJwt) {
+            return await SessionManager.verifySessionToken(refreshedSessionJwt);
+          }
           return await getSessionFromRequest(request);
         } catch {
           return undefined;
@@ -217,14 +350,32 @@ const asgardeoMiddleware =
       },
     };
 
+    // ─── Call custom handler, then finalise the response ─────────────────────
+    //
+    // We no longer return early from the handler result so that we can always
+    // attach the refreshed session cookie to whatever response is produced —
+    // whether it is a normal NextResponse.next() or a handler-provided response.
+    // The cookie is NOT set on redirect responses (which only happen when
+    // isAuthenticated=false, in which case refreshedSessionJwt is undefined).
+
+    let response: NextResponse;
+
     if (handler) {
       const result: NextResponse | void = await handler(asgardeo, request);
-      if (result) {
-        return result;
-      }
+      response = result ?? NextResponse.next();
+    } else {
+      response = NextResponse.next();
     }
 
-    return NextResponse.next();
+    if (refreshedSessionJwt) {
+      response.cookies.set(
+        SessionManager.getSessionCookieName(),
+        refreshedSessionJwt,
+        SessionManager.getSessionCookieOptions(),
+      );
+    }
+
+    return response;
   };
 
 export default asgardeoMiddleware;

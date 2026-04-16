@@ -111,12 +111,22 @@ const handleOAuthCallbackAction = async (
           | string
           | undefined;
 
+        // Extract refresh token and access token lifetime from the token response.
+        // These are used to enable transparent token refresh without forcing the user
+        // to re-authenticate when the access token expires.
+        const refreshToken: string | undefined = (signInResult['refresh_token'] ??
+          signInResult['refreshToken']) as string | undefined;
+        const accessTokenExpiresIn: number =
+          ((signInResult['expires_in'] ?? signInResult['expiresIn']) as number | undefined) ?? 3600;
+
         const sessionToken: string = await SessionManager.createSessionToken(
           accessToken,
           userIdFromToken,
           sessionId,
           scopes,
           organizationId,
+          accessTokenExpiresIn,
+          refreshToken,
         );
 
         cookieStore.set(SessionManager.getSessionCookieName(), sessionToken, SessionManager.getSessionCookieOptions());

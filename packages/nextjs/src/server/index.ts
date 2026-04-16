@@ -27,3 +27,6 @@ export {default as asgardeoMiddleware} from './middleware/asgardeoMiddleware';
 export * from './middleware/asgardeoMiddleware';
 
 export {default as createRouteMatcher} from './middleware/createRouteMatcher';
+
+export {default as refreshTokenAction} from './actions/refreshTokenAction';
+export type {RefreshTokenActionResult} from './actions/refreshTokenAction';

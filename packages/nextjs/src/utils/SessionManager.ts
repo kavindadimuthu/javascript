@@ -17,18 +17,22 @@
  */
 
 import {AsgardeoRuntimeError, CookieConfig} from '@asgardeo/node';
-import {SignJWT, jwtVerify, JWTPayload} from 'jose';
+import {SignJWT, jwtVerify, decodeJwt, JWTPayload} from 'jose';
 
 /**
  * Session token payload interface
  */
 export interface SessionTokenPayload extends JWTPayload {
-  /** Expiration timestamp */
+  /** Unix timestamp when the OAuth access token expires (NOT the session cookie expiry) */
+  accessTokenExpiresAt?: number;
+  /** Expiration timestamp of the session JWT cookie itself */
   exp: number;
   /** Issued at timestamp */
   iat: number;
   /** Organization ID if applicable */
   organizationId?: string;
+  /** OAuth refresh token for obtaining new access tokens without re-authentication */
+  refreshToken?: string;
   /** OAuth scopes */
   scopes: string[];
   /** Session ID */
@@ -41,7 +45,24 @@ export interface SessionTokenPayload extends JWTPayload {
  * Session management utility class for JWT-based session cookies
  */
 class SessionManager {
-  private static readonly DEFAULT_EXPIRY_SECONDS: number = 3600;
+  /**
+   * Lifetime of the session cookie (the JWT itself).
+   * Should be >= the refresh token lifetime so the cookie persists long enough
+   * to use the refresh token. Default: 24 hours.
+   */
+  private static readonly DEFAULT_SESSION_EXPIRY_SECONDS: number = 24 * 3600;
+
+  /**
+   * Default OAuth access token lifetime in seconds when not provided by the server.
+   * Used to set accessTokenExpiresAt in the session payload.
+   */
+  private static readonly DEFAULT_ACCESS_TOKEN_EXPIRY_SECONDS: number = 3600;
+
+  /**
+   * How many seconds before the access token expires to proactively refresh it.
+   * A 5-minute window prevents tokens from expiring mid-request.
+   */
+  public static readonly REFRESH_THRESHOLD_SECONDS: number = 300;
 
   /**
    * Get the signing secret from environment variable
@@ -87,7 +108,21 @@ class SessionManager {
   }
 
   /**
-   * Create a session cookie with user information
+   * Create a session cookie with user information.
+   *
+   * The JWT expiry (exp) is tied to the session cookie lifetime (default 24h), NOT the
+   * access token lifetime. The access token expiry is stored separately in
+   * `accessTokenExpiresAt` so the middleware and getAccessToken() can decide when to
+   * refresh without the session cookie becoming invalid.
+   *
+   * @param accessToken - The OAuth access token
+   * @param userId - The authenticated user's ID (becomes JWT `sub`)
+   * @param sessionId - Internal session identifier
+   * @param scopes - Space-separated OAuth scopes
+   * @param organizationId - Optional current organization ID
+   * @param accessTokenExpiresIn - How long (seconds) the access token is valid. Default 3600.
+   * @param refreshToken - Optional OAuth refresh token
+   * @param sessionExpirySeconds - How long (seconds) the session cookie should live. Default 24h.
    */
   static async createSessionToken(
     accessToken: string,
@@ -95,13 +130,18 @@ class SessionManager {
     sessionId: string,
     scopes: string,
     organizationId?: string,
-    expirySeconds: number = this.DEFAULT_EXPIRY_SECONDS,
+    accessTokenExpiresIn: number = this.DEFAULT_ACCESS_TOKEN_EXPIRY_SECONDS,
+    refreshToken?: string,
+    sessionExpirySeconds: number = this.DEFAULT_SESSION_EXPIRY_SECONDS,
   ): Promise<string> {
     const secret: Uint8Array = this.getSecret();
+    const nowSeconds: number = Math.floor(Date.now() / 1000);
 
     const jwt: string = await new SignJWT({
       accessToken,
+      accessTokenExpiresAt: nowSeconds + accessTokenExpiresIn,
       organizationId,
+      ...(refreshToken ? {refreshToken} : {}),
       scopes,
       sessionId,
       type: 'session',
@@ -109,7 +149,7 @@ class SessionManager {
       .setProtectedHeader({alg: 'HS256'})
       .setSubject(userId)
       .setIssuedAt()
-      .setExpirationTime(Date.now() / 1000 + expirySeconds)
+      .setExpirationTime(nowSeconds + sessionExpirySeconds)
       .sign(secret);
 
     return jwt;
@@ -158,7 +198,26 @@ class SessionManager {
   }
 
   /**
-   * Get session cookie options
+   * Decode a session token without verifying its signature or expiry.
+   *
+   * ONLY use this in the middleware to read the refresh token from a cookie that may
+   * be expired. For any security-sensitive check, use verifySessionToken() instead.
+   *
+   * @param token - The raw JWT string from the session cookie
+   * @returns The decoded payload, or null if the token cannot be parsed
+   */
+  static decodeSessionToken(token: string): SessionTokenPayload | null {
+    try {
+      return decodeJwt(token) as SessionTokenPayload;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Get session cookie options.
+   * maxAge matches DEFAULT_SESSION_EXPIRY_SECONDS (24h) so the browser keeps
+   * the cookie alive long enough for refresh tokens to be used.
    */
   static getSessionCookieOptions(): {
     httpOnly: boolean;
@@ -169,7 +228,7 @@ class SessionManager {
   } {
     return {
       httpOnly: true,
-      maxAge: this.DEFAULT_EXPIRY_SECONDS,
+      maxAge: this.DEFAULT_SESSION_EXPIRY_SECONDS,
       path: '/',
       sameSite: 'lax' as const,
       secure: process.env['NODE_ENV'] === 'production',
