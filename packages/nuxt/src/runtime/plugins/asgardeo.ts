@@ -126,7 +126,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
       if (ssrContext) {
         authState.value = {
           isLoading: false,
-          isSignedIn: ssrContext.isSignedIn,
+          isSignedIn: ssrContext.isSignedIn ?? false,
           user: ssrContext.session?.sub ? ({sub: ssrContext.session.sub} as AsgardeoAuthState['user']) : null,
         };
       } else {

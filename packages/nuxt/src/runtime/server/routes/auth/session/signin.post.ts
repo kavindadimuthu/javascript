@@ -17,6 +17,7 @@
  */
 
 import {EmbeddedSignInFlowStatus, generateSessionId, isEmpty} from '@asgardeo/node';
+import type {TokenResponse} from '@asgardeo/node';
 import {defineEventHandler, readBody, getCookie, setCookie, deleteCookie, createError} from 'h3';
 import type {H3Event} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
@@ -29,6 +30,14 @@ import {
   getTempSessionCookieOptions,
 } from '../../../utils/session';
 import {useRuntimeConfig} from '#imports';
+
+function isTokenResponse(value: unknown): value is TokenResponse {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    ('accessToken' in value || 'idToken' in value || 'refreshToken' in value)
+  );
+}
 
 /**
  * POST /api/auth/signin
@@ -130,6 +139,13 @@ export default defineEventHandler(async (event: H3Event) => {
       throw createError({
         statusCode: 502,
         statusMessage: `Token exchange failed after embedded flow: ${err?.message ?? String(err)}`,
+      });
+    }
+
+    if (!isTokenResponse(tokenResponse)) {
+      throw createError({
+        statusCode: 502,
+        statusMessage: 'Token exchange failed: Invalid token response from Identity Provider.',
       });
     }
 

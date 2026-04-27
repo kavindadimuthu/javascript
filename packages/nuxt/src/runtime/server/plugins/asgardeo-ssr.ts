@@ -67,9 +67,7 @@ export default defineNitroPlugin((nitro: {hooks: {hook: Function}}) => {
     const client: AsgardeoNuxtClient = AsgardeoNuxtClient.getInstance();
     if (!client.isInitialized) {
       const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig(event);
-      const publicConfig: typeof config.public.asgardeo & AsgardeoNuxtConfig = config.public.asgardeo as
-        | (typeof config.public.asgardeo & AsgardeoNuxtConfig)
-        | AsgardeoNuxtConfig;
+      const publicConfig: AsgardeoNuxtConfig = config.public.asgardeo as AsgardeoNuxtConfig;
       const privateConfig: typeof config.asgardeo = config.asgardeo;
 
       if (!publicConfig?.baseUrl || !publicConfig?.clientId) {
@@ -121,9 +119,7 @@ export default defineNitroPlugin((nitro: {hooks: {hook: Function}}) => {
 
     // ── 2. Verify session cookie + rehydrate legacy store ─────────────────
     const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig(event);
-    const publicConfig: typeof config.public.asgardeo & AsgardeoNuxtConfig = config.public.asgardeo as
-      | (typeof config.public.asgardeo & AsgardeoNuxtConfig)
-      | AsgardeoNuxtConfig;
+    const publicConfig: AsgardeoNuxtConfig = config.public.asgardeo as AsgardeoNuxtConfig;
     const prefs: AsgardeoNuxtConfig['preferences'] | undefined = publicConfig?.preferences;
     const sessionSecret: string | undefined = process.env['ASGARDEO_SESSION_SECRET'] || config.asgardeo?.sessionSecret;
 

@@ -37,9 +37,7 @@ import {useRuntimeConfig} from '#imports';
  */
 export default defineEventHandler(async (event: H3Event): Promise<BrandingPreference | null> => {
   const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig(event);
-  const publicConfig: typeof config.public.asgardeo & AsgardeoNuxtConfig = config.public.asgardeo as
-    | (typeof config.public.asgardeo & AsgardeoNuxtConfig)
-    | AsgardeoNuxtConfig;
+  const publicConfig: AsgardeoNuxtConfig = config.public.asgardeo as AsgardeoNuxtConfig;
   const sessionSecret: string | undefined = config.asgardeo?.sessionSecret;
 
   const baseUrl: string = (publicConfig?.baseUrl ?? '') as string;

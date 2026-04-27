@@ -22,6 +22,10 @@ import type {H3Event} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
 import {useRuntimeConfig} from '#imports';
 
+function hasFlowStatus(value: unknown): value is {flowStatus?: EmbeddedFlowStatus} {
+  return typeof value === 'object' && value !== null && 'flowStatus' in value;
+}
+
 /**
  * POST /api/auth/signup
  *
@@ -65,7 +69,7 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   // ── Flow complete ─────────────────────────────────────────────────────────
-  if (response?.flowStatus === EmbeddedFlowStatus.Complete) {
+  if (hasFlowStatus(response) && response.flowStatus === EmbeddedFlowStatus.Complete) {
     return {data: {afterSignUpUrl}, success: true};
   }
 

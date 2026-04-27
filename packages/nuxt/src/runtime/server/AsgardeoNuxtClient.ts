@@ -231,8 +231,29 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
     // Code exchange path: {code, state, session_state} as arg0, {} as arg1, sessionId as arg2.
     // Falls through to the legacy client mirroring AsgardeoNextClient.
     if (typeof arg0 === 'object' && arg0 !== null && ('code' in arg0 || 'state' in arg0)) {
+      const payload: {code?: unknown; session_state?: unknown; state?: unknown} = arg0 as {
+        code?: unknown;
+        session_state?: unknown;
+        state?: unknown;
+      };
+      const code: string | undefined = typeof payload.code === 'string' ? payload.code : undefined;
+      const sessionState: string | undefined =
+        typeof payload.session_state === 'string' ? payload.session_state : undefined;
+      const state: string | undefined = typeof payload.state === 'string' ? payload.state : undefined;
+      const extraParams: Record<string, string | boolean> = {};
+
+      if (code) {
+        extraParams.code = code;
+      }
+      if (sessionState) {
+        extraParams.session_state = sessionState;
+      }
+      if (state) {
+        extraParams.state = state;
+      }
+
       // args[3] would be onSignInSuccess (undefined), args[2] is sessionId
-      return this.legacy.signIn(args[3], args[2], arg0?.code, arg0?.session_state, arg0?.state, arg0);
+      return this.legacy.signIn(args[3], args[2], code, sessionState, state, extraParams);
     }
 
     // Redirect-flow: first argument is a callback function.

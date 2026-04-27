@@ -202,7 +202,7 @@ export async function issueSessionCookie(
 ): Promise<void> {
   // Lazy-import to avoid circular dep: session.ts → AsgardeoNuxtClient → session.ts
   const {default: AsgardeoNuxtClient} = await import('../AsgardeoNuxtClient');
-  const client: InstanceType<typeof AsgardeoNuxtClient> = AsgardeoNuxtClient.getInstance();
+  const client: ReturnType<typeof AsgardeoNuxtClient.getInstance> = AsgardeoNuxtClient.getInstance();
 
   const idToken: IdToken = await client.getDecodedIdToken(sessionId, tokenResponse.idToken);
 

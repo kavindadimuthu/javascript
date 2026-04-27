@@ -16,6 +16,7 @@
  * under the License.
  */
 
+import type {TokenResponse} from '@asgardeo/node';
 import {defineEventHandler, readBody, getCookie, deleteCookie, createError} from 'h3';
 import type {H3Event} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
@@ -26,6 +27,14 @@ import {
   getTempSessionCookieOptions,
 } from '../../../utils/session';
 import {useRuntimeConfig} from '#imports';
+
+function isTokenResponse(value: unknown): value is TokenResponse {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    ('accessToken' in value || 'idToken' in value || 'refreshToken' in value)
+  );
+}
 
 /**
  * POST /api/auth/callback
@@ -86,6 +95,10 @@ export default defineEventHandler(async (event: H3Event) => {
     tokenResponse = await client.signIn({code, session_state: sessionState, state}, {}, sessionId);
   } catch (err: any) {
     return {error: err?.message ?? String(err), success: false};
+  }
+
+  if (!isTokenResponse(tokenResponse)) {
+    return {error: 'Invalid token response from Identity Provider.', success: false};
   }
 
   // ── Issue session cookie ──────────────────────────────────────────────────

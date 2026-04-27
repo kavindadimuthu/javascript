@@ -38,7 +38,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig();
   const sessionSecret: string | undefined = config.asgardeo?.sessionSecret;
 
-  const query: ReturnType<typeof getQuery> = getQuery(event);
+  const query: Record<string, unknown> = getQuery(event) as Record<string, unknown>;
   const returnTo: string | undefined = query['returnTo'] as string | undefined;
 
   // Validate returnTo is a relative path to prevent open redirect
