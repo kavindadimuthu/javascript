@@ -17,6 +17,7 @@
  */
 
 import {defineEventHandler, deleteCookie} from 'h3';
+import type {H3Event} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
 import {verifyAndRehydrateSession} from '../../../utils/serverSession';
 import {
@@ -37,28 +38,31 @@ import {useRuntimeConfig} from '#imports';
  *
  * Using POST instead of GET prevents CSRF-based forced sign-outs.
  */
-export default defineEventHandler(async (event): Promise<{redirectUrl: string}> => {
-  const config = useRuntimeConfig();
-  const sessionSecret = config.asgardeo?.sessionSecret;
-  const publicConfig = config.public.asgardeo;
-  const fallbackUrl = (publicConfig as any).afterSignOutUrl || '/';
+export default defineEventHandler(async (event: H3Event): Promise<{redirectUrl: string}> => {
+  const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig();
+  const sessionSecret: string | undefined = config.asgardeo?.sessionSecret;
+  const publicConfig: typeof config.public.asgardeo = config.public.asgardeo;
+  const fallbackUrl: string = (publicConfig as any).afterSignOutUrl || '/';
 
-  const clearCookies = () => {
+  const clearCookies = (): void => {
     deleteCookie(event, getSessionCookieName(), getSessionCookieOptions());
     deleteCookie(event, getTempSessionCookieName(), getTempSessionCookieOptions());
   };
 
   // Decode + rehydrate so the legacy client can read the id_token from the
   // in-memory store when building the RP-Initiated Logout URL.
-  const session = await verifyAndRehydrateSession(event, sessionSecret);
+  const session: Awaited<ReturnType<typeof verifyAndRehydrateSession>> = await verifyAndRehydrateSession(
+    event,
+    sessionSecret,
+  );
   if (!session) {
     clearCookies();
     return {redirectUrl: fallbackUrl};
   }
 
   try {
-    const client = AsgardeoNuxtClient.getInstance();
-    const signOutUrl = await client.signOut(session.sessionId);
+    const client: AsgardeoNuxtClient = AsgardeoNuxtClient.getInstance();
+    const signOutUrl: string = await client.signOut(session.sessionId);
 
     clearCookies();
 

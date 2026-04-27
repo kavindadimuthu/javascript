@@ -19,10 +19,13 @@
 import {getRedirectBasedSignUpUrl} from '@asgardeo/browser';
 import type {BrandingPreference, Organization, UserProfile} from '@asgardeo/node';
 import {AsgardeoPlugin, ASGARDEO_KEY} from '@asgardeo/vue';
+import type {H3Event} from 'h3';
 import {computed} from 'vue';
+import type {ComputedRef, Ref} from 'vue';
 import AsgardeoRoot from '../components/AsgardeoRoot';
-import type {AsgardeoAuthState} from '../types';
+import type {AsgardeoAuthState, AsgardeoSSRData} from '../types';
 import {defineNuxtPlugin, useState, useRequestEvent, useRuntimeConfig, navigateTo} from '#app';
+import type {NuxtApp} from '#app';
 
 // Import H3 augmentation so event.context.asgardeo is typed
 import '../types/augments.d';
@@ -47,8 +50,18 @@ import '../types/augments.d';
  *  4. **AsgardeoPlugin (delegated)** — install the Vue SDK plugin in
  *     delegated mode so it skips browser-only initialisation (SSR-safe).
  */
-export default defineNuxtPlugin(nuxtApp => {
-  const publicConfig = useRuntimeConfig().public.asgardeo as {
+export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
+  const publicConfig: {
+    afterSignInUrl: string;
+    afterSignOutUrl: string;
+    applicationId?: string;
+    baseUrl: string;
+    clientId: string;
+    organizationHandle?: string;
+    scopes: string[];
+    signInUrl?: string;
+    signUpUrl?: string;
+  } = useRuntimeConfig().public.asgardeo as {
     afterSignInUrl: string;
     afterSignOutUrl: string;
     applicationId?: string;
@@ -79,19 +92,22 @@ export default defineNuxtPlugin(nuxtApp => {
   //  Nuxt snapshots the values into the `__NUXT__` payload and the client
   //  hydrates automatically — no extra fetch needed.
 
-  const authState = useState<AsgardeoAuthState>('asgardeo:auth', () => ({
+  const authState: Ref<AsgardeoAuthState> = useState<AsgardeoAuthState>('asgardeo:auth', () => ({
     isLoading: true,
     isSignedIn: false,
     user: null,
   }));
-  const userProfileState = useState<UserProfile | null>('asgardeo:user-profile', () => null);
-  const currentOrgState = useState<Organization | null>('asgardeo:current-org', () => null);
-  const myOrgsState = useState<Organization[]>('asgardeo:my-orgs', () => []);
-  const brandingState = useState<BrandingPreference | null>('asgardeo:branding', () => null);
+  const userProfileState: Ref<UserProfile | null> = useState<UserProfile | null>('asgardeo:user-profile', () => null);
+  const currentOrgState: Ref<Organization | null> = useState<Organization | null>('asgardeo:current-org', () => null);
+  const myOrgsState: Ref<Organization[]> = useState<Organization[]>('asgardeo:my-orgs', () => []);
+  const brandingState: Ref<BrandingPreference | null> = useState<BrandingPreference | null>(
+    'asgardeo:branding',
+    () => null,
+  );
 
   if (import.meta.server) {
-    const event = useRequestEvent();
-    const ssr = event?.context?.asgardeo?.ssr;
+    const event: H3Event | undefined = useRequestEvent();
+    const ssr: AsgardeoSSRData | undefined = event?.context?.asgardeo?.ssr as AsgardeoSSRData | undefined;
 
     if (ssr) {
       // Seed from the rich SSR payload written by the asgardeo-ssr Nitro plugin.
@@ -106,7 +122,7 @@ export default defineNuxtPlugin(nuxtApp => {
       brandingState.value = ssr.brandingPreference;
     } else {
       // Backwards-compat: fall back to the legacy context shape (pre-Step-2 plugin).
-      const ssrContext = event?.context?.asgardeo;
+      const ssrContext: {isSignedIn?: boolean; session?: {sub?: string}} | undefined = event?.context?.asgardeo;
       if (ssrContext) {
         authState.value = {
           isLoading: false,
@@ -114,7 +130,9 @@ export default defineNuxtPlugin(nuxtApp => {
           user: ssrContext.session?.sub ? ({sub: ssrContext.session.sub} as AsgardeoAuthState['user']) : null,
         };
       } else {
-        const legacyAuth = event?.context?.['__asgardeoAuth'] as AsgardeoAuthState | undefined;
+        const legacyAuth: AsgardeoAuthState | undefined = event?.context?.['__asgardeoAuth'] as
+          | AsgardeoAuthState
+          | undefined;
         authState.value = legacyAuth ?? {isLoading: false, isSignedIn: false, user: null};
       }
     }
@@ -125,25 +143,25 @@ export default defineNuxtPlugin(nuxtApp => {
   }
 
   // ── 2. Reactive refs over auth state ────────────────────────────────────
-  const isSignedIn = computed(() => authState.value.isSignedIn);
-  const isLoading = computed(() => authState.value.isLoading);
-  const isInitialized = computed(() => !authState.value.isLoading);
+  const isSignedIn: ComputedRef<boolean> = computed(() => authState.value.isSignedIn);
+  const isLoading: ComputedRef<boolean> = computed(() => authState.value.isLoading);
+  const isInitialized: ComputedRef<boolean> = computed(() => !authState.value.isLoading);
   // `user` is backed by the dedicated state key so AsgardeoRoot can read it
   // reactively without going through the ASGARDEO_KEY indirection.
-  const user = computed(() => authState.value.user ?? null);
+  const user: ComputedRef<AsgardeoAuthState['user'] | null> = computed(() => authState.value.user ?? null);
   // `organization` reflects the SSR-resolved current org (hydrated from
   // 'asgardeo:current-org'). Kept readonly at the ASGARDEO_KEY level.
-  const organizationRef = computed(() => currentOrgState.value);
+  const organizationRef: ComputedRef<Organization | null> = computed(() => currentOrgState.value);
 
   // ── 3. Action helpers (Nuxt-aware navigation) ───────────────────────────
   const signIn = async (options?: Record<string, unknown>): Promise<void> => {
-    const returnTo = typeof options?.['returnTo'] === 'string' ? options['returnTo'] : undefined;
-    const url = returnTo ? `/api/auth/signin?returnTo=${encodeURIComponent(returnTo)}` : '/api/auth/signin';
+    const returnTo: string | undefined = typeof options?.['returnTo'] === 'string' ? options['returnTo'] : undefined;
+    const url: string = returnTo ? `/api/auth/signin?returnTo=${encodeURIComponent(returnTo)}` : '/api/auth/signin';
     await navigateTo(url, {external: true});
   };
 
   const signOut = async (): Promise<void> => {
-    const res = await $fetch<{redirectUrl: string}>('/api/auth/signout', {method: 'POST'});
+    const res: {redirectUrl: string} = await $fetch<{redirectUrl: string}>('/api/auth/signout', {method: 'POST'});
     await navigateTo(res.redirectUrl || '/', {external: true});
   };
 
@@ -176,7 +194,7 @@ export default defineNuxtPlugin(nuxtApp => {
 
   const getAccessToken = async (): Promise<string> => {
     try {
-      const res = await $fetch<{accessToken: string}>('/api/auth/token');
+      const res: {accessToken: string} = await $fetch<{accessToken: string}>('/api/auth/token');
       return res.accessToken ?? '';
     } catch {
       return '';

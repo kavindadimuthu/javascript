@@ -18,7 +18,7 @@
 
 import {AsgardeoRuntimeError} from '@asgardeo/browser';
 import {BaseSignUpButton} from '@asgardeo/vue';
-import {type Component, type SetupContext, type VNode, defineComponent, h, ref} from 'vue';
+import {type Component, type Ref, type SetupContext, type VNode, defineComponent, h, ref} from 'vue';
 import {navigateTo} from '#app';
 import {useAsgardeo} from '#imports';
 
@@ -40,7 +40,7 @@ const SignUpButton: Component = defineComponent({
   name: 'SignUpButton',
   setup(_: {}, {slots, emit, attrs}: SetupContext): () => VNode {
     const {signUp, signUpUrl} = useAsgardeo();
-    const isLoading = ref(false);
+    const isLoading: Ref<boolean> = ref(false);
 
     const handleSignUp = async (e?: MouseEvent): Promise<void> => {
       try {

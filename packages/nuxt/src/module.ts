@@ -26,10 +26,17 @@ import {
   createResolver,
   defineNuxtModule,
 } from '@nuxt/kit';
+import type {Nuxt} from '@nuxt/schema';
 import {defu} from 'defu';
 import type {AsgardeoNuxtConfig} from './runtime/types';
 
-const PACKAGE_NAME = '@asgardeo/nuxt';
+const PACKAGE_NAME: string = '@asgardeo/nuxt';
+
+type ServerRoute = {
+  handler: string;
+  method?: 'patch' | 'post';
+  route: string;
+};
 
 export default defineNuxtModule<AsgardeoNuxtConfig>({
   defaults: {},
@@ -37,7 +44,7 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
     configKey: 'asgardeo',
     name: PACKAGE_NAME,
   },
-  setup(userOptions, nuxt) {
+  setup(userOptions: AsgardeoNuxtConfig, nuxt: Nuxt) {
     const {resolve} = createResolver(import.meta.url);
 
     // Merge config: env vars (highest) -> nuxt.config.ts userOptions -> hard defaults (lowest)
@@ -62,7 +69,7 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
       },
     );
 
-    const privateConfig = {
+    const privateConfig: {clientSecret: string; sessionSecret: string} = {
       clientSecret: process.env['ASGARDEO_CLIENT_SECRET'] || userOptions.clientSecret || '',
       sessionSecret: process.env['ASGARDEO_SESSION_SECRET'] || userOptions.sessionSecret || '',
     };
@@ -106,7 +113,10 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
     };
 
     // Ensure clientSecret never leaks to public config
-    const publicAsgardeo = nuxt.options.runtimeConfig.public.asgardeo as Record<string, unknown>;
+    const publicAsgardeo: Record<string, unknown> = nuxt.options.runtimeConfig.public.asgardeo as Record<
+      string,
+      unknown
+    >;
     if (publicAsgardeo?.['clientSecret']) {
       delete publicAsgardeo['clientSecret'];
       console.error(
@@ -121,7 +131,7 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
     }
 
     // Register server API routes
-    const serverRoutes = [
+    const serverRoutes: ServerRoute[] = [
       // ── Auth flow ──────────────────────────────────────────────────────
       {handler: resolve('./runtime/server/routes/auth/session/signin.get'), route: '/api/auth/signin'},
       {
@@ -187,9 +197,9 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
       {handler: resolve('./runtime/server/routes/auth/branding/branding.get'), route: '/api/auth/branding'},
     ];
 
-    for (const sr of serverRoutes) {
+    serverRoutes.forEach((sr: ServerRoute): void => {
       addServerHandler({handler: sr.handler, method: 'method' in sr ? sr.method : undefined, route: sr.route});
-    }
+    });
 
     // Register server plugin for SSR auth state + rich SSR data fetching
     addServerPlugin(resolve('./runtime/server/plugins/asgardeo-ssr'));

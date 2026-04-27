@@ -17,6 +17,8 @@
  */
 
 
+import type {Ref} from 'vue';
+import type {RouteLocationNormalized} from 'vue-router';
 import type {AsgardeoAuthState} from '../types';
 import {defineNuxtRouteMiddleware, navigateTo, useState} from '#app';
 
@@ -38,7 +40,7 @@ export interface AsgardeoMiddlewareOptions {
   requireScopes?: string[];
 }
 
-const DEFAULT_REDIRECT_TO = '/api/auth/signin';
+const DEFAULT_REDIRECT_TO: string = '/api/auth/signin';
 
 /**
  * Typed factory for Asgardeo route middleware.
@@ -57,26 +59,28 @@ const DEFAULT_REDIRECT_TO = '/api/auth/signin';
  * The built-in `'auth'` middleware registered by this module is equivalent
  * to calling `defineAsgardeoMiddleware()` with no options.
  */
-export function defineAsgardeoMiddleware(options: AsgardeoMiddlewareOptions = {}) {
+export function defineAsgardeoMiddleware(
+  options: AsgardeoMiddlewareOptions = {},
+): ReturnType<typeof defineNuxtRouteMiddleware> {
   const {redirectTo = DEFAULT_REDIRECT_TO, requireOrganization = false, requireScopes = []} = options;
 
-  return defineNuxtRouteMiddleware(to => {
-    const authState = useState<AsgardeoAuthState>('asgardeo:auth');
+  return defineNuxtRouteMiddleware((to: RouteLocationNormalized) => {
+    const authState: Ref<AsgardeoAuthState> = useState<AsgardeoAuthState>('asgardeo:auth');
 
     if (!authState.value?.isSignedIn) {
-      const returnTo = encodeURIComponent(to.fullPath);
+      const returnTo: string = encodeURIComponent(to.fullPath);
       return navigateTo(`${redirectTo}?returnTo=${returnTo}`, {external: true});
     }
 
-    const user = authState.value.user as Record<string, unknown> | null;
+    const user: Record<string, unknown> | null = authState.value.user as Record<string, unknown> | null;
 
     if (requireOrganization && !user?.['organizationId']) {
       return navigateTo(redirectTo, {external: true});
     }
 
     if (requireScopes.length > 0) {
-      const sessionScopes = String(user?.['scopes'] ?? '').split(' ');
-      const hasAllScopes = requireScopes.every(s => sessionScopes.includes(s));
+      const sessionScopes: string[] = String(user?.['scopes'] ?? '').split(' ');
+      const hasAllScopes: boolean = requireScopes.every((s: string) => sessionScopes.includes(s));
       if (!hasAllScopes) {
         return navigateTo(redirectTo, {external: true});
       }

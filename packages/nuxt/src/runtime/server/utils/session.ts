@@ -21,15 +21,15 @@ import type {IdToken, TokenResponse} from '@asgardeo/node';
 import {setCookie} from 'h3';
 import type {H3Event} from 'h3';
 import {SignJWT, jwtVerify} from 'jose';
-import type {AsgardeoSessionPayload, AsgardeoTempSessionPayload} from '../../types';
+import type {AsgardeoSessionPayload} from '../../types';
 
-const DEFAULT_EXPIRY_SECONDS = 3600;
+const DEFAULT_EXPIRY_SECONDS: number = 3600;
 
 /**
  * Get the signing secret from environment or runtime config.
  */
 function getSecret(sessionSecret?: string): Uint8Array {
-  const secret = sessionSecret || process.env['ASGARDEO_SESSION_SECRET'];
+  const secret: string | undefined = sessionSecret || process.env['ASGARDEO_SESSION_SECRET'];
 
   if (!secret) {
     if (process.env['NODE_ENV'] === 'production') {
@@ -67,7 +67,7 @@ export async function createSessionToken(
   },
   sessionSecret?: string,
 ): Promise<string> {
-  const secret = getSecret(sessionSecret);
+  const secret: Uint8Array = getSecret(sessionSecret);
 
   return new SignJWT({
     accessToken: params.accessToken,
@@ -94,7 +94,7 @@ export async function createTempSessionToken(
   sessionSecret?: string,
   returnTo?: string,
 ): Promise<string> {
-  const secret = getSecret(sessionSecret);
+  const secret: Uint8Array = getSecret(sessionSecret);
 
   const payload: Record<string, unknown> = {
     sessionId,
@@ -112,7 +112,7 @@ export async function createTempSessionToken(
  * Verify and decode a session JWT.
  */
 export async function verifySessionToken(token: string, sessionSecret?: string): Promise<AsgardeoSessionPayload> {
-  const secret = getSecret(sessionSecret);
+  const secret: Uint8Array = getSecret(sessionSecret);
   const {payload} = await jwtVerify(token, secret);
   return payload as AsgardeoSessionPayload;
 }
@@ -124,7 +124,7 @@ export async function verifyTempSessionToken(
   token: string,
   sessionSecret?: string,
 ): Promise<{returnTo?: string; sessionId: string}> {
-  const secret = getSecret(sessionSecret);
+  const secret: Uint8Array = getSecret(sessionSecret);
   const {payload} = await jwtVerify(token, secret);
 
   if (payload['type'] !== 'temp') {
@@ -154,7 +154,15 @@ export function getTempSessionCookieName(): string {
 /**
  * Session cookie options.
  */
-export function getSessionCookieOptions() {
+type SessionCookieOptions = {
+  httpOnly: boolean;
+  maxAge: number;
+  path: string;
+  sameSite: 'lax';
+  secure: boolean;
+};
+
+export function getSessionCookieOptions(): SessionCookieOptions {
   return {
     httpOnly: true,
     maxAge: DEFAULT_EXPIRY_SECONDS,
@@ -167,7 +175,7 @@ export function getSessionCookieOptions() {
 /**
  * Temp session cookie options (15 min TTL).
  */
-export function getTempSessionCookieOptions() {
+export function getTempSessionCookieOptions(): SessionCookieOptions {
   return {
     httpOnly: true,
     maxAge: 15 * 60,
@@ -193,17 +201,17 @@ export async function issueSessionCookie(
 ): Promise<void> {
   // Lazy-import to avoid circular dep: session.ts → AsgardeoNuxtClient → session.ts
   const {default: AsgardeoNuxtClient} = await import('../AsgardeoNuxtClient');
-  const client = AsgardeoNuxtClient.getInstance();
+  const client: InstanceType<typeof AsgardeoNuxtClient> = AsgardeoNuxtClient.getInstance();
 
   const idToken: IdToken = await client.getDecodedIdToken(sessionId, tokenResponse.idToken);
 
-  const userId = (idToken.sub || sessionId) as string;
-  const organizationId = (idToken['user_org'] || idToken['organization_id']) as string | undefined;
-  const expiresInSeconds = parseInt(tokenResponse.expiresIn ?? '3600', 10);
-  const accessTokenExpiresAt =
+  const userId: string = (idToken.sub || sessionId) as string;
+  const organizationId: string | undefined = (idToken['user_org'] || idToken['organization_id']) as string | undefined;
+  const expiresInSeconds: number = parseInt(tokenResponse.expiresIn ?? '3600', 10);
+  const accessTokenExpiresAt: number =
     Math.floor(Date.now() / 1000) + (Number.isFinite(expiresInSeconds) ? expiresInSeconds : 3600);
 
-  const sessionToken = await createSessionToken(
+  const sessionToken: string = await createSessionToken(
     {
       accessToken: tokenResponse.accessToken,
       accessTokenExpiresAt,

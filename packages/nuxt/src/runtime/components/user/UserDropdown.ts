@@ -47,7 +47,7 @@ const UserDropdown: Component = defineComponent({
   },
   setup(props: {className: string}, {slots, emit}: {emit: any; slots: any}): () => VNode | VNode[] | null {
     const {user, signOut} = useAsgardeo();
-    const {flattenedProfile, schemas, updateProfile} = useUser();
+    useUser();
     const isProfileModalOpen: Ref<boolean> = ref(false);
 
     return (): VNode | VNode[] | null =>

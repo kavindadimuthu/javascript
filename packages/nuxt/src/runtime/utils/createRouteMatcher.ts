@@ -39,9 +39,9 @@
  * ```
  */
 export function createRouteMatcher(patterns: string[]): (path: string) => boolean {
-  const regexes = patterns.map(pattern => {
+  const regexes: RegExp[] = patterns.map((pattern: string) => {
     // Escape regex special characters except * and groups in parentheses
-    const regexStr = pattern
+    const regexStr: string = pattern
       .replace(/[.+^${}|[\]\\]/g, '\\$&') // escape regex chars (but not *, ?, ())
       .replace(/\*\*/g, '___DOUBLE_STAR___') // placeholder for **
       .replace(/\*/g, '[^/]*') // single * matches one segment
@@ -50,5 +50,5 @@ export function createRouteMatcher(patterns: string[]): (path: string) => boolea
     return new RegExp(`^${regexStr}$`);
   });
 
-  return (path: string): boolean => regexes.some(regex => regex.test(path));
+  return (path: string): boolean => regexes.some((regex: RegExp) => regex.test(path));
 }

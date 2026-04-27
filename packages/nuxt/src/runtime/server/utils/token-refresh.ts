@@ -19,13 +19,14 @@
 import {createError, setCookie, type H3Event} from 'h3';
 import {requireServerSession} from './serverSession';
 import {createSessionToken, getSessionCookieName, getSessionCookieOptions} from './session';
+import type {AsgardeoSessionPayload} from '../../types';
 import {useRuntimeConfig} from '#imports';
 
 /**
  * Seconds before expiry at which we proactively refresh the access token.
  * Refreshing 60 s early avoids races where the token expires mid-request.
  */
-const REFRESH_SKEW_SECONDS = 60;
+const REFRESH_SKEW_SECONDS: number = 60;
 
 /**
  * Shape of an OIDC token endpoint refresh response (snake_case JSON).
@@ -63,8 +64,8 @@ interface OIDCTokenRefreshResponse {
  * ```
  */
 export async function getValidAccessToken(event: H3Event): Promise<string> {
-  const session = await requireServerSession(event);
-  const now = Math.floor(Date.now() / 1000);
+  const session: AsgardeoSessionPayload = await requireServerSession(event);
+  const now: number = Math.floor(Date.now() / 1000);
 
   // If no expiry metadata (old session pre-Phase-2) or token still fresh, return as-is.
   if (!session.accessTokenExpiresAt || session.accessTokenExpiresAt - REFRESH_SKEW_SECONDS > now) {
@@ -79,13 +80,13 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
     });
   }
 
-  const config = useRuntimeConfig(event);
-  const publicConfig = config.public.asgardeo;
-  const privateConfig = config.asgardeo;
+  const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig(event);
+  const publicConfig: typeof config.public.asgardeo = config.public.asgardeo;
+  const privateConfig: typeof config.asgardeo = config.asgardeo;
 
-  const tokenEndpoint = `${publicConfig.baseUrl}/oauth2/token`;
+  const tokenEndpoint: string = `${publicConfig.baseUrl}/oauth2/token`;
 
-  const body = new URLSearchParams({
+  const body: URLSearchParams = new URLSearchParams({
     client_id: publicConfig.clientId,
     grant_type: 'refresh_token',
     refresh_token: session.refreshToken,
@@ -97,20 +98,20 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
 
   let refreshed: OIDCTokenRefreshResponse;
   try {
-    const res = await fetch(tokenEndpoint, {
+    const res: Response = await fetch(tokenEndpoint, {
       body,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       method: 'POST',
     });
 
     if (!res.ok) {
-      const errText = await res.text().catch(() => String(res.status));
+      const errText: string = await res.text().catch(() => String(res.status));
       throw new Error(`Token endpoint returned ${res.status}: ${errText}`);
     }
 
     refreshed = (await res.json()) as OIDCTokenRefreshResponse;
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg: string = err instanceof Error ? err.message : String(err);
     console.error('[asgardeo] Token refresh failed:', msg);
     throw createError({
       statusCode: 401,
@@ -119,7 +120,7 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
   }
 
   // Re-issue session JWT with the refreshed tokens.
-  const newSessionToken = await createSessionToken(
+  const newSessionToken: string = await createSessionToken(
     {
       accessToken: refreshed.access_token,
       accessTokenExpiresAt: now + (refreshed.expires_in ?? 3600),
