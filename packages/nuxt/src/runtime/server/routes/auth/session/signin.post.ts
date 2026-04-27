@@ -122,7 +122,7 @@ export default defineEventHandler(async event => {
 
     let tokenResponse: any;
     try {
-      tokenResponse = await client.signIn({code, state, session_state: sessionState}, {}, sessionId);
+      tokenResponse = await client.signIn({code, session_state: sessionState, state}, {}, sessionId);
     } catch (err: any) {
       throw createError({
         statusCode: 502,

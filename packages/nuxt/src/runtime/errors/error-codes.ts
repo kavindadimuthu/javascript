@@ -27,26 +27,24 @@ export enum ErrorCode {
   ConfigMissingClientId = 'config/missing-client-id',
   ConfigMissingSecret = 'config/missing-session-secret',
 
-  OAuthCallbackError = 'oauth/callback-error',
   // ── OAuth ──────────────────────────────────────────────────────────
+  OAuthCallbackError = 'oauth/callback-error',
   OAuthStateInvalid = 'oauth/state-invalid',
   // ── Security ───────────────────────────────────────────────────────
   OpenRedirectBlocked = 'security/open-redirect-blocked',
-  OrganizationCreateFailed = 'organization/create-failed',
 
   // ── Organization ───────────────────────────────────────────────────
+  OrganizationCreateFailed = 'organization/create-failed',
   OrganizationSwitchFailed = 'organization/switch-failed',
+  // ── Session ────────────────────────────────────────────────────────
   SessionExpired = 'session/expired',
   SessionInvalid = 'session/invalid',
-  // ── Session ────────────────────────────────────────────────────────
   SessionMissing = 'session/missing',
 
   TempSessionInvalid = 'session/temp-invalid',
   TokenExchangeFailed = 'oauth/token-exchange-failed',
-
   TokenRefreshFailed = 'oauth/token-refresh-failed',
   // ── SCIM2 ──────────────────────────────────────────────────────────
   UserProfileFetchFailed = 'scim2/user-profile-fetch-failed',
-
   UserProfileUpdateFailed = 'scim2/user-profile-update-failed',
 }

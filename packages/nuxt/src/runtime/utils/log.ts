@@ -52,14 +52,14 @@ export function createLogger(subsystem: string) {
         console.log(tag, ...args);
       }
     },
+    error: (...args: unknown[]): void => {
+      console.error(tag, ...args);
+    },
     info: (...args: unknown[]): void => {
       console.log(tag, ...args);
     },
     warn: (...args: unknown[]): void => {
       console.warn(tag, ...args);
-    },
-    error: (...args: unknown[]): void => {
-      console.error(tag, ...args);
     },
   };
 }

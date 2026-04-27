@@ -97,9 +97,9 @@ export default defineEventHandler(async event => {
     );
   } catch (err: any) {
     throw createError({
+      data: err?.message || 'An unexpected error occurred during token exchange.',
       statusCode: 500,
       statusMessage: 'Token exchange failed.',
-      data: err?.message || 'An unexpected error occurred during token exchange.',
     });
   }
 

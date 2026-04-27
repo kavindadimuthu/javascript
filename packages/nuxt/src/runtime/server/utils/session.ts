@@ -71,12 +71,12 @@ export async function createSessionToken(
 
   return new SignJWT({
     accessToken: params.accessToken,
+    accessTokenExpiresAt: params.accessTokenExpiresAt,
+    idToken: params.idToken,
+    organizationId: params.organizationId,
+    refreshToken: params.refreshToken,
     scopes: params.scopes,
     sessionId: params.sessionId,
-    organizationId: params.organizationId,
-    accessTokenExpiresAt: params.accessTokenExpiresAt,
-    refreshToken: params.refreshToken,
-    idToken: params.idToken,
     type: 'session',
   } as Omit<AsgardeoSessionPayload, 'sub' | 'iat' | 'exp'>)
     .setProtectedHeader({alg: 'HS256'})
@@ -132,8 +132,8 @@ export async function verifyTempSessionToken(
   }
 
   return {
-    sessionId: payload['sessionId'] as string,
     returnTo: payload['returnTo'] as string | undefined,
+    sessionId: payload['sessionId'] as string,
   };
 }
 
@@ -206,13 +206,13 @@ export async function issueSessionCookie(
   const sessionToken = await createSessionToken(
     {
       accessToken: tokenResponse.accessToken,
-      userId,
-      sessionId,
-      scopes: tokenResponse.scope || '',
-      organizationId,
       accessTokenExpiresAt,
-      refreshToken: tokenResponse.refreshToken || undefined,
       idToken: tokenResponse.idToken || undefined,
+      organizationId,
+      refreshToken: tokenResponse.refreshToken || undefined,
+      scopes: tokenResponse.scope || '',
+      sessionId,
+      userId,
     },
     sessionSecret,
   );

@@ -138,8 +138,8 @@ const AsgardeoRoot: Component = defineComponent({
     ): Promise<{data: {user: User}; error: string; success: boolean}> => {
       try {
         const result: {data: {user: User}; error: string; success: boolean} = await $fetch('/api/auth/user/profile', {
-          method: 'PATCH',
           body: requestConfig,
+          method: 'PATCH',
         });
         if (result?.success && result.data?.user) {
           onUpdateProfile(result.data.user);
@@ -166,7 +166,7 @@ const AsgardeoRoot: Component = defineComponent({
      * Token-exchange org switch via the `/api/auth/organizations/switch` Nitro route.
      */
     const onOrganizationSwitch = async (organization: Organization): Promise<any> =>
-      $fetch('/api/auth/organizations/switch', {method: 'POST', body: {organization}});
+      $fetch('/api/auth/organizations/switch', {body: {organization}, method: 'POST'});
 
     /**
      * Paginated org list via the `/api/auth/organizations` Nitro route.
@@ -192,7 +192,7 @@ const AsgardeoRoot: Component = defineComponent({
      * Create a new sub-organisation via the `POST /api/auth/organizations` route.
      */
     const createOrganization = async (payload: CreateOrganizationPayload): Promise<Organization> =>
-      $fetch<Organization>('/api/auth/organizations', {method: 'POST', body: payload});
+      $fetch<Organization>('/api/auth/organizations', {body: payload, method: 'POST'});
 
     /**
      * Refresh the current organisation from the session's ID token claims
@@ -268,14 +268,14 @@ const AsgardeoRoot: Component = defineComponent({
                                       // When fetchUserProfile is false the Nitro plugin
                                       // skips SCIM calls, so we must also pass empty values
                                       // here to keep SSR and client in sync.
-                                      profile: shouldFetchProfile ? userProfileState.value : null,
                                       flattenedProfile: shouldFetchProfile
                                         ? userProfileState.value?.flattenedProfile ?? null
                                         : null,
-                                      schemas: shouldFetchProfile ? userProfileState.value?.schemas ?? null : null,
                                       onUpdateProfile: shouldFetchProfile ? onUpdateProfile : undefined,
-                                      updateProfile: shouldFetchProfile ? updateProfile : undefined,
+                                      profile: shouldFetchProfile ? userProfileState.value : null,
                                       revalidateProfile: shouldFetchProfile ? revalidateProfile : undefined,
+                                      schemas: shouldFetchProfile ? userProfileState.value?.schemas ?? null : null,
+                                      updateProfile: shouldFetchProfile ? updateProfile : undefined,
                                     },
                                     {
                                       default: (): VNode | VNode[] | undefined =>
@@ -284,20 +284,20 @@ const AsgardeoRoot: Component = defineComponent({
                                           {
                                             // When fetchOrganizations is false pass empty
                                             // values so the provider renders without org data.
+                                            createOrganization: shouldFetchOrgs
+                                              ? (createOrganization as any)
+                                              : undefined,
                                             currentOrganization: shouldFetchOrgs ? currentOrgState.value : null,
+                                            getAllOrganizations: shouldFetchOrgs ? getAllOrganizations : undefined,
                                             myOrganizations: shouldFetchOrgs ? myOrgsState.value : [],
                                             onOrganizationSwitch: shouldFetchOrgs
                                               ? (onOrganizationSwitch as any)
                                               : undefined,
-                                            getAllOrganizations: shouldFetchOrgs ? getAllOrganizations : undefined,
-                                            revalidateMyOrganizations: shouldFetchOrgs
-                                              ? revalidateMyOrganizations
-                                              : undefined,
-                                            createOrganization: shouldFetchOrgs
-                                              ? (createOrganization as any)
-                                              : undefined,
                                             revalidateCurrentOrganization: shouldFetchOrgs
                                               ? revalidateCurrentOrganization
+                                              : undefined,
+                                            revalidateMyOrganizations: shouldFetchOrgs
+                                              ? revalidateMyOrganizations
                                               : undefined,
                                           },
                                           {

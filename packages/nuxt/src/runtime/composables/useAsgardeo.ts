@@ -64,8 +64,8 @@ export function useAsgardeo(): AsgardeoContext {
       const payload = arg0;
       const request = args[1] ?? {};
       const res = await $fetch<{data: any; success: boolean}>('/api/auth/signin', {
-        method: 'POST',
         body: {payload, request},
+        method: 'POST',
       });
 
       // Flow complete — server has set the session cookie. Refresh the client
@@ -90,8 +90,8 @@ export function useAsgardeo(): AsgardeoContext {
           }
         }
         return {
-          flowStatus: EmbeddedSignInFlowStatus.SuccessCompleted,
           authData: {},
+          flowStatus: EmbeddedSignInFlowStatus.SuccessCompleted,
         };
       }
       return res.data;
@@ -131,8 +131,8 @@ export function useAsgardeo(): AsgardeoContext {
     // still goes to the hosted register page.
     if (payload && typeof payload === 'object' && 'flowType' in payload) {
       const res = await $fetch<{data: any; success: boolean}>('/api/auth/signup', {
-        method: 'POST',
         body: {payload},
+        method: 'POST',
       });
       if (res.data?.afterSignUpUrl) {
         await navigateTo(res.data.afterSignUpUrl as string, {external: false});
@@ -156,9 +156,9 @@ export function useAsgardeo(): AsgardeoContext {
     }
 
     const redirectUrl: string = getRedirectBasedSignUpUrl({
+      applicationId: cfg.applicationId,
       baseUrl: cfg.baseUrl,
       clientId: cfg.clientId,
-      applicationId: cfg.applicationId,
     } as any);
 
     if (redirectUrl) {

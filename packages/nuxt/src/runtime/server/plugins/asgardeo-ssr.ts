@@ -98,11 +98,11 @@ export default defineNitroPlugin(nitro => {
 
       try {
         await client.initialize({
+          afterSignInUrl: resolveCallbackUrl(event),
+          afterSignOutUrl: publicConfig.afterSignOutUrl || '/',
           baseUrl: publicConfig.baseUrl,
           clientId: publicConfig.clientId,
           clientSecret: privateConfig?.clientSecret || undefined,
-          afterSignInUrl: resolveCallbackUrl(event),
-          afterSignOutUrl: publicConfig.afterSignOutUrl || '/',
           scopes: publicConfig.scopes || ['openid', 'profile'],
         });
       } catch (err) {
@@ -125,7 +125,7 @@ export default defineNitroPlugin(nitro => {
 
     const session = await verifyAndRehydrateSession(event, sessionSecret);
     if (!session) {
-      event.context.asgardeo = {session: null, isSignedIn: false};
+      event.context.asgardeo = {isSignedIn: false, session: null};
       return;
     }
 
@@ -188,24 +188,24 @@ export default defineNitroPlugin(nitro => {
 
     // ── 5. Write to event context ──────────────────────────────────────────
     const ssrData: AsgardeoSSRData = {
+      brandingPreference: brandingResult.status === 'fulfilled' ? brandingResult.value : null,
+      currentOrganization: currentOrgResult.status === 'fulfilled' ? currentOrgResult.value : null,
       isSignedIn: true,
-      session,
+      myOrganizations: orgsResult.status === 'fulfilled' && Array.isArray(orgsResult.value) ? orgsResult.value : [],
       resolvedBaseUrl,
+      session,
       user: userResult.status === 'fulfilled' ? userResult.value : null,
       userProfile: userProfileResult.status === 'fulfilled' ? userProfileResult.value : null,
-      myOrganizations: orgsResult.status === 'fulfilled' && Array.isArray(orgsResult.value) ? orgsResult.value : [],
-      currentOrganization: currentOrgResult.status === 'fulfilled' ? currentOrgResult.value : null,
-      brandingPreference: brandingResult.status === 'fulfilled' ? brandingResult.value : null,
     };
 
-    event.context.asgardeo = {session, isSignedIn: true, ssr: ssrData};
+    event.context.asgardeo = {isSignedIn: true, session, ssr: ssrData};
 
     // Keep legacy __asgardeoAuth in place so the existing Nuxt plugin
     // (Step 3) can be updated independently without a runtime gap.
     const authState: AsgardeoAuthState = {
+      isLoading: false,
       isSignedIn: true,
       user: ssrData.user,
-      isLoading: false,
     };
     event.context['__asgardeoAuth'] = authState;
   });

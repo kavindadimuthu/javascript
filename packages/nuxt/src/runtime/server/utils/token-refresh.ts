@@ -86,9 +86,9 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
   const tokenEndpoint = `${publicConfig.baseUrl}/oauth2/token`;
 
   const body = new URLSearchParams({
+    client_id: publicConfig.clientId,
     grant_type: 'refresh_token',
     refresh_token: session.refreshToken,
-    client_id: publicConfig.clientId,
   });
 
   if (privateConfig?.clientSecret) {
@@ -98,9 +98,9 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
   let refreshed: OIDCTokenRefreshResponse;
   try {
     const res = await fetch(tokenEndpoint, {
-      method: 'POST',
       body,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      method: 'POST',
     });
 
     if (!res.ok) {
@@ -122,13 +122,13 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
   const newSessionToken = await createSessionToken(
     {
       accessToken: refreshed.access_token,
-      userId: session.sub,
-      sessionId: session.sessionId,
-      scopes: refreshed.scope ?? session.scopes,
-      organizationId: session.organizationId,
       accessTokenExpiresAt: now + (refreshed.expires_in ?? 3600),
-      refreshToken: refreshed.refresh_token ?? session.refreshToken,
       idToken: refreshed.id_token ?? session.idToken,
+      organizationId: session.organizationId,
+      refreshToken: refreshed.refresh_token ?? session.refreshToken,
+      scopes: refreshed.scope ?? session.scopes,
+      sessionId: session.sessionId,
+      userId: session.sub,
     },
     privateConfig?.sessionSecret,
   );

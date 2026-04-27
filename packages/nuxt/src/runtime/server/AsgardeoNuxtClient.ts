@@ -113,13 +113,13 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
     }
 
     const authConfig: AuthClientConfig<AsgardeoNuxtConfig> = {
+      afterSignInUrl: config.afterSignInUrl as string,
+      afterSignOutUrl: config.afterSignOutUrl || '/',
       baseUrl: config.baseUrl as string,
       clientId: config.clientId as string,
       clientSecret: config.clientSecret || undefined,
-      afterSignInUrl: config.afterSignInUrl as string,
-      afterSignOutUrl: config.afterSignOutUrl || '/',
-      scopes: config.scopes || ['openid', 'profile'],
       enablePKCE: true,
+      scopes: config.scopes || ['openid', 'profile'],
     } as AuthClientConfig<AsgardeoNuxtConfig>;
 
     const result = await this.legacy.initialize(authConfig, storage);
@@ -162,13 +162,13 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
     await storageManager.setSessionData(
       {
         access_token: session.accessToken,
+        created_at: iatSeconds * 1000,
+        expires_in: String(expiresInSeconds || 3600),
         id_token: session.idToken ?? '',
         refresh_token: session.refreshToken ?? '',
         scope: session.scopes ?? '',
-        expires_in: String(expiresInSeconds || 3600),
-        token_type: 'Bearer',
         session_state: '',
-        created_at: iatSeconds * 1000,
+        token_type: 'Bearer',
       },
       session.sessionId,
     );

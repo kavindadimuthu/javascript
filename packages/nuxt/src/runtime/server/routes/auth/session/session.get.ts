@@ -34,14 +34,14 @@ export default defineEventHandler(async (event): Promise<AsgardeoAuthState> => {
 
   const session = await verifyAndRehydrateSession(event, sessionSecret);
   if (!session) {
-    return {isSignedIn: false, user: null, isLoading: false};
+    return {isLoading: false, isSignedIn: false, user: null};
   }
 
   try {
     const client = AsgardeoNuxtClient.getInstance();
     const user = await client.getUser(session.sessionId);
-    return {isSignedIn: true, user, isLoading: false};
+    return {isLoading: false, isSignedIn: true, user};
   } catch {
-    return {isSignedIn: false, user: null, isLoading: false};
+    return {isLoading: false, isSignedIn: false, user: null};
   }
 });

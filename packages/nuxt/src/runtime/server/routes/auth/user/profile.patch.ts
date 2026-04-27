@@ -50,7 +50,7 @@ export default defineEventHandler(async (event): Promise<{data: {user: User}; er
   try {
     const client = AsgardeoNuxtClient.getInstance();
     const user: User = await client.updateUserProfile(payload, session.sessionId);
-    return {data: {user}, success: true, error: ''};
+    return {data: {user}, error: '', success: true};
   } catch (err) {
     throw createError({
       statusCode: 500,

@@ -79,9 +79,9 @@ export default defineEventHandler(async event => {
 
   let tokenResponse: any;
   try {
-    tokenResponse = await client.signIn({code, state, session_state: sessionState}, {}, sessionId);
+    tokenResponse = await client.signIn({code, session_state: sessionState, state}, {}, sessionId);
   } catch (err: any) {
-    return {success: false, error: err?.message ?? String(err)};
+    return {error: err?.message ?? String(err), success: false};
   }
 
   // ── Issue session cookie ──────────────────────────────────────────────────
@@ -89,7 +89,7 @@ export default defineEventHandler(async event => {
     await issueSessionCookie(event, sessionId, tokenResponse, sessionSecret);
     deleteCookie(event, getTempSessionCookieName(), getTempSessionCookieOptions());
   } catch (err: any) {
-    return {success: false, error: `Failed to establish session: ${err?.message ?? String(err)}`};
+    return {error: `Failed to establish session: ${err?.message ?? String(err)}`, success: false};
   }
 
   return {redirectUrl: afterSignInUrl, success: true};
