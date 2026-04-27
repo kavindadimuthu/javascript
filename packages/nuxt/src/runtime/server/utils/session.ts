@@ -38,6 +38,7 @@ function getSecret(sessionSecret?: string): Uint8Array {
           'Set it to a secure random string of at least 32 characters.',
       );
     }
+    // eslint-disable-next-line no-console
     console.warn(
       '[asgardeo] Using default session secret for development. Set ASGARDEO_SESSION_SECRET for production.',
     );

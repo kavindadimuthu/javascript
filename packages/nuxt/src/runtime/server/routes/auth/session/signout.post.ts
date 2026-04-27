@@ -68,6 +68,7 @@ export default defineEventHandler(async (event: H3Event): Promise<{redirectUrl: 
 
     return {redirectUrl: signOutUrl || fallbackUrl};
   } catch (err: any) {
+    // eslint-disable-next-line no-console
     console.error('[asgardeo] Sign-out error:', err?.message || err);
     clearCookies();
     return {redirectUrl: fallbackUrl};

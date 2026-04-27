@@ -119,6 +119,7 @@ export default defineEventHandler(async (event: H3Event) => {
     await issueSessionCookie(event, sessionId, tokenResponse, sessionSecret);
     deleteCookie(event, getTempSessionCookieName(), getTempSessionCookieOptions());
   } catch (err: any) {
+    // eslint-disable-next-line no-console
     console.error('[asgardeo] Failed to create JWT session:', err?.message || err);
     throw createError({
       statusCode: 500,

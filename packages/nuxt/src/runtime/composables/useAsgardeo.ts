@@ -99,7 +99,7 @@ export function useAsgardeo(): AsgardeoContext {
     }
 
     // Redirect flow.
-    const options = arg0 as Record<string, unknown> | undefined;
+    const options: Record<string, unknown> | undefined = arg0 as Record<string, unknown> | undefined;
     const returnTo: string | undefined = typeof options?.['returnTo'] === 'string' ? options['returnTo'] : undefined;
     const url: string = returnTo ? `/api/auth/signin?returnTo=${encodeURIComponent(returnTo)}` : '/api/auth/signin';
     await navigateTo(url, {external: true});
@@ -138,7 +138,7 @@ export function useAsgardeo(): AsgardeoContext {
       });
       if (res.data?.afterSignUpUrl) {
         await navigateTo(res.data.afterSignUpUrl as string, {external: false});
-        return;
+        return undefined;
       }
       return res.data;
     }
@@ -159,7 +159,7 @@ export function useAsgardeo(): AsgardeoContext {
     // Explicit override always wins.
     if (cfg.signUpUrl) {
       await navigateTo(cfg.signUpUrl, {external: true});
-      return;
+      return undefined;
     }
 
     const redirectUrl: string = getRedirectBasedSignUpUrl({
@@ -170,7 +170,7 @@ export function useAsgardeo(): AsgardeoContext {
 
     if (redirectUrl) {
       await navigateTo(redirectUrl, {external: true});
-      return;
+      return undefined;
     }
 
     // Last-resort fallback: the embedded sign-up page on the consumer app.

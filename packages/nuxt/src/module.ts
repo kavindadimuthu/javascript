@@ -81,14 +81,16 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
     //  - Server: runtime/server/plugins/asgardeo-ssr.ts (refuses to initialize)
     //  - Client: runtime/plugins/asgardeo.ts (dev-time browser console warning)
 
+    const {options} = nuxt;
+
     // Security: ensure secrets are never in public runtime config
-    nuxt.options.runtimeConfig.asgardeo = defu(
-      (nuxt.options.runtimeConfig.asgardeo as Record<string, unknown>) || {},
+    options.runtimeConfig.asgardeo = defu(
+      (options.runtimeConfig.asgardeo as Record<string, unknown>) || {},
       privateConfig,
     ) as {clientSecret: string; sessionSecret: string};
 
-    nuxt.options.runtimeConfig.public.asgardeo = defu(
-      (nuxt.options.runtimeConfig.public.asgardeo as Record<string, unknown>) || {},
+    options.runtimeConfig.public.asgardeo = defu(
+      (options.runtimeConfig.public.asgardeo as Record<string, unknown>) || {},
       {
         afterSignInUrl: publicConfig.afterSignInUrl,
         afterSignOutUrl: publicConfig.afterSignOutUrl,
@@ -113,18 +115,17 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
     };
 
     // Ensure clientSecret never leaks to public config
-    const publicAsgardeo: Record<string, unknown> = nuxt.options.runtimeConfig.public.asgardeo as Record<
-      string,
-      unknown
-    >;
+    const publicAsgardeo: Record<string, unknown> = options.runtimeConfig.public.asgardeo as Record<string, unknown>;
     if (publicAsgardeo?.['clientSecret']) {
       delete publicAsgardeo['clientSecret'];
+      // eslint-disable-next-line no-console
       console.error(
         `[${PACKAGE_NAME}] SECURITY: clientSecret found in public config. Removed. Use ASGARDEO_CLIENT_SECRET env var.`,
       );
     }
     if (publicAsgardeo?.['sessionSecret']) {
       delete publicAsgardeo['sessionSecret'];
+      // eslint-disable-next-line no-console
       console.error(
         `[${PACKAGE_NAME}] SECURITY: sessionSecret found in public config. Removed. Use ASGARDEO_SESSION_SECRET env var.`,
       );

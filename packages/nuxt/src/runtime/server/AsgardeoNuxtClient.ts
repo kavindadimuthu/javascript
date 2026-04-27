@@ -386,6 +386,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
    * Delegates to the standalone `getBrandingPreference` API helper from
    * `@asgardeo/node`, which does not require an authenticated session.
    */
+  // eslint-disable-next-line class-methods-use-this
   async getBrandingPreference(config: GetBrandingPreferenceConfig): Promise<BrandingPreference> {
     return getBrandingPreference(config);
   }

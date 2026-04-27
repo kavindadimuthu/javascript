@@ -72,7 +72,7 @@ export async function useServerSession(event: H3Event): Promise<AsgardeoSessionP
  * ```
  */
 export async function requireServerSession(event: H3Event): Promise<AsgardeoSessionPayload> {
-  const session = await useServerSession(event);
+  const session: AsgardeoSessionPayload | null = await useServerSession(event);
   if (!session) {
     throw createError({
       statusCode: 401,

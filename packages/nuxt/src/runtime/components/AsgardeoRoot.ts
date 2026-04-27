@@ -136,7 +136,9 @@ const AsgardeoRoot: Component = defineComponent({
       requestConfig: UpdateMeProfileConfig,
       _sessionId?: string,
     ): Promise<{data: {user: User}; error: string; success: boolean}> => {
-      void _sessionId;
+      if (_sessionId) {
+        // no-op: session is resolved server-side
+      }
       try {
         const result: {data: {user: User}; error: string; success: boolean} = await $fetch('/api/auth/user/profile', {
           body: requestConfig,

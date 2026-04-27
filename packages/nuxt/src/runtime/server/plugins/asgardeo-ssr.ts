@@ -132,7 +132,8 @@ export default defineNitroPlugin((nitro: {hooks: {hook: Function}}) => {
       sessionSecret,
     );
     if (!session) {
-      event.context.asgardeo = {isSignedIn: false, session: null};
+      const eventContext: H3Event['context'] = event.context;
+      eventContext.asgardeo = {isSignedIn: false, session: null};
       return;
     }
 
@@ -207,7 +208,8 @@ export default defineNitroPlugin((nitro: {hooks: {hook: Function}}) => {
       userProfile: userProfileResult.status === 'fulfilled' ? userProfileResult.value : null,
     };
 
-    event.context.asgardeo = {isSignedIn: true, session, ssr: ssrData};
+    const eventContext: H3Event['context'] = event.context;
+    eventContext.asgardeo = {isSignedIn: true, session, ssr: ssrData};
 
     // Keep legacy __asgardeoAuth in place so the existing Nuxt plugin
     // (Step 3) can be updated independently without a runtime gap.
@@ -216,6 +218,6 @@ export default defineNitroPlugin((nitro: {hooks: {hook: Function}}) => {
       isSignedIn: true,
       user: ssrData.user,
     };
-    event.context['__asgardeoAuth'] = authState;
+    eventContext['__asgardeoAuth'] = authState;
   });
 });

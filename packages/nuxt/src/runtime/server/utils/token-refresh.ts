@@ -112,6 +112,7 @@ export async function getValidAccessToken(event: H3Event): Promise<string> {
     refreshed = (await res.json()) as OIDCTokenRefreshResponse;
   } catch (err: unknown) {
     const msg: string = err instanceof Error ? err.message : String(err);
+    // eslint-disable-next-line no-console
     console.error('[asgardeo] Token refresh failed:', msg);
     throw createError({
       statusCode: 401,

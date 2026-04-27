@@ -16,6 +16,8 @@
  * under the License.
  */
 
+/* eslint-disable no-console */
+
 const PREFIX: string = '@asgardeo/nuxt';
 
 /**
@@ -68,3 +70,5 @@ export function createLogger(subsystem: string): {
     },
   };
 }
+
+/* eslint-enable no-console */
