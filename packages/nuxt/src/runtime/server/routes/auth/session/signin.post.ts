@@ -18,7 +18,9 @@
 
 import {EmbeddedSignInFlowStatus, generateSessionId, isEmpty} from '@asgardeo/node';
 import {defineEventHandler, readBody, getCookie, setCookie, deleteCookie, createError} from 'h3';
+import type {H3Event} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
+import {useServerSession} from '../../../utils/serverSession';
 import {
   issueSessionCookie,
   createTempSessionToken,
@@ -26,7 +28,6 @@ import {
   getTempSessionCookieName,
   getTempSessionCookieOptions,
 } from '../../../utils/session';
-import {useServerSession} from '../../../utils/serverSession';
 import {useRuntimeConfig} from '#imports';
 
 /**
@@ -44,25 +45,28 @@ import {useRuntimeConfig} from '#imports';
  * { "data": { ... }, "success": true }
  * ```
  */
-export default defineEventHandler(async event => {
-  const config = useRuntimeConfig();
-  const sessionSecret = config.asgardeo?.sessionSecret;
+export default defineEventHandler(async (event: H3Event) => {
+  const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig();
+  const sessionSecret: string | undefined = config.asgardeo?.sessionSecret;
   const afterSignInUrl: string = ((config.public.asgardeo as any)?.afterSignInUrl as string | undefined) || '/';
 
-  const client = AsgardeoNuxtClient.getInstance();
+  const client: AsgardeoNuxtClient = AsgardeoNuxtClient.getInstance();
 
   // ── Resolve sessionId ─────────────────────────────────────────────────────
   // Priority: live session cookie → temp session cookie → new random id.
   let sessionId: string;
 
-  const liveSession = await useServerSession(event);
+  const liveSession: import('../../../../types').AsgardeoSessionPayload | null = await useServerSession(event);
   if (liveSession?.sessionId) {
     sessionId = liveSession.sessionId;
   } else {
-    const tempCookie = getCookie(event, getTempSessionCookieName());
+    const tempCookie: string | undefined = getCookie(event, getTempSessionCookieName());
     if (tempCookie) {
       try {
-        const tempSession = await verifyTempSessionToken(tempCookie, sessionSecret);
+        const tempSession: {returnTo?: string; sessionId: string} = await verifyTempSessionToken(
+          tempCookie,
+          sessionSecret,
+        );
         sessionId = tempSession.sessionId;
       } catch {
         // Expired / tampered — mint a fresh one below.
@@ -73,19 +77,19 @@ export default defineEventHandler(async event => {
     }
 
     // Persist the sessionId in a temp cookie so the callback can look it up.
-    const tempToken = await createTempSessionToken(sessionId, sessionSecret);
+    const tempToken: string = await createTempSessionToken(sessionId, sessionSecret);
     setCookie(event, getTempSessionCookieName(), tempToken, getTempSessionCookieOptions());
   }
 
   // ── Parse request body ────────────────────────────────────────────────────
   const body: {payload?: Record<string, unknown>; request?: Record<string, unknown>} = await readBody(event);
-  const payload = body?.payload ?? {};
-  const request = body?.request ?? {};
+  const payload: Record<string, unknown> = body?.payload ?? {};
+  const request: Record<string, unknown> = body?.request ?? {};
 
   // ── Initiate flow (no payload or empty payload) ────────────────────────────
   if (isEmpty(payload) || !('flowId' in payload)) {
     try {
-      const signInUrl = await client.getAuthorizeRequestUrl(
+      const signInUrl: string = await client.getAuthorizeRequestUrl(
         {client_secret: '{{clientSecret}}', response_mode: 'direct'},
         sessionId,
       );
@@ -111,10 +115,9 @@ export default defineEventHandler(async event => {
 
   // ── Flow complete — exchange code for tokens and issue session cookie ───────
   if (response?.flowStatus === EmbeddedSignInFlowStatus.SuccessCompleted) {
-    const authData = response.authData ?? {};
-    const code: string = authData['code'];
-    const state: string = authData['state'];
-    const sessionState: string = authData['session_state'];
+    const authData: Record<string, unknown> = response.authData ?? {};
+    const {code, state} = authData as {code: string; state: string};
+    const sessionState: string = authData['session_state'] as string;
 
     if (!code) {
       throw createError({statusCode: 502, statusMessage: 'Authorization code missing from completed flow response.'});
@@ -122,11 +125,7 @@ export default defineEventHandler(async event => {
 
     let tokenResponse: any;
     try {
-      tokenResponse = await client.signIn(
-        {code, state, session_state: sessionState},
-        {},
-        sessionId,
-      );
+      tokenResponse = await client.signIn({code, session_state: sessionState, state}, {}, sessionId);
     } catch (err: any) {
       throw createError({
         statusCode: 502,

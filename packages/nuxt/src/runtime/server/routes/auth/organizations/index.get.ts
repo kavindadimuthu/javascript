@@ -18,6 +18,8 @@
 
 import type {AllOrganizationsApiResponse} from '@asgardeo/node';
 import {defineEventHandler, createError} from 'h3';
+import type {H3Event} from 'h3';
+import type {AsgardeoSessionPayload} from '../../../../types';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
 import {verifyAndRehydrateSession} from '../../../utils/serverSession';
 import {useRuntimeConfig} from '#imports';
@@ -30,17 +32,17 @@ import {useRuntimeConfig} from '#imports';
  *
  * Mirrors `getAllOrganizations` server action in the Next.js SDK.
  */
-export default defineEventHandler(async (event): Promise<AllOrganizationsApiResponse> => {
-  const config = useRuntimeConfig();
-  const sessionSecret = config.asgardeo?.sessionSecret;
+export default defineEventHandler(async (event: H3Event): Promise<AllOrganizationsApiResponse> => {
+  const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig();
+  const sessionSecret: string | undefined = config.asgardeo?.sessionSecret;
 
-  const session = await verifyAndRehydrateSession(event, sessionSecret);
+  const session: AsgardeoSessionPayload | null = await verifyAndRehydrateSession(event, sessionSecret);
   if (!session) {
     throw createError({statusCode: 401, statusMessage: 'Unauthorized: Invalid or expired session.'});
   }
 
   try {
-    const client = AsgardeoNuxtClient.getInstance();
+    const client: AsgardeoNuxtClient = AsgardeoNuxtClient.getInstance();
     return await client.getAllOrganizations(undefined, session.sessionId);
   } catch (err) {
     throw createError({

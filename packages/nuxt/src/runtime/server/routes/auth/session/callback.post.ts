@@ -17,6 +17,7 @@
  */
 
 import {defineEventHandler, readBody, getCookie, deleteCookie, createError} from 'h3';
+import type {H3Event} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
 import {
   issueSessionCookie,
@@ -47,13 +48,13 @@ import {useRuntimeConfig} from '#imports';
  * { "success": false, "error": "..." }
  * ```
  */
-export default defineEventHandler(async event => {
-  const config = useRuntimeConfig();
-  const sessionSecret = config.asgardeo?.sessionSecret;
+export default defineEventHandler(async (event: H3Event) => {
+  const config: ReturnType<typeof useRuntimeConfig> = useRuntimeConfig();
+  const sessionSecret: string | undefined = config.asgardeo?.sessionSecret;
   const afterSignInUrl: string = ((config.public.asgardeo as any)?.afterSignInUrl as string | undefined) || '/';
 
   // ── Parse request body ────────────────────────────────────────────────────
-  const body: {code?: string; state?: string; sessionState?: string} = await readBody(event);
+  const body: {code?: string; sessionState?: string; state?: string} = await readBody(event);
   const {code, state, sessionState} = body ?? {};
 
   if (!code) {
@@ -61,31 +62,27 @@ export default defineEventHandler(async event => {
   }
 
   // ── Resolve sessionId from temp session cookie ────────────────────────────
-  const tempCookie = getCookie(event, getTempSessionCookieName());
+  const tempCookie: string | undefined = getCookie(event, getTempSessionCookieName());
   if (!tempCookie) {
     throw createError({statusCode: 400, statusMessage: 'No active auth session found. Please restart sign-in.'});
   }
 
   let sessionId: string;
   try {
-    const tempSession = await verifyTempSessionToken(tempCookie, sessionSecret);
+    const tempSession: {returnTo?: string; sessionId: string} = await verifyTempSessionToken(tempCookie, sessionSecret);
     sessionId = tempSession.sessionId;
   } catch {
     throw createError({statusCode: 400, statusMessage: 'Auth session expired or invalid. Please restart sign-in.'});
   }
 
   // ── Exchange code for tokens ──────────────────────────────────────────────
-  const client = AsgardeoNuxtClient.getInstance();
+  const client: AsgardeoNuxtClient = AsgardeoNuxtClient.getInstance();
 
   let tokenResponse: any;
   try {
-    tokenResponse = await client.signIn(
-      {code, state, session_state: sessionState},
-      {},
-      sessionId,
-    );
+    tokenResponse = await client.signIn({code, session_state: sessionState, state}, {}, sessionId);
   } catch (err: any) {
-    return {success: false, error: err?.message ?? String(err)};
+    return {error: err?.message ?? String(err), success: false};
   }
 
   // ── Issue session cookie ──────────────────────────────────────────────────
@@ -93,7 +90,7 @@ export default defineEventHandler(async event => {
     await issueSessionCookie(event, sessionId, tokenResponse, sessionSecret);
     deleteCookie(event, getTempSessionCookieName(), getTempSessionCookieOptions());
   } catch (err: any) {
-    return {success: false, error: `Failed to establish session: ${err?.message ?? String(err)}`};
+    return {error: `Failed to establish session: ${err?.message ?? String(err)}`, success: false};
   }
 
   return {redirectUrl: afterSignInUrl, success: true};
