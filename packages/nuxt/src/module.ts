@@ -76,12 +76,12 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
 
     // Security: ensure secrets are never in public runtime config
     nuxt.options.runtimeConfig.asgardeo = defu(
-      nuxt.options.runtimeConfig.asgardeo as Record<string, unknown> || {},
+      (nuxt.options.runtimeConfig.asgardeo as Record<string, unknown>) || {},
       privateConfig,
     ) as {clientSecret: string; sessionSecret: string};
 
     nuxt.options.runtimeConfig.public.asgardeo = defu(
-      nuxt.options.runtimeConfig.public.asgardeo as Record<string, unknown> || {},
+      (nuxt.options.runtimeConfig.public.asgardeo as Record<string, unknown>) || {},
       {
         baseUrl: publicConfig.baseUrl,
         clientId: publicConfig.clientId,
@@ -94,51 +94,86 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
         preferences: publicConfig.preferences,
       },
     ) as {
-      baseUrl: string;
-      clientId: string;
       afterSignInUrl: string;
       afterSignOutUrl: string;
       applicationId?: string;
+      baseUrl: string;
+      clientId: string;
+      preferences: AsgardeoNuxtConfig['preferences'];
+      scopes: string[];
       signInUrl?: string;
       signUpUrl?: string;
-      scopes: string[];
-      preferences: AsgardeoNuxtConfig['preferences'];
     };
 
     // Ensure clientSecret never leaks to public config
     const publicAsgardeo = nuxt.options.runtimeConfig.public.asgardeo as Record<string, unknown>;
     if (publicAsgardeo?.['clientSecret']) {
       delete publicAsgardeo['clientSecret'];
-      console.error(`[${PACKAGE_NAME}] SECURITY: clientSecret found in public config. Removed. Use ASGARDEO_CLIENT_SECRET env var.`);
+      console.error(
+        `[${PACKAGE_NAME}] SECURITY: clientSecret found in public config. Removed. Use ASGARDEO_CLIENT_SECRET env var.`,
+      );
     }
     if (publicAsgardeo?.['sessionSecret']) {
       delete publicAsgardeo['sessionSecret'];
-      console.error(`[${PACKAGE_NAME}] SECURITY: sessionSecret found in public config. Removed. Use ASGARDEO_SESSION_SECRET env var.`);
+      console.error(
+        `[${PACKAGE_NAME}] SECURITY: sessionSecret found in public config. Removed. Use ASGARDEO_SESSION_SECRET env var.`,
+      );
     }
 
     // Register server API routes
     const serverRoutes = [
       // ── Auth flow ──────────────────────────────────────────────────────
-      {route: '/api/auth/signin',   handler: resolve('./runtime/server/routes/auth/session/signin.get')},
-      {route: '/api/auth/signin',   handler: resolve('./runtime/server/routes/auth/session/signin.post'),   method: 'post' as const},
-      {route: '/api/auth/signup',   handler: resolve('./runtime/server/routes/auth/session/signup.post'),   method: 'post' as const},
+      {route: '/api/auth/signin', handler: resolve('./runtime/server/routes/auth/session/signin.get')},
+      {
+        route: '/api/auth/signin',
+        handler: resolve('./runtime/server/routes/auth/session/signin.post'),
+        method: 'post' as const,
+      },
+      {
+        route: '/api/auth/signup',
+        handler: resolve('./runtime/server/routes/auth/session/signup.post'),
+        method: 'post' as const,
+      },
       {route: '/api/auth/callback', handler: resolve('./runtime/server/routes/auth/session/callback.get')},
-      {route: '/api/auth/callback', handler: resolve('./runtime/server/routes/auth/session/callback.post'), method: 'post' as const},
-      {route: '/api/auth/signout',  handler: resolve('./runtime/server/routes/auth/session/signout.post'), method: 'post' as const},
+      {
+        route: '/api/auth/callback',
+        handler: resolve('./runtime/server/routes/auth/session/callback.post'),
+        method: 'post' as const,
+      },
+      {
+        route: '/api/auth/signout',
+        handler: resolve('./runtime/server/routes/auth/session/signout.post'),
+        method: 'post' as const,
+      },
       // ── Session / token ───────────────────────────────────────────────
-      {route: '/api/auth/session',  handler: resolve('./runtime/server/routes/auth/session/session.get')},
-      {route: '/api/auth/token',    handler: resolve('./runtime/server/routes/auth/session/token.get')},
+      {route: '/api/auth/session', handler: resolve('./runtime/server/routes/auth/session/session.get')},
+      {route: '/api/auth/token', handler: resolve('./runtime/server/routes/auth/session/token.get')},
       // ── User ──────────────────────────────────────────────────────────
-      {route: '/api/auth/user',         handler: resolve('./runtime/server/routes/auth/user/user.get')},
+      {route: '/api/auth/user', handler: resolve('./runtime/server/routes/auth/user/user.get')},
       {route: '/api/auth/user/profile', handler: resolve('./runtime/server/routes/auth/user/profile.get')},
-      {route: '/api/auth/user/profile', handler: resolve('./runtime/server/routes/auth/user/profile.patch'), method: 'patch' as const},
+      {
+        route: '/api/auth/user/profile',
+        handler: resolve('./runtime/server/routes/auth/user/profile.patch'),
+        method: 'patch' as const,
+      },
       // ── Organisations ─────────────────────────────────────────────────
-      {route: '/api/auth/organizations',         handler: resolve('./runtime/server/routes/auth/organizations/index.get')},
-      {route: '/api/auth/organizations',         handler: resolve('./runtime/server/routes/auth/organizations/index.post'),   method: 'post'  as const},
-      {route: '/api/auth/organizations/me',      handler: resolve('./runtime/server/routes/auth/organizations/me.get')},
-      {route: '/api/auth/organizations/current', handler: resolve('./runtime/server/routes/auth/organizations/current.get')},
-      {route: '/api/auth/organizations/:id',     handler: resolve('./runtime/server/routes/auth/organizations/id.get')},
-      {route: '/api/auth/organizations/switch',  handler: resolve('./runtime/server/routes/auth/organizations/switch.post'),  method: 'post'  as const},
+      {route: '/api/auth/organizations', handler: resolve('./runtime/server/routes/auth/organizations/index.get')},
+      {
+        route: '/api/auth/organizations',
+        handler: resolve('./runtime/server/routes/auth/organizations/index.post'),
+        method: 'post' as const,
+      },
+      {route: '/api/auth/organizations/me', handler: resolve('./runtime/server/routes/auth/organizations/me.get')},
+      {
+        route: '/api/auth/organizations/current',
+        handler: resolve('./runtime/server/routes/auth/organizations/current.get'),
+      },
+      {route: '/api/auth/organizations/:id', handler: resolve('./runtime/server/routes/auth/organizations/id.get')},
+      {
+        route: '/api/auth/organizations/switch',
+        handler: resolve('./runtime/server/routes/auth/organizations/switch.post'),
+        method: 'post' as const,
+      },
       // ── Branding ──────────────────────────────────────────────────────
       {route: '/api/auth/branding', handler: resolve('./runtime/server/routes/auth/branding/branding.get')},
     ];
@@ -164,12 +199,12 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
       // Core auth composable (Nuxt-specific wrapper around @asgardeo/vue)
       {name: 'useAsgardeo', from: resolve('./runtime/composables/useAsgardeo')},
       // Composables from @asgardeo/vue — auto-imported directly, no local wrappers
-      {name: 'useUser',         from: '@asgardeo/vue'},
+      {name: 'useUser', from: '@asgardeo/vue'},
       {name: 'useOrganization', from: '@asgardeo/vue'},
-      {name: 'useFlow',         from: '@asgardeo/vue'},
-      {name: 'useFlowMeta',     from: '@asgardeo/vue'},
-      {name: 'useTheme',        from: '@asgardeo/vue'},
-      {name: 'useBranding',     from: '@asgardeo/vue'},
+      {name: 'useFlow', from: '@asgardeo/vue'},
+      {name: 'useFlowMeta', from: '@asgardeo/vue'},
+      {name: 'useTheme', from: '@asgardeo/vue'},
+      {name: 'useBranding', from: '@asgardeo/vue'},
       // useI18n aliased to `useAsgardeoI18n` to avoid collision with @nuxtjs/i18n
       {name: 'useI18n', as: 'useAsgardeoI18n', from: '@asgardeo/vue'},
       // Middleware factory
@@ -200,30 +235,42 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
     // addImports above — only the components need Nuxt wrappers.
 
     // ── Control flow ────────────────────────────────────────────────────────
-    addComponent({name: 'AsgardeoSignedIn',  filePath: resolve('./runtime/components/control/SignedIn')});
+    addComponent({name: 'AsgardeoSignedIn', filePath: resolve('./runtime/components/control/SignedIn')});
     addComponent({name: 'AsgardeoSignedOut', filePath: resolve('./runtime/components/control/SignedOut')});
-    addComponent({name: 'AsgardeoLoading',   filePath: resolve('./runtime/components/control/Loading')});
+    addComponent({name: 'AsgardeoLoading', filePath: resolve('./runtime/components/control/Loading')});
 
     // ── Action buttons ───────────────────────────────────────────────────────
-    addComponent({name: 'AsgardeoSignInButton',  filePath: resolve('./runtime/components/actions/SignInButton')});
+    addComponent({name: 'AsgardeoSignInButton', filePath: resolve('./runtime/components/actions/SignInButton')});
     addComponent({name: 'AsgardeoSignOutButton', filePath: resolve('./runtime/components/actions/SignOutButton')});
-    addComponent({name: 'AsgardeoSignUpButton',  filePath: resolve('./runtime/components/actions/SignUpButton')});
+    addComponent({name: 'AsgardeoSignUpButton', filePath: resolve('./runtime/components/actions/SignUpButton')});
 
     // ── Embedded auth flows ──────────────────────────────────────────────────
     addComponent({name: 'AsgardeoSignIn', filePath: resolve('./runtime/components/auth/SignIn')});
     addComponent({name: 'AsgardeoSignUp', filePath: resolve('./runtime/components/auth/SignUp')});
 
     // ── User ─────────────────────────────────────────────────────────────────
-    addComponent({name: 'AsgardeoUser',         filePath: resolve('./runtime/components/user/User')});
-    addComponent({name: 'AsgardeoUserProfile',  filePath: resolve('./runtime/components/user/UserProfile')});
+    addComponent({name: 'AsgardeoUser', filePath: resolve('./runtime/components/user/User')});
+    addComponent({name: 'AsgardeoUserProfile', filePath: resolve('./runtime/components/user/UserProfile')});
     addComponent({name: 'AsgardeoUserDropdown', filePath: resolve('./runtime/components/user/UserDropdown')});
 
     // ── Organization ─────────────────────────────────────────────────────────
-    addComponent({name: 'AsgardeoOrganization',         filePath: resolve('./runtime/components/organization/Organization')});
-    addComponent({name: 'AsgardeoOrganizationProfile',  filePath: resolve('./runtime/components/organization/OrganizationProfile')});
-    addComponent({name: 'AsgardeoOrganizationSwitcher', filePath: resolve('./runtime/components/organization/OrganizationSwitcher')});
-    addComponent({name: 'AsgardeoOrganizationList',     filePath: resolve('./runtime/components/organization/OrganizationList')});
-    addComponent({name: 'AsgardeoCreateOrganization',   filePath: resolve('./runtime/components/organization/CreateOrganization')});
+    addComponent({name: 'AsgardeoOrganization', filePath: resolve('./runtime/components/organization/Organization')});
+    addComponent({
+      name: 'AsgardeoOrganizationProfile',
+      filePath: resolve('./runtime/components/organization/OrganizationProfile'),
+    });
+    addComponent({
+      name: 'AsgardeoOrganizationSwitcher',
+      filePath: resolve('./runtime/components/organization/OrganizationSwitcher'),
+    });
+    addComponent({
+      name: 'AsgardeoOrganizationList',
+      filePath: resolve('./runtime/components/organization/OrganizationList'),
+    });
+    addComponent({
+      name: 'AsgardeoCreateOrganization',
+      filePath: resolve('./runtime/components/organization/CreateOrganization'),
+    });
 
     // ── Auth callback ────────────────────────────────────────────────────────
     addComponent({name: 'AsgardeoCallback', filePath: resolve('./runtime/components/auth/Callback')});
@@ -233,15 +280,15 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
 declare module '@nuxt/schema' {
   interface PublicRuntimeConfig {
     asgardeo: {
-      baseUrl: string;
-      clientId: string;
       afterSignInUrl: string;
       afterSignOutUrl: string;
       applicationId?: string;
+      baseUrl: string;
+      clientId: string;
+      preferences?: import('./runtime/types').AsgardeoNuxtConfig['preferences'];
+      scopes: string[];
       signInUrl?: string;
       signUpUrl?: string;
-      scopes: string[];
-      preferences?: import('./runtime/types').AsgardeoNuxtConfig['preferences'];
     };
   }
 

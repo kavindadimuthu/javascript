@@ -19,6 +19,7 @@
 import {EmbeddedSignInFlowStatus, generateSessionId, isEmpty} from '@asgardeo/node';
 import {defineEventHandler, readBody, getCookie, setCookie, deleteCookie, createError} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
+import {useServerSession} from '../../../utils/serverSession';
 import {
   issueSessionCookie,
   createTempSessionToken,
@@ -26,7 +27,6 @@ import {
   getTempSessionCookieName,
   getTempSessionCookieOptions,
 } from '../../../utils/session';
-import {useServerSession} from '../../../utils/serverSession';
 import {useRuntimeConfig} from '#imports';
 
 /**
@@ -122,11 +122,7 @@ export default defineEventHandler(async event => {
 
     let tokenResponse: any;
     try {
-      tokenResponse = await client.signIn(
-        {code, state, session_state: sessionState},
-        {},
-        sessionId,
-      );
+      tokenResponse = await client.signIn({code, state, session_state: sessionState}, {}, sessionId);
     } catch (err: any) {
       throw createError({
         statusCode: 502,

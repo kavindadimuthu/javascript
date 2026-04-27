@@ -19,8 +19,8 @@
 import type {H3Event} from 'h3';
 import {getCookie, createError} from 'h3';
 import {verifySessionToken, getSessionCookieName} from './session';
-import AsgardeoNuxtClient from '../AsgardeoNuxtClient';
 import type {AsgardeoSessionPayload} from '../../types';
+import AsgardeoNuxtClient from '../AsgardeoNuxtClient';
 import {useRuntimeConfig} from '#imports';
 
 /**

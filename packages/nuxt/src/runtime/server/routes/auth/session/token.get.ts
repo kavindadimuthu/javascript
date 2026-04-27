@@ -27,7 +27,7 @@ import {getValidAccessToken} from '../../../utils/token-refresh';
  * (requires a refresh token stored in the session JWT).
  * Returns 401 if there is no active session or the token cannot be refreshed.
  */
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const accessToken = await getValidAccessToken(event);
   return {accessToken};
 });

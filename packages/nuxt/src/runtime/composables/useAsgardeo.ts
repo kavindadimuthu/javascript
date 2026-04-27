@@ -16,10 +16,10 @@
  * under the License.
  */
 
-import {navigateTo, useState, useRuntimeConfig} from '#app';
 import {EmbeddedSignInFlowStatus, getRedirectBasedSignUpUrl} from '@asgardeo/browser';
 import {useAsgardeo as useAsgardeoVue, type AsgardeoContext} from '@asgardeo/vue';
 import type {AsgardeoAuthState} from '../types';
+import {navigateTo, useState, useRuntimeConfig} from '#app';
 
 /**
  * Nuxt-aware primary composable for Asgardeo authentication.
@@ -58,8 +58,7 @@ export function useAsgardeo(): AsgardeoContext {
   const signIn = async (...args: any[]): Promise<any> => {
     // Embedded-flow path: second arg is a non-null object with `flowId`.
     const arg0 = args[0];
-    const isEmbedded =
-      typeof arg0 === 'object' && arg0 !== null && 'flowId' in arg0;
+    const isEmbedded = typeof arg0 === 'object' && arg0 !== null && 'flowId' in arg0;
 
     if (isEmbedded) {
       const payload = arg0;
@@ -144,9 +143,9 @@ export function useAsgardeo(): AsgardeoContext {
 
     // Redirect flow.
     const cfg = (useRuntimeConfig().public.asgardeo ?? {}) as {
+      applicationId?: string;
       baseUrl?: string;
       clientId?: string;
-      applicationId?: string;
       signUpUrl?: string;
     };
 

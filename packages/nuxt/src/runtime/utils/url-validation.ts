@@ -43,11 +43,7 @@ import {ErrorCode} from '../errors/error-codes';
  */
 export function validateReturnUrl(url: unknown): string {
   if (typeof url !== 'string' || url.trim() === '') {
-    throw new AsgardeoError(
-      'returnTo must be a non-empty string.',
-      ErrorCode.OpenRedirectBlocked,
-      {statusCode: 400},
-    );
+    throw new AsgardeoError('returnTo must be a non-empty string.', ErrorCode.OpenRedirectBlocked, {statusCode: 400});
   }
 
   const trimmed = url.trim();

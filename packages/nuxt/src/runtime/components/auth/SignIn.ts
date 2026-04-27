@@ -16,8 +16,6 @@
  * under the License.
  */
 
-import {navigateTo} from '#app';
-import {useAsgardeo} from '#imports';
 import {
   type EmbeddedSignInFlowHandleRequestPayload,
   type EmbeddedSignInFlowHandleResponse,
@@ -26,6 +24,8 @@ import {
 } from '@asgardeo/browser';
 import {BaseSignIn} from '@asgardeo/vue';
 import {type Component, type PropType, type SetupContext, type VNode, defineComponent, h} from 'vue';
+import {navigateTo} from '#app';
+import {useAsgardeo} from '#imports';
 
 /**
  * Nuxt-specific SignIn container for the embedded (app-native) sign-in flow.

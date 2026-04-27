@@ -19,10 +19,8 @@
 import type {Organization, TokenResponse} from '@asgardeo/node';
 import {defineEventHandler, readBody, createError} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
-import {
-  issueSessionCookie,
-} from '../../../utils/session';
 import {verifyAndRehydrateSession} from '../../../utils/serverSession';
+import {issueSessionCookie} from '../../../utils/session';
 import {useRuntimeConfig} from '#imports';
 
 /**
@@ -36,7 +34,7 @@ import {useRuntimeConfig} from '#imports';
  *
  * Mirrors `switchOrganization` server action in the Next.js SDK.
  */
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const config = useRuntimeConfig();
   const sessionSecret = config.asgardeo?.sessionSecret;
 
@@ -44,7 +42,7 @@ export default defineEventHandler(async (event) => {
   if (!session) {
     throw createError({statusCode: 401, statusMessage: 'Unauthorized: Invalid or expired session.'});
   }
-  const sessionId = session.sessionId;
+  const {sessionId} = session;
 
   let organization: Organization;
   try {
@@ -79,7 +77,9 @@ export default defineEventHandler(async (event) => {
   } catch (err) {
     throw createError({
       statusCode: 500,
-      statusMessage: `Failed to establish new session after organisation switch: ${err instanceof Error ? err.message : String(err)}`,
+      statusMessage: `Failed to establish new session after organisation switch: ${
+        err instanceof Error ? err.message : String(err)
+      }`,
     });
   }
 

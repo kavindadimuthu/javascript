@@ -35,7 +35,7 @@ import {useRuntimeConfig} from '#imports';
  * creates a signed session JWT cookie,
  * and redirects to afterSignInUrl.
  */
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const config = useRuntimeConfig();
   const sessionSecret = config.asgardeo?.sessionSecret;
   const publicConfig = config.public.asgardeo;

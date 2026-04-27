@@ -16,10 +16,10 @@
  * under the License.
  */
 
-import {useAsgardeo} from '#imports';
 import {AsgardeoRuntimeError} from '@asgardeo/browser';
 import {BaseSignOutButton} from '@asgardeo/vue';
 import {type Component, type SetupContext, type VNode, defineComponent, h, ref} from 'vue';
+import {useAsgardeo} from '#imports';
 
 /**
  * Nuxt-specific SignOutButton container.

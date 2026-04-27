@@ -16,16 +16,6 @@
  * under the License.
  */
 
-import {useState, useRuntimeConfig} from '#imports';
-import {
-  BrandingProvider,
-  FlowMetaProvider,
-  FlowProvider,
-  I18nProvider,
-  OrganizationProvider,
-  ThemeProvider,
-  UserProvider,
-} from '@asgardeo/vue';
 import {generateFlattenedUserProfile} from '@asgardeo/node';
 import type {
   AllOrganizationsApiResponse,
@@ -37,13 +27,17 @@ import type {
   UserProfile,
 } from '@asgardeo/node';
 import {
-  defineComponent,
-  h,
-  type Component,
-  type SetupContext,
-  type VNode,
-} from 'vue';
+  BrandingProvider,
+  FlowMetaProvider,
+  FlowProvider,
+  I18nProvider,
+  OrganizationProvider,
+  ThemeProvider,
+  UserProvider,
+} from '@asgardeo/vue';
+import {defineComponent, h, type Component, type SetupContext, type VNode} from 'vue';
 import type {AsgardeoAuthState, AsgardeoNuxtConfig} from '../types';
+import {useState, useRuntimeConfig} from '#imports';
 
 /**
  * Nuxt root wrapper that mounts the full Asgardeo Vue provider tree.
@@ -89,9 +83,11 @@ const AsgardeoRoot: Component = defineComponent({
     const authState = useState<AsgardeoAuthState>('asgardeo:auth');
 
     // ── Preferences from runtime config ────────────────────────────────────
-    const prefs = (useRuntimeConfig().public.asgardeo as {
-      preferences?: AsgardeoNuxtConfig['preferences'];
-    })?.preferences;
+    const prefs = (
+      useRuntimeConfig().public.asgardeo as {
+        preferences?: AsgardeoNuxtConfig['preferences'];
+      }
+    )?.preferences;
 
     // Gate flags — mirror the same checks in asgardeo-ssr.ts so client props
     // always agree with what the Nitro plugin decided to fetch server-side.
@@ -141,10 +137,10 @@ const AsgardeoRoot: Component = defineComponent({
       _sessionId?: string,
     ): Promise<{data: {user: User}; error: string; success: boolean}> => {
       try {
-        const result: {data: {user: User}; error: string; success: boolean} = await $fetch(
-          '/api/auth/user/profile',
-          {method: 'PATCH', body: requestConfig},
-        );
+        const result: {data: {user: User}; error: string; success: boolean} = await $fetch('/api/auth/user/profile', {
+          method: 'PATCH',
+          body: requestConfig,
+        });
         if (result?.success && result.data?.user) {
           onUpdateProfile(result.data.user);
         }
@@ -169,16 +165,14 @@ const AsgardeoRoot: Component = defineComponent({
     /**
      * Token-exchange org switch via the `/api/auth/organizations/switch` Nitro route.
      */
-    const onOrganizationSwitch = async (organization: Organization): Promise<any> => {
-      return $fetch('/api/auth/organizations/switch', {method: 'POST', body: {organization}});
-    };
+    const onOrganizationSwitch = async (organization: Organization): Promise<any> =>
+      $fetch('/api/auth/organizations/switch', {method: 'POST', body: {organization}});
 
     /**
      * Paginated org list via the `/api/auth/organizations` Nitro route.
      */
-    const getAllOrganizations = async (): Promise<AllOrganizationsApiResponse> => {
-      return $fetch<AllOrganizationsApiResponse>('/api/auth/organizations');
-    };
+    const getAllOrganizations = async (): Promise<AllOrganizationsApiResponse> =>
+      $fetch<AllOrganizationsApiResponse>('/api/auth/organizations');
 
     /**
      * Refresh the user's org membership list and update local state so
@@ -197,9 +191,8 @@ const AsgardeoRoot: Component = defineComponent({
     /**
      * Create a new sub-organisation via the `POST /api/auth/organizations` route.
      */
-    const createOrganization = async (payload: CreateOrganizationPayload): Promise<Organization> => {
-      return $fetch<Organization>('/api/auth/organizations', {method: 'POST', body: payload});
-    };
+    const createOrganization = async (payload: CreateOrganizationPayload): Promise<Organization> =>
+      $fetch<Organization>('/api/auth/organizations', {method: 'POST', body: payload});
 
     /**
      * Refresh the current organisation from the session's ID token claims
@@ -238,68 +231,90 @@ const AsgardeoRoot: Component = defineComponent({
     // config option, derive `enabled` from it the same way `AsgardeoProvider`
     // does (`enabled: platform === Platform.AsgardeoV2`).
     return (): VNode =>
-      h(I18nProvider, {preferences: prefs?.i18n}, {
-        default: (): VNode =>
-          h(FlowMetaProvider, {enabled: false}, {
-            default: (): VNode =>
-              h(BrandingProvider, {
-            // When inheritFromBranding is disabled, pass null so the provider
-            // falls back to its own default theme without using SSR-fetched data.
-            brandingPreference: shouldFetchBranding ? brandingState.value : null,
-            revalidateBranding: shouldFetchBranding ? revalidateBranding : undefined,
-          }, {
-            default: (): VNode =>
-              h(ThemeProvider, {
-                // Mirror the same flag used in the Nitro plugin gate.
-                inheritFromBranding: shouldFetchBranding,
-                mode: themeMode as any,
-              }, {
+      h(
+        I18nProvider,
+        {preferences: prefs?.i18n},
+        {
+          default: (): VNode =>
+            h(
+              FlowMetaProvider,
+              {enabled: false},
+              {
                 default: (): VNode =>
-                  h(FlowProvider, null, {
-                    default: (): VNode =>
-                      h(UserProvider, {
-                        // When fetchUserProfile is false the Nitro plugin
-                        // skips SCIM calls, so we must also pass empty values
-                        // here to keep SSR and client in sync.
-                        profile: shouldFetchProfile ? userProfileState.value : null,
-                        flattenedProfile: shouldFetchProfile
-                          ? (userProfileState.value?.flattenedProfile ?? null)
-                          : null,
-                        schemas: shouldFetchProfile
-                          ? (userProfileState.value?.schemas ?? null)
-                          : null,
-                        onUpdateProfile: shouldFetchProfile ? onUpdateProfile : undefined,
-                        updateProfile: shouldFetchProfile ? updateProfile : undefined,
-                        revalidateProfile: shouldFetchProfile ? revalidateProfile : undefined,
-                      }, {
-                        default: (): VNode | VNode[] | undefined =>
-                          h(OrganizationProvider, {
-                            // When fetchOrganizations is false pass empty
-                            // values so the provider renders without org data.
-                            currentOrganization: shouldFetchOrgs ? currentOrgState.value : null,
-                            myOrganizations: shouldFetchOrgs ? myOrgsState.value : [],
-                            onOrganizationSwitch: shouldFetchOrgs
-                              ? (onOrganizationSwitch as any)
-                              : undefined,
-                            getAllOrganizations: shouldFetchOrgs ? getAllOrganizations : undefined,
-                            revalidateMyOrganizations: shouldFetchOrgs
-                              ? revalidateMyOrganizations
-                              : undefined,
-                            createOrganization: shouldFetchOrgs
-                              ? (createOrganization as any)
-                              : undefined,
-                            revalidateCurrentOrganization: shouldFetchOrgs
-                              ? revalidateCurrentOrganization
-                              : undefined,
-                          }, {
-                            default: (): VNode | VNode[] | undefined => slots['default']?.(),
-                          }),
-                      }),
-                  }),
-              }),
-          }),
-          }),
-      });
+                  h(
+                    BrandingProvider,
+                    {
+                      // When inheritFromBranding is disabled, pass null so the provider
+                      // falls back to its own default theme without using SSR-fetched data.
+                      brandingPreference: shouldFetchBranding ? brandingState.value : null,
+                      revalidateBranding: shouldFetchBranding ? revalidateBranding : undefined,
+                    },
+                    {
+                      default: (): VNode =>
+                        h(
+                          ThemeProvider,
+                          {
+                            // Mirror the same flag used in the Nitro plugin gate.
+                            inheritFromBranding: shouldFetchBranding,
+                            mode: themeMode as any,
+                          },
+                          {
+                            default: (): VNode =>
+                              h(FlowProvider, null, {
+                                default: (): VNode =>
+                                  h(
+                                    UserProvider,
+                                    {
+                                      // When fetchUserProfile is false the Nitro plugin
+                                      // skips SCIM calls, so we must also pass empty values
+                                      // here to keep SSR and client in sync.
+                                      profile: shouldFetchProfile ? userProfileState.value : null,
+                                      flattenedProfile: shouldFetchProfile
+                                        ? userProfileState.value?.flattenedProfile ?? null
+                                        : null,
+                                      schemas: shouldFetchProfile ? userProfileState.value?.schemas ?? null : null,
+                                      onUpdateProfile: shouldFetchProfile ? onUpdateProfile : undefined,
+                                      updateProfile: shouldFetchProfile ? updateProfile : undefined,
+                                      revalidateProfile: shouldFetchProfile ? revalidateProfile : undefined,
+                                    },
+                                    {
+                                      default: (): VNode | VNode[] | undefined =>
+                                        h(
+                                          OrganizationProvider,
+                                          {
+                                            // When fetchOrganizations is false pass empty
+                                            // values so the provider renders without org data.
+                                            currentOrganization: shouldFetchOrgs ? currentOrgState.value : null,
+                                            myOrganizations: shouldFetchOrgs ? myOrgsState.value : [],
+                                            onOrganizationSwitch: shouldFetchOrgs
+                                              ? (onOrganizationSwitch as any)
+                                              : undefined,
+                                            getAllOrganizations: shouldFetchOrgs ? getAllOrganizations : undefined,
+                                            revalidateMyOrganizations: shouldFetchOrgs
+                                              ? revalidateMyOrganizations
+                                              : undefined,
+                                            createOrganization: shouldFetchOrgs
+                                              ? (createOrganization as any)
+                                              : undefined,
+                                            revalidateCurrentOrganization: shouldFetchOrgs
+                                              ? revalidateCurrentOrganization
+                                              : undefined,
+                                          },
+                                          {
+                                            default: (): VNode | VNode[] | undefined => slots['default']?.(),
+                                          },
+                                        ),
+                                    },
+                                  ),
+                              }),
+                          },
+                        ),
+                    },
+                  ),
+              },
+            ),
+        },
+      );
   },
 });
 

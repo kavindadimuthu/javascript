@@ -18,10 +18,10 @@
 
 import type {BrandingPreference} from '@asgardeo/node';
 import {defineEventHandler, createError} from 'h3';
+import type {AsgardeoNuxtConfig} from '../../../../types';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
 import {verifyAndRehydrateSession} from '../../../utils/serverSession';
 import {useRuntimeConfig} from '#imports';
-import type {AsgardeoNuxtConfig} from '../../../../types';
 
 /**
  * GET /api/auth/branding
@@ -36,7 +36,7 @@ import type {AsgardeoNuxtConfig} from '../../../../types';
  */
 export default defineEventHandler(async (event): Promise<BrandingPreference | null> => {
   const config = useRuntimeConfig(event);
-  const publicConfig = config.public.asgardeo as (typeof config.public.asgardeo & AsgardeoNuxtConfig);
+  const publicConfig = config.public.asgardeo as typeof config.public.asgardeo & AsgardeoNuxtConfig;
   const sessionSecret = config.asgardeo?.sessionSecret;
 
   const baseUrl: string = (publicConfig?.baseUrl ?? '') as string;

@@ -16,10 +16,10 @@
  * under the License.
  */
 
-import {useAsgardeo, useUser} from '#imports';
 import {withVendorCSSClassPrefix} from '@asgardeo/browser';
 import {BaseUserDropdown, UserProfile as UserProfileComponent} from '@asgardeo/vue';
 import {type Component, type Ref, type VNode, defineComponent, h, ref} from 'vue';
+import {useAsgardeo, useUser} from '#imports';
 
 /**
  * Nuxt-specific UserDropdown container.

@@ -31,7 +31,7 @@ import {useRuntimeConfig} from '#imports';
  * Request body: {@link UpdateMeProfileConfig} (the SCIM patch payload).
  * Response: `{ data: { user: User }; success: boolean; error: string }`
  */
-export default defineEventHandler(async (event): Promise<{data: {user: User}; success: boolean; error: string}> => {
+export default defineEventHandler(async (event): Promise<{data: {user: User}; error: string; success: boolean}> => {
   const config = useRuntimeConfig();
   const sessionSecret = config.asgardeo?.sessionSecret;
 

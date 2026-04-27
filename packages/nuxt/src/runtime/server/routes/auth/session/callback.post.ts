@@ -53,7 +53,7 @@ export default defineEventHandler(async event => {
   const afterSignInUrl: string = ((config.public.asgardeo as any)?.afterSignInUrl as string | undefined) || '/';
 
   // ── Parse request body ────────────────────────────────────────────────────
-  const body: {code?: string; state?: string; sessionState?: string} = await readBody(event);
+  const body: {code?: string; sessionState?: string; state?: string} = await readBody(event);
   const {code, state, sessionState} = body ?? {};
 
   if (!code) {
@@ -79,11 +79,7 @@ export default defineEventHandler(async event => {
 
   let tokenResponse: any;
   try {
-    tokenResponse = await client.signIn(
-      {code, state, session_state: sessionState},
-      {},
-      sessionId,
-    );
+    tokenResponse = await client.signIn({code, state, session_state: sessionState}, {}, sessionId);
   } catch (err: any) {
     return {success: false, error: err?.message ?? String(err)};
   }

@@ -157,9 +157,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
     const storageManager = await this.legacy.getStorageManager();
     const iatSeconds: number = typeof session.iat === 'number' ? session.iat : Math.floor(Date.now() / 1000);
     const expiresInSeconds: number =
-      typeof session.accessTokenExpiresAt === 'number'
-        ? Math.max(0, session.accessTokenExpiresAt - iatSeconds)
-        : 3600;
+      typeof session.accessTokenExpiresAt === 'number' ? Math.max(0, session.accessTokenExpiresAt - iatSeconds) : 3600;
 
     await storageManager.setSessionData(
       {
@@ -255,7 +253,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
       // Redirect-flow sign-up: not meaningful server-side, but satisfies the interface.
       return;
     }
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl = configData?.baseUrl as string | undefined;
     return executeEmbeddedSignUpFlow({baseUrl, payload: payloadOrOptions as EmbeddedFlowExecuteRequestPayload});
   }
@@ -303,10 +301,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
     return this.legacy.isSignedIn(sessionId as string);
   }
 
-  override exchangeToken(
-    config: TokenExchangeRequestConfig,
-    sessionId?: string,
-  ): Promise<TokenResponse | Response> {
+  override exchangeToken(config: TokenExchangeRequestConfig, sessionId?: string): Promise<TokenResponse | Response> {
     return this.legacy.exchangeToken(config, sessionId);
   }
 
@@ -318,7 +313,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
    */
   override async getUserProfile(sessionId: string): Promise<UserProfile> {
     const accessToken: string = await this.getAccessToken(sessionId);
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
 
     try {
@@ -368,7 +363,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
    */
   override async getMyOrganizations(sessionId: string): Promise<Organization[]> {
     const accessToken: string = await this.getAccessToken(sessionId);
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
 
     return getMeOrganizations({
@@ -392,16 +387,15 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
    */
   override async updateUserProfile(config: UpdateMeProfileConfig, sessionId: string): Promise<User> {
     const accessToken = await this.getAccessToken(sessionId);
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl = (configData?.baseUrl ?? '') as string;
 
     return updateMeProfile({
-      ...config,                                                  // pass-through, includes payload
+      ...config, // pass-through, includes payload
       baseUrl,
       headers: {...config.headers, Authorization: `Bearer ${accessToken}`},
     });
   }
-
 
   /**
    * Retrieves all organisations accessible to the authenticated user
@@ -410,7 +404,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
   override async getAllOrganizations(options?: any, sessionId?: string): Promise<AllOrganizationsApiResponse> {
     const resolvedSessionId = sessionId ?? '';
     const accessToken: string = await this.getAccessToken(resolvedSessionId);
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
 
     return getAllOrganizations({
@@ -424,7 +418,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
    */
   async createOrganization(payload: CreateOrganizationPayload, sessionId: string): Promise<Organization> {
     const accessToken: string = await this.getAccessToken(sessionId);
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
 
     return createOrganization({
@@ -440,7 +434,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
    */
   async getOrganization(organizationId: string, sessionId: string): Promise<OrganizationDetails> {
     const accessToken: string = await this.getAccessToken(sessionId);
-    const configData = await this.legacy.getConfigData?.() as (AuthClientConfig<AsgardeoNuxtConfig> | undefined);
+    const configData = (await this.legacy.getConfigData?.()) as AuthClientConfig<AsgardeoNuxtConfig> | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
 
     return getOrganization({

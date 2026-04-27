@@ -16,11 +16,11 @@
  * under the License.
  */
 
-import {SignJWT, jwtVerify} from 'jose';
 import {CookieConfig} from '@asgardeo/node';
 import type {IdToken, TokenResponse} from '@asgardeo/node';
 import {setCookie} from 'h3';
 import type {H3Event} from 'h3';
+import {SignJWT, jwtVerify} from 'jose';
 import type {AsgardeoSessionPayload, AsgardeoTempSessionPayload} from '../../types';
 
 const DEFAULT_EXPIRY_SECONDS = 3600;
@@ -35,10 +35,12 @@ function getSecret(sessionSecret?: string): Uint8Array {
     if (process.env['NODE_ENV'] === 'production') {
       throw new Error(
         '[asgardeo] ASGARDEO_SESSION_SECRET environment variable is required in production. ' +
-        'Set it to a secure random string of at least 32 characters.',
+          'Set it to a secure random string of at least 32 characters.',
       );
     }
-    console.warn('[asgardeo] Using default session secret for development. Set ASGARDEO_SESSION_SECRET for production.');
+    console.warn(
+      '[asgardeo] Using default session secret for development. Set ASGARDEO_SESSION_SECRET for production.',
+    );
     return new TextEncoder().encode('asgardeo-dev-secret-not-for-production');
   }
 
@@ -51,17 +53,17 @@ function getSecret(sessionSecret?: string): Uint8Array {
 export async function createSessionToken(
   params: {
     accessToken: string;
-    userId: string;
-    sessionId: string;
-    scopes: string;
-    organizationId?: string;
-    expirySeconds?: number;
     /** Unix timestamp (seconds) when the access token expires. */
     accessTokenExpiresAt?: number;
-    /** Refresh token for silent re-auth. */
-    refreshToken?: string;
+    expirySeconds?: number;
     /** Raw ID token string. */
     idToken?: string;
+    organizationId?: string;
+    /** Refresh token for silent re-auth. */
+    refreshToken?: string;
+    scopes: string;
+    sessionId: string;
+    userId: string;
   },
   sessionSecret?: string,
 ): Promise<string> {
@@ -103,20 +105,13 @@ export async function createTempSessionToken(
     payload['returnTo'] = returnTo;
   }
 
-  return new SignJWT(payload)
-    .setProtectedHeader({alg: 'HS256'})
-    .setIssuedAt()
-    .setExpirationTime('15m')
-    .sign(secret);
+  return new SignJWT(payload).setProtectedHeader({alg: 'HS256'}).setIssuedAt().setExpirationTime('15m').sign(secret);
 }
 
 /**
  * Verify and decode a session JWT.
  */
-export async function verifySessionToken(
-  token: string,
-  sessionSecret?: string,
-): Promise<AsgardeoSessionPayload> {
+export async function verifySessionToken(token: string, sessionSecret?: string): Promise<AsgardeoSessionPayload> {
   const secret = getSecret(sessionSecret);
   const {payload} = await jwtVerify(token, secret);
   return payload as AsgardeoSessionPayload;
@@ -128,7 +123,7 @@ export async function verifySessionToken(
 export async function verifyTempSessionToken(
   token: string,
   sessionSecret?: string,
-): Promise<{sessionId: string; returnTo?: string}> {
+): Promise<{returnTo?: string; sessionId: string}> {
   const secret = getSecret(sessionSecret);
   const {payload} = await jwtVerify(token, secret);
 

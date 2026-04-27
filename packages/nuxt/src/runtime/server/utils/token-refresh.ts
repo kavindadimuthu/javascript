@@ -17,9 +17,9 @@
  */
 
 import {createError, setCookie, type H3Event} from 'h3';
-import {useRuntimeConfig} from '#imports';
 import {requireServerSession} from './serverSession';
 import {createSessionToken, getSessionCookieName, getSessionCookieOptions} from './session';
+import {useRuntimeConfig} from '#imports';
 
 /**
  * Seconds before expiry at which we proactively refresh the access token.
@@ -33,10 +33,10 @@ const REFRESH_SKEW_SECONDS = 60;
 interface OIDCTokenRefreshResponse {
   access_token: string;
   expires_in?: number;
-  refresh_token?: string;
   id_token?: string;
-  token_type?: string;
+  refresh_token?: string;
   scope?: string;
+  token_type?: string;
 }
 
 /**

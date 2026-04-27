@@ -18,11 +18,11 @@
 
 import {getRequestURL, type H3Event} from 'h3';
 import {defineNitroPlugin} from 'nitropack/runtime';
-import {useRuntimeConfig} from '#imports';
-import AsgardeoNuxtClient from '../AsgardeoNuxtClient';
-import {verifyAndRehydrateSession} from '../utils/serverSession';
 import type {AsgardeoAuthState, AsgardeoNuxtConfig, AsgardeoSSRData} from '../../types';
 import {createLogger} from '../../utils/log';
+import AsgardeoNuxtClient from '../AsgardeoNuxtClient';
+import {verifyAndRehydrateSession} from '../utils/serverSession';
+import {useRuntimeConfig} from '#imports';
 
 // Import augmentation so event.context.asgardeo is typed
 import '../../types/augments.d';
@@ -61,19 +61,19 @@ function resolveCallbackUrl(event: H3Event): string {
  * call never crashes SSR — the client layer can recover via the existing
  * `/api/auth/*` routes.
  */
-export default defineNitroPlugin((nitro) => {
-  nitro.hooks.hook('request', async (event) => {
+export default defineNitroPlugin(nitro => {
+  nitro.hooks.hook('request', async event => {
     // ── 1. Initialise singleton (once per process) ─────────────────────────
     const client = AsgardeoNuxtClient.getInstance();
     if (!client.isInitialized) {
       const config = useRuntimeConfig(event);
-      const publicConfig = config.public.asgardeo as (typeof config.public.asgardeo & AsgardeoNuxtConfig);
+      const publicConfig = config.public.asgardeo as typeof config.public.asgardeo & AsgardeoNuxtConfig;
       const privateConfig = config.asgardeo;
 
       if (!publicConfig?.baseUrl || !publicConfig?.clientId) {
         log.error(
           'Missing required config: baseUrl and clientId. ' +
-          'Set NUXT_PUBLIC_ASGARDEO_BASE_URL and NUXT_PUBLIC_ASGARDEO_CLIENT_ID.',
+            'Set NUXT_PUBLIC_ASGARDEO_BASE_URL and NUXT_PUBLIC_ASGARDEO_CLIENT_ID.',
         );
         return;
       }
@@ -86,13 +86,13 @@ export default defineNitroPlugin((nitro) => {
         if (process.env['NODE_ENV'] === 'production') {
           log.error(
             'ASGARDEO_SESSION_SECRET is required in production. Set it to a secure ' +
-            'random string of at least 32 characters. Refusing to initialize Asgardeo client.',
+              'random string of at least 32 characters. Refusing to initialize Asgardeo client.',
           );
           return;
         }
         log.warn(
           'ASGARDEO_SESSION_SECRET is not set. Using an insecure default for development only. ' +
-          'Set ASGARDEO_SESSION_SECRET before deploying.',
+            'Set ASGARDEO_SESSION_SECRET before deploying.',
         );
       }
 
@@ -119,7 +119,7 @@ export default defineNitroPlugin((nitro) => {
 
     // ── 2. Verify session cookie + rehydrate legacy store ─────────────────
     const config = useRuntimeConfig(event);
-    const publicConfig = config.public.asgardeo as (typeof config.public.asgardeo & AsgardeoNuxtConfig);
+    const publicConfig = config.public.asgardeo as typeof config.public.asgardeo & AsgardeoNuxtConfig;
     const prefs = publicConfig?.preferences;
     const sessionSecret = process.env['ASGARDEO_SESSION_SECRET'] || config.asgardeo?.sessionSecret;
 
@@ -158,24 +158,16 @@ export default defineNitroPlugin((nitro) => {
       client.getUser(session.sessionId),
 
       // SCIM2 user profile (flattened + schemas)
-      shouldFetchProfile
-        ? client.getUserProfile(session.sessionId)
-        : Promise.resolve(null),
+      shouldFetchProfile ? client.getUserProfile(session.sessionId) : Promise.resolve(null),
 
       // User's organisations
-      shouldFetchOrgs
-        ? client.getMyOrganizations(session.sessionId)
-        : Promise.resolve([] as any[]),
+      shouldFetchOrgs ? client.getMyOrganizations(session.sessionId) : Promise.resolve([] as any[]),
 
       // Current organisation (derived from the ID token)
-      shouldFetchOrgs
-        ? client.getCurrentOrganization(session.sessionId)
-        : Promise.resolve(null),
+      shouldFetchOrgs ? client.getCurrentOrganization(session.sessionId) : Promise.resolve(null),
 
       // Branding preference (does not require a session)
-      shouldFetchBranding
-        ? client.getBrandingPreference({baseUrl: resolvedBaseUrl})
-        : Promise.resolve(null),
+      shouldFetchBranding ? client.getBrandingPreference({baseUrl: resolvedBaseUrl}) : Promise.resolve(null),
     ]);
 
     if (userResult.status === 'rejected') {

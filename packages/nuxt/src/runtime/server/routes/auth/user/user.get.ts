@@ -27,7 +27,7 @@ import {useRuntimeConfig} from '#imports';
  * Returns user information for the current session.
  * Requires a valid session.
  */
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const config = useRuntimeConfig();
   const sessionSecret = config.asgardeo?.sessionSecret;
 

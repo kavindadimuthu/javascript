@@ -18,13 +18,13 @@
 
 import {defineEventHandler, deleteCookie} from 'h3';
 import AsgardeoNuxtClient from '../../../AsgardeoNuxtClient';
+import {verifyAndRehydrateSession} from '../../../utils/serverSession';
 import {
   getSessionCookieName,
   getSessionCookieOptions,
   getTempSessionCookieName,
   getTempSessionCookieOptions,
 } from '../../../utils/session';
-import {verifyAndRehydrateSession} from '../../../utils/serverSession';
 import {useRuntimeConfig} from '#imports';
 
 /**

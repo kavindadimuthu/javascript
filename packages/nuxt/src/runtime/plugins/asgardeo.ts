@@ -16,13 +16,13 @@
  * under the License.
  */
 
-import {defineNuxtPlugin, useState, useRequestEvent, useRuntimeConfig, navigateTo} from '#app';
-import {computed} from 'vue';
 import {getRedirectBasedSignUpUrl} from '@asgardeo/browser';
+import type {BrandingPreference, Organization, UserProfile} from '@asgardeo/node';
 import {AsgardeoPlugin, ASGARDEO_KEY} from '@asgardeo/vue';
+import {computed} from 'vue';
 import AsgardeoRoot from '../components/AsgardeoRoot';
 import type {AsgardeoAuthState} from '../types';
-import type {BrandingPreference, Organization, UserProfile} from '@asgardeo/node';
+import {defineNuxtPlugin, useState, useRequestEvent, useRuntimeConfig, navigateTo} from '#app';
 
 // Import H3 augmentation so event.context.asgardeo is typed
 import '../types/augments.d';
@@ -47,17 +47,17 @@ import '../types/augments.d';
  *  4. **AsgardeoPlugin (delegated)** — install the Vue SDK plugin in
  *     delegated mode so it skips browser-only initialisation (SSR-safe).
  */
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(nuxtApp => {
   const publicConfig = useRuntimeConfig().public.asgardeo as {
-    baseUrl: string;
-    clientId: string;
     afterSignInUrl: string;
     afterSignOutUrl: string;
+    applicationId?: string;
+    baseUrl: string;
+    clientId: string;
+    organizationHandle?: string;
     scopes: string[];
     signInUrl?: string;
     signUpUrl?: string;
-    organizationHandle?: string;
-    applicationId?: string;
   };
 
   // Surface misconfiguration in the browser dev console only. The server
@@ -68,8 +68,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       // eslint-disable-next-line no-console
       console.warn(
         '[@asgardeo/nuxt] Missing baseUrl or clientId. ' +
-        'Set NUXT_PUBLIC_ASGARDEO_BASE_URL and NUXT_PUBLIC_ASGARDEO_CLIENT_ID, ' +
-        'or configure `asgardeo` in nuxt.config. Auth endpoints will not function until this is resolved.',
+          'Set NUXT_PUBLIC_ASGARDEO_BASE_URL and NUXT_PUBLIC_ASGARDEO_CLIENT_ID, ' +
+          'or configure `asgardeo` in nuxt.config. Auth endpoints will not function until this is resolved.',
       );
     }
   }

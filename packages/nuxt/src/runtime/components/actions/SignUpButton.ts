@@ -16,11 +16,11 @@
  * under the License.
  */
 
-import {navigateTo} from '#app';
-import {useAsgardeo} from '#imports';
 import {AsgardeoRuntimeError} from '@asgardeo/browser';
 import {BaseSignUpButton} from '@asgardeo/vue';
 import {type Component, type SetupContext, type VNode, defineComponent, h, ref} from 'vue';
+import {navigateTo} from '#app';
+import {useAsgardeo} from '#imports';
 
 /**
  * Nuxt-specific SignUpButton container.
