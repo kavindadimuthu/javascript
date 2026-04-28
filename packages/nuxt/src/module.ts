@@ -298,6 +298,13 @@ export default defineNuxtModule<AsgardeoNuxtConfig>({
 });
 
 declare module '@nuxt/schema' {
+  interface NuxtConfig {
+    asgardeo?: import('./runtime/types').AsgardeoNuxtConfig;
+  }
+  interface NuxtOptions {
+    asgardeo?: import('./runtime/types').AsgardeoNuxtConfig;
+  }
+
   interface PublicRuntimeConfig {
     asgardeo: {
       afterSignInUrl: string;
@@ -316,6 +323,16 @@ declare module '@nuxt/schema' {
     asgardeo: {
       clientSecret: string;
       sessionSecret: string;
+    };
+  }
+}
+
+declare module 'h3' {
+  interface H3EventContext {
+    asgardeo?: {
+      isSignedIn: boolean;
+      session: import('./runtime/types').AsgardeoSessionPayload | null;
+      ssr?: import('./runtime/types').AsgardeoSSRData;
     };
   }
 }
