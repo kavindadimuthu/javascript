@@ -24,10 +24,12 @@ const navItems: NavItem[] = [
     label: 'Components',
     icon: 'box',
     children: [
+      { path: '/components/auth', label: 'Auth' },
       { path: '/components/primitives', label: 'Primitives', internal: true },
       { path: '/components/actions', label: 'Actions' },
       { path: '/components/control', label: 'Control' },
       { path: '/components/presentation', label: 'Presentation' },
+      { path: '/components/factories', label: 'Factories' },
       { path: '/components/social', label: 'Social Logins', internal: true },
     ],
   },

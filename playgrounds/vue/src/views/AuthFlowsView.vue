@@ -9,9 +9,6 @@ import {
   SignInButton,
   SignOutButton,
   SignUpButton,
-  BaseSignInButton,
-  BaseSignOutButton,
-  BaseSignUpButton,
   GoogleButton,
   GitHubButton,
   MicrosoftButton,
@@ -155,20 +152,6 @@ function logNativeEvent(type: string, eventType: string, data?: unknown) {
                 </div>
               </div>
 
-              <div>
-                <p class="text-xs font-medium text-on-surface-muted uppercase tracking-wide mb-2">Base (Unstyled) Buttons</p>
-                <div class="flex flex-wrap gap-3">
-                  <BaseSignInButton class="px-3 py-1.5 bg-accent-100 text-accent-800 rounded text-sm font-medium hover:bg-accent-50 transition-colors">
-                    Base Sign In
-                  </BaseSignInButton>
-                  <BaseSignOutButton class="px-3 py-1.5 bg-status-error-bg text-status-error-text rounded text-sm font-medium transition-colors">
-                    Base Sign Out
-                  </BaseSignOutButton>
-                  <BaseSignUpButton class="px-3 py-1.5 bg-status-success-bg text-status-success-text rounded text-sm font-medium transition-colors">
-                    Base Sign Up
-                  </BaseSignUpButton>
-                </div>
-              </div>
             </div>
           </SectionCard>
 
