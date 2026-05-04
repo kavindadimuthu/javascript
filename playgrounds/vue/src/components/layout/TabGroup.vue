@@ -12,7 +12,7 @@ const emit = defineEmits<{
 <template>
   <div>
     <div class="border-b border-border">
-      <div class="flex gap-4 flex-wrap">
+      <div class="tab-scroll flex gap-4 flex-nowrap overflow-x-auto">
         <button
           v-for="tab in tabs"
           :key="tab.key"
@@ -42,3 +42,14 @@ const emit = defineEmits<{
     </div>
   </div>
 </template>
+
+<style scoped>
+.tab-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tab-scroll::-webkit-scrollbar {
+  display: none;
+}
+</style>

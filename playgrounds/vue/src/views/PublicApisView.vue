@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import PageHeader from '../components/layout/PageHeader.vue'
-import TabGroup from '../components/layout/TabGroup.vue'
 import AsgardeoTab from '../components/public-apis/AsgardeoTab.vue'
 import UserTab from '../components/public-apis/UserTab.vue'
 import OrganizationTab from '../components/public-apis/OrganizationTab.vue'
@@ -15,46 +14,43 @@ import I18nTab from '../components/public-apis/I18nTab.vue'
 const route = useRoute()
 const router = useRouter()
 
-const validTabs = ['asgardeo', 'user', 'organization', 'flow', 'flowMeta', 'theme', 'branding', 'i18n']
+const tabComponents: Record<string, any> = {
+  asgardeo: AsgardeoTab,
+  user: UserTab,
+  organization: OrganizationTab,
+  flow: FlowTab,
+  flowMeta: FlowMetaTab,
+  theme: ThemeTab,
+  branding: BrandingTab,
+  i18n: I18nTab,
+}
 
-const activeTab = computed({
-  get() {
-    const tab = route.params.tab as string
-    return validTabs.includes(tab) ? tab : 'asgardeo'
-  },
-  set(tab: string) {
-    router.push(`/public-apis/${tab}`)
-  },
+const validTabs = Object.keys(tabComponents)
+
+const activeTab = computed(() => {
+  const tab = route.params.tab as string
+  return validTabs.includes(tab) ? tab : 'asgardeo'
 })
 
-const tabs = [
-  { key: 'asgardeo', label: 'useAsgardeo' },
-  { key: 'user', label: 'useUser', internal: true },
-  { key: 'organization', label: 'useOrganization', internal: true },
-  { key: 'flow', label: 'useFlow', internal: true },
-  { key: 'flowMeta', label: 'useFlowMeta', internal: true },
-  { key: 'theme', label: 'useTheme', internal: true },
-  { key: 'branding', label: 'useBranding', internal: true },
-  { key: 'i18n', label: 'useI18n', internal: true },
-]
+watch(
+  () => route.params.tab,
+  (tab) => {
+    if (!validTabs.includes(tab as string)) {
+      router.replace('/composables/asgardeo')
+    }
+  }
+)
+
+const activeComponent = computed(() => tabComponents[activeTab.value])
 </script>
 
 <template>
   <div class="space-y-6">
     <PageHeader
-      title="Public APIs"
+      title="Composables"
       description="Interactive playground for every composable method exposed by the SDK."
     />
 
-    <TabGroup :tabs="tabs" v-model="activeTab">
-      <template #asgardeo><AsgardeoTab /></template>
-      <template #user><UserTab /></template>
-      <template #organization><OrganizationTab /></template>
-      <template #flow><FlowTab /></template>
-      <template #flowMeta><FlowMetaTab /></template>
-      <template #theme><ThemeTab /></template>
-      <template #branding><BrandingTab /></template>
-      <template #i18n><I18nTab /></template>
-    </TabGroup>
+    <component :is="activeComponent" />
   </div>
 </template>

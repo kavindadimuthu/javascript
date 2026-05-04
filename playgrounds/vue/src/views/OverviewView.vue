@@ -74,7 +74,7 @@ async function fetchDecodedIdToken() {
 const quickLinks = [
   { path: '/auth-flows', title: 'Auth Flows', description: 'Try redirect-based and app-native sign-in flows.' },
   { path: '/components', title: 'Components', description: 'Explore all UI components: primitives, actions, and more.' },
-  { path: '/public-apis', title: 'Public APIs', description: 'Test every composable method interactively.' },
+  { path: '/composables', title: 'Composables', description: 'Test every composable method interactively.' },
 ];
 </script>
 

@@ -32,6 +32,7 @@ import {
   PencilIcon,
 } from '@asgardeo/vue';
 import SectionCard from '../layout/SectionCard.vue';
+import TabGroup from '../layout/TabGroup.vue';
 
 // ── Button ──
 const btnVariant = ref<'solid' | 'outline' | 'ghost' | 'text'>('solid');
@@ -123,354 +124,401 @@ const icons = [
   { name: 'GlobeIcon', component: GlobeIcon },
   { name: 'PencilIcon', component: PencilIcon },
 ];
+
+const tabs = [
+  { key: 'button', label: '<Button/>' },
+  { key: 'textField', label: '<TextField/>' },
+  { key: 'passwordField', label: '<PasswordField/>' },
+  { key: 'select', label: '<Select/>' },
+  { key: 'checkbox', label: '<Checkbox/>' },
+  { key: 'datePicker', label: '<DatePicker/>' },
+  { key: 'otpField', label: '<OtpField/>' },
+  { key: 'card', label: '<Card/>' },
+  { key: 'alert', label: '<Alert/>' },
+  { key: 'typography', label: '<Typography/>' },
+  { key: 'spinner', label: '<Spinner/>' },
+  { key: 'logo', label: '<Logo/>' },
+  { key: 'divider', label: '<Divider/>' },
+  { key: 'icons', label: '<Icons/>' },
+];
+
+const activeTab = ref(tabs[0].key);
 </script>
 
 <template>
   <div class="space-y-6">
+    <TabGroup :tabs="tabs" v-model="activeTab">
+      <template #button>
+        <!-- Button -->
+        <SectionCard title="Button">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Button
+                :variant="btnVariant"
+                :color="btnColor"
+                :size="btnSize"
+                :disabled="btnDisabled"
+                :loading="btnLoading"
+                :fullWidth="btnFullWidth"
+              >
+                Click Me
+              </Button>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">variant
+                <select v-model="btnVariant" :class="controlClass">
+                  <option>solid</option><option>outline</option><option>ghost</option><option>text</option>
+                </select>
+              </label>
+              <label class="block text-xs text-on-surface-muted">color
+                <select v-model="btnColor" :class="controlClass">
+                  <option>primary</option><option>secondary</option><option>danger</option>
+                </select>
+              </label>
+              <label class="block text-xs text-on-surface-muted">size
+                <select v-model="btnSize" :class="controlClass">
+                  <option>small</option><option>medium</option><option>large</option>
+                </select>
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="btnDisabled" /> disabled
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="btnLoading" /> loading
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="btnFullWidth" /> fullWidth
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Button -->
-    <SectionCard title="Button">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Button
-            :variant="btnVariant"
-            :color="btnColor"
-            :size="btnSize"
-            :disabled="btnDisabled"
-            :loading="btnLoading"
-            :fullWidth="btnFullWidth"
-          >
-            Click Me
-          </Button>
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">variant
-            <select v-model="btnVariant" :class="controlClass">
-              <option>solid</option><option>outline</option><option>ghost</option><option>text</option>
-            </select>
-          </label>
-          <label class="block text-xs text-on-surface-muted">color
-            <select v-model="btnColor" :class="controlClass">
-              <option>primary</option><option>secondary</option><option>danger</option>
-            </select>
-          </label>
-          <label class="block text-xs text-on-surface-muted">size
-            <select v-model="btnSize" :class="controlClass">
-              <option>small</option><option>medium</option><option>large</option>
-            </select>
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="btnDisabled" /> disabled
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="btnLoading" /> loading
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="btnFullWidth" /> fullWidth
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #textField>
+        <!-- TextField -->
+        <SectionCard title="TextField">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <TextField
+                v-model="tfValue"
+                name="demo-tf"
+                label="Label"
+                :type="tfType"
+                :placeholder="tfPlaceholder"
+                :required="tfRequired"
+                :disabled="tfDisabled"
+                :error="tfError || undefined"
+                class="w-full"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">type
+                <select v-model="tfType" :class="controlClass">
+                  <option>text</option><option>email</option><option>number</option><option>tel</option><option>url</option>
+                </select>
+              </label>
+              <label class="block text-xs text-on-surface-muted">placeholder
+                <input v-model="tfPlaceholder" type="text" :class="controlClass" />
+              </label>
+              <label class="block text-xs text-on-surface-muted">error text
+                <input v-model="tfError" type="text" :class="controlClass" placeholder="Leave empty for none" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="tfRequired" /> required
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="tfDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- TextField -->
-    <SectionCard title="TextField">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <TextField
-            v-model="tfValue"
-            name="demo-tf"
-            label="Label"
-            :type="tfType"
-            :placeholder="tfPlaceholder"
-            :required="tfRequired"
-            :disabled="tfDisabled"
-            :error="tfError || undefined"
-            class="w-full"
-          />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">type
-            <select v-model="tfType" :class="controlClass">
-              <option>text</option><option>email</option><option>number</option><option>tel</option><option>url</option>
-            </select>
-          </label>
-          <label class="block text-xs text-on-surface-muted">placeholder
-            <input v-model="tfPlaceholder" type="text" :class="controlClass" />
-          </label>
-          <label class="block text-xs text-on-surface-muted">error text
-            <input v-model="tfError" type="text" :class="controlClass" placeholder="Leave empty for none" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="tfRequired" /> required
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="tfDisabled" /> disabled
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #passwordField>
+        <!-- PasswordField -->
+        <SectionCard title="PasswordField">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <PasswordField
+                v-model="pfValue"
+                name="demo-pf"
+                label="Password"
+                :placeholder="pfPlaceholder"
+                :required="pfRequired"
+                :disabled="pfDisabled"
+                class="w-full"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">placeholder
+                <input v-model="pfPlaceholder" type="text" :class="controlClass" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="pfRequired" /> required
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="pfDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- PasswordField -->
-    <SectionCard title="PasswordField">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <PasswordField
-            v-model="pfValue"
-            name="demo-pf"
-            label="Password"
-            :placeholder="pfPlaceholder"
-            :required="pfRequired"
-            :disabled="pfDisabled"
-            class="w-full"
-          />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">placeholder
-            <input v-model="pfPlaceholder" type="text" :class="controlClass" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="pfRequired" /> required
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="pfDisabled" /> disabled
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #select>
+        <!-- Select -->
+        <SectionCard title="Select">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Select
+                v-model="selValue"
+                name="demo-select"
+                label="Framework"
+                :options="selOptions"
+                :placeholder="selPlaceholder"
+                :required="selRequired"
+                :disabled="selDisabled"
+                class="w-full"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">placeholder
+                <input v-model="selPlaceholder" type="text" :class="controlClass" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="selRequired" /> required
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="selDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Select -->
-    <SectionCard title="Select">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Select
-            v-model="selValue"
-            name="demo-select"
-            label="Framework"
-            :options="selOptions"
-            :placeholder="selPlaceholder"
-            :required="selRequired"
-            :disabled="selDisabled"
-            class="w-full"
-          />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">placeholder
-            <input v-model="selPlaceholder" type="text" :class="controlClass" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="selRequired" /> required
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="selDisabled" /> disabled
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #checkbox>
+        <!-- Checkbox -->
+        <SectionCard title="Checkbox">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Checkbox
+                v-model="cbChecked"
+                name="demo-cb"
+                :label="cbLabel"
+                :required="cbRequired"
+                :disabled="cbDisabled"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">label
+                <input v-model="cbLabel" type="text" :class="controlClass" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="cbRequired" /> required
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="cbDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Checkbox -->
-    <SectionCard title="Checkbox">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Checkbox
-            v-model="cbChecked"
-            name="demo-cb"
-            :label="cbLabel"
-            :required="cbRequired"
-            :disabled="cbDisabled"
-          />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">label
-            <input v-model="cbLabel" type="text" :class="controlClass" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="cbRequired" /> required
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="cbDisabled" /> disabled
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #datePicker>
+        <!-- DatePicker -->
+        <SectionCard title="DatePicker">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <DatePicker
+                v-model="dpValue"
+                name="demo-dp"
+                :label="dpLabel"
+                :required="dpRequired"
+                :disabled="dpDisabled"
+                class="w-full"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">label
+                <input v-model="dpLabel" type="text" :class="controlClass" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="dpRequired" /> required
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="dpDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- DatePicker -->
-    <SectionCard title="DatePicker">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <DatePicker
-            v-model="dpValue"
-            name="demo-dp"
-            :label="dpLabel"
-            :required="dpRequired"
-            :disabled="dpDisabled"
-            class="w-full"
-          />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">label
-            <input v-model="dpLabel" type="text" :class="controlClass" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="dpRequired" /> required
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="dpDisabled" /> disabled
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #otpField>
+        <!-- OtpField -->
+        <SectionCard title="OtpField">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <OtpField
+                v-model="otpValue"
+                name="demo-otp"
+                label="Enter OTP"
+                :length="otpLength"
+                :required="otpRequired"
+                :disabled="otpDisabled"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">length
+                <input v-model.number="otpLength" type="number" min="4" max="8" :class="controlClass" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="otpRequired" /> required
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="otpDisabled" /> disabled
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- OtpField -->
-    <SectionCard title="OtpField">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <OtpField
-            v-model="otpValue"
-            name="demo-otp"
-            label="Enter OTP"
-            :length="otpLength"
-            :required="otpRequired"
-            :disabled="otpDisabled"
-          />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">length
-            <input v-model.number="otpLength" type="number" min="4" max="8" :class="controlClass" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="otpRequired" /> required
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="otpDisabled" /> disabled
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #card>
+        <!-- Card -->
+        <SectionCard title="Card">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Card :variant="cardVariant" class="w-full">
+                <p class="text-sm text-on-surface">Card content goes here. This is a sample card using the SDK's Card primitive.</p>
+              </Card>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">variant
+                <select v-model="cardVariant" :class="controlClass">
+                  <option>elevated</option><option>outlined</option><option>flat</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Card -->
-    <SectionCard title="Card">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Card :variant="cardVariant" class="w-full">
-            <p class="text-sm text-on-surface">Card content goes here. This is a sample card using the SDK's Card primitive.</p>
-          </Card>
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">variant
-            <select v-model="cardVariant" :class="controlClass">
-              <option>elevated</option><option>outlined</option><option>flat</option>
-            </select>
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #alert>
+        <!-- Alert -->
+        <SectionCard title="Alert">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Alert
+                v-if="alertVisible"
+                :severity="alertSeverity"
+                :dismissible="alertDismissible"
+                @dismiss="alertVisible = false"
+                class="w-full"
+              >
+                {{ alertText }}
+              </Alert>
+              <button v-else type="button" class="text-sm text-accent-600 underline" @click="alertVisible = true">
+                Reset
+              </button>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">severity
+                <select v-model="alertSeverity" :class="controlClass">
+                  <option>success</option><option>error</option><option>warning</option><option>info</option>
+                </select>
+              </label>
+              <label class="block text-xs text-on-surface-muted">text
+                <input v-model="alertText" type="text" :class="controlClass" />
+              </label>
+              <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
+                <input type="checkbox" v-model="alertDismissible" /> dismissible
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Alert -->
-    <SectionCard title="Alert">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Alert
-            v-if="alertVisible"
-            :severity="alertSeverity"
-            :dismissible="alertDismissible"
-            @dismiss="alertVisible = false"
-            class="w-full"
-          >
-            {{ alertText }}
-          </Alert>
-          <button v-else type="button" class="text-sm text-accent-600 underline" @click="alertVisible = true">
-            Reset
-          </button>
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">severity
-            <select v-model="alertSeverity" :class="controlClass">
-              <option>success</option><option>error</option><option>warning</option><option>info</option>
-            </select>
-          </label>
-          <label class="block text-xs text-on-surface-muted">text
-            <input v-model="alertText" type="text" :class="controlClass" />
-          </label>
-          <label class="flex items-center gap-2 text-xs text-on-surface-muted cursor-pointer">
-            <input type="checkbox" v-model="alertDismissible" /> dismissible
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #typography>
+        <!-- Typography -->
+        <SectionCard title="Typography">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6 overflow-hidden">
+              <Typography :variant="typoVariant">The quick brown fox jumps over the lazy dog</Typography>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">variant
+                <select v-model="typoVariant" :class="controlClass">
+                  <option>h1</option><option>h2</option><option>h3</option><option>h4</option>
+                  <option>h5</option><option>h6</option><option>body1</option><option>body2</option>
+                  <option>subtitle1</option><option>subtitle2</option><option>caption</option><option>overline</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Typography -->
-    <SectionCard title="Typography">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6 overflow-hidden">
-          <Typography :variant="typoVariant">The quick brown fox jumps over the lazy dog</Typography>
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">variant
-            <select v-model="typoVariant" :class="controlClass">
-              <option>h1</option><option>h2</option><option>h3</option><option>h4</option>
-              <option>h5</option><option>h6</option><option>body1</option><option>body2</option>
-              <option>subtitle1</option><option>subtitle2</option><option>caption</option><option>overline</option>
-            </select>
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #spinner>
+        <!-- Spinner -->
+        <SectionCard title="Spinner">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Spinner :size="spinnerSize" />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">size
+                <select v-model="spinnerSize" :class="controlClass">
+                  <option>small</option><option>medium</option><option>large</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Spinner -->
-    <SectionCard title="Spinner">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Spinner :size="spinnerSize" />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">size
-            <select v-model="spinnerSize" :class="controlClass">
-              <option>small</option><option>medium</option><option>large</option>
-            </select>
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #logo>
+        <!-- Logo -->
+        <SectionCard title="Logo">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
+              <Logo :src="logoSrc" :alt="logoAlt" />
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs text-on-surface-muted">src
+                <input v-model="logoSrc" type="url" :class="controlClass" />
+              </label>
+              <label class="block text-xs text-on-surface-muted">alt
+                <input v-model="logoAlt" type="text" :class="controlClass" />
+              </label>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Logo -->
-    <SectionCard title="Logo">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex items-center justify-center min-h-[80px] bg-surface-muted rounded-lg p-6">
-          <Logo :src="logoSrc" :alt="logoAlt" />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-xs text-on-surface-muted">src
-            <input v-model="logoSrc" type="url" :class="controlClass" />
-          </label>
-          <label class="block text-xs text-on-surface-muted">alt
-            <input v-model="logoAlt" type="text" :class="controlClass" />
-          </label>
-        </div>
-      </div>
-    </SectionCard>
+      <template #divider>
+        <!-- Divider -->
+        <SectionCard title="Divider">
+          <div class="bg-surface-muted rounded-lg p-6">
+            <p class="text-sm text-on-surface-secondary mb-3">Content above</p>
+            <Divider />
+            <p class="text-sm text-on-surface-secondary mt-3">Content below</p>
+          </div>
+        </SectionCard>
+      </template>
 
-    <!-- Divider -->
-    <SectionCard title="Divider">
-      <div class="bg-surface-muted rounded-lg p-6">
-        <p class="text-sm text-on-surface-secondary mb-3">Content above</p>
-        <Divider />
-        <p class="text-sm text-on-surface-secondary mt-3">Content below</p>
-      </div>
-    </SectionCard>
-
-    <!-- Icons -->
-    <SectionCard title="Icons" description="All 16 available icons from @asgardeo/vue.">
-      <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4">
-        <div
-          v-for="icon in icons"
-          :key="icon.name"
-          class="flex flex-col items-center gap-1.5 p-2 rounded-lg hover:bg-surface-muted transition-colors"
-        >
-          <component :is="icon.component" class="h-5 w-5 text-on-surface" />
-          <span class="text-xs text-on-surface-muted text-center break-all">{{ icon.name.replace('Icon', '') }}</span>
-        </div>
-      </div>
-    </SectionCard>
-
+      <template #icons>
+        <!-- Icons -->
+        <SectionCard title="Icons" description="All 16 available icons from @asgardeo/vue.">
+          <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4">
+            <div
+              v-for="icon in icons"
+              :key="icon.name"
+              class="flex flex-col items-center gap-1.5 p-2 rounded-lg hover:bg-surface-muted transition-colors"
+            >
+              <component :is="icon.component" class="h-5 w-5 text-on-surface" />
+              <span class="text-xs text-on-surface-muted text-center break-all">{{ icon.name.replace('Icon', '') }}</span>
+            </div>
+          </div>
+        </SectionCard>
+      </template>
+    </TabGroup>
   </div>
 </template>

@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import {
   SignedIn,
   UserProfile,
@@ -16,6 +16,7 @@ import {
   FieldType,
 } from '@asgardeo/vue';
 import SectionCard from '../layout/SectionCard.vue';
+import TabGroup from '../layout/TabGroup.vue';
 import ResultPanel from '../shared/ResultPanel.vue';
 
 // FieldFactory demo — individual field values
@@ -31,20 +32,28 @@ const roleOptions = [
   { label: 'Editor', value: 'editor' },
   { label: 'Viewer', value: 'viewer' },
 ];
+
+const tabs = [
+  { key: 'userProfile', label: '<UserProfile/>' },
+  { key: 'baseUserProfile', label: '<BaseUserProfile/>' },
+  { key: 'userDropdown', label: '<UserDropdown/>' },
+  { key: 'organizationList', label: '<OrganizationList/>' },
+  { key: 'organizationSwitcher', label: '<OrganizationSwitcher/>' },
+  { key: 'organizationProfile', label: '<OrganizationProfile/>' },
+  { key: 'createOrganization', label: '<CreateOrganization/>' },
+  { key: 'inviteUser', label: '<InviteUser/>' },
+  { key: 'languageSwitcher', label: '<LanguageSwitcher/>' },
+  { key: 'fieldFactory', label: '<FieldFactory/>' },
+  { key: 'acceptInvite', label: '<AcceptInvite/>' },
+];
+
+const activeTab = ref(tabs[0].key);
 </script>
 
 <template>
-  <div class="space-y-8">
-
-    <!-- ── User Components ── -->
-    <div>
-      <h2
-        class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
-        User Components
-      </h2>
-      <div class="space-y-6">
-
-        <!-- UserProfile -->
+  <div class="space-y-6">
+    <TabGroup :tabs="tabs" v-model="activeTab">
+      <template #userProfile>
         <SectionCard title="UserProfile"
           description="Pre-built user profile card. Displays the signed-in user's info and supports inline field editing via the editable prop.">
           <SignedIn>
@@ -62,10 +71,11 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-        <!-- BaseUserProfile -->
+      <template #baseUserProfile>
         <SectionCard title="BaseUserProfile"
-          description="Unstyled base variant — use the default scoped slot to render a fully custom profile layout.">
+          description="Unstyled base variant - use the default scoped slot to render a fully custom profile layout.">
           <SignedIn>
             <template #default>
               <BaseUserProfile>
@@ -87,8 +97,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-        <!-- UserDropdown -->
+      <template #userDropdown>
         <SectionCard title="UserDropdown"
           description="Avatar button that opens a dropdown with user info and a sign-out action. Typically placed in a top navigation bar.">
           <SignedIn>
@@ -103,19 +114,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-      </div>
-    </div>
-
-    <!-- ── Organization Components ── -->
-    <div>
-      <h2
-        class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
-        Organization Components
-      </h2>
-      <div class="space-y-6">
-
-        <!-- OrganizationList -->
+      <template #organizationList>
         <SectionCard title="OrganizationList"
           description="Displays all organizations the signed-in user belongs to. Clicking an org switches the current context.">
           <SignedIn>
@@ -127,8 +128,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-        <!-- OrganizationSwitcher -->
+      <template #organizationSwitcher>
         <SectionCard title="OrganizationSwitcher"
           description="Compact dropdown for switching between organizations without leaving the current page.">
           <SignedIn>
@@ -143,8 +145,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-        <!-- OrganizationProfile -->
+      <template #organizationProfile>
         <SectionCard title="OrganizationProfile"
           description="Shows the current organization's details. Requires an active organization context.">
           <SignedIn>
@@ -156,8 +159,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-        <!-- CreateOrganization -->
+      <template #createOrganization>
         <SectionCard title="CreateOrganization"
           description="Form component for creating a new organization under the authenticated user's account.">
           <SignedIn>
@@ -169,8 +173,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-        <!-- InviteUser -->
+      <template #inviteUser>
         <SectionCard title="InviteUser"
           description="Form for inviting a user to the current organization by email address.">
           <SignedIn>
@@ -182,19 +187,9 @@ const roleOptions = [
             </template>
           </SignedIn>
         </SectionCard>
+      </template>
 
-      </div>
-    </div>
-
-    <!-- ── Utility Components ── -->
-    <div>
-      <h2
-        class="text-base font-semibold text-on-surface uppercase tracking-wide mb-4 pb-2 border-b border-border-divider">
-        Utility Components
-      </h2>
-      <div class="space-y-6">
-
-        <!-- LanguageSwitcher -->
+      <template #languageSwitcher>
         <SectionCard title="LanguageSwitcher"
           description="Dropdown that lists available locales from the i18n configuration and switches the active language.">
           <div class="flex items-center gap-4">
@@ -202,10 +197,11 @@ const roleOptions = [
             <p class="text-xs text-on-surface-muted">Locales are determined by your i18n provider configuration.</p>
           </div>
         </SectionCard>
+      </template>
 
-        <!-- FieldFactory -->
+      <template #fieldFactory>
         <SectionCard title="FieldFactory"
-          description="Dynamically renders a styled form field from a FieldConfig object — supports text, email, password, select, and checkbox field types.">
+          description="Dynamically renders a styled form field from a FieldConfig object - supports text, email, password, select, and checkbox field types.">
           <div class="grid md:grid-cols-2 gap-6">
             <div class="space-y-4">
               <FieldFactory :type="FieldType.Text" name="username" label="Username" :value="fieldValues.username"
@@ -225,8 +221,9 @@ const roleOptions = [
             </div>
           </div>
         </SectionCard>
+      </template>
 
-        <!-- AcceptInvite -->
+      <template #acceptInvite>
         <SectionCard title="AcceptInvite"
           description="Renders the accept-invite flow. Typically shown on a dedicated /accept-invite route when a user arrives via an invitation link.">
           <div class="space-y-3">
@@ -240,9 +237,7 @@ const roleOptions = [
             <AcceptInvite />
           </div>
         </SectionCard>
-
-      </div>
-    </div>
-
+      </template>
+    </TabGroup>
   </div>
 </template>

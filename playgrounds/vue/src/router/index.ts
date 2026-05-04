@@ -11,9 +11,9 @@ const router = createRouter({
       path: '/components/:tab',
       component: () => import('../views/ComponentsView.vue'),
     },
-    { path: '/public-apis', redirect: '/public-apis/asgardeo' },
+    { path: '/composables', redirect: '/composables/asgardeo' },
     {
-      path: '/public-apis/:tab',
+      path: '/composables/:tab',
       component: () => import('../views/PublicApisView.vue'),
     },
     createCallbackRoute({ path: '/callback' }),
