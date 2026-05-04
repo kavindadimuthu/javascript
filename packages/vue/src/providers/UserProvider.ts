@@ -54,7 +54,7 @@ interface UserProviderProps {
 const UserProvider: Component = defineComponent({
   name: 'UserProvider',
   props: {
-    /** Optional callback run after the profile is updated locally. */
+    /** Callback to sync a successfully-saved profile back up to AsgardeoProvider. */
     onUpdateProfile: {default: undefined, type: Function as PropType<(payload: User) => void>},
     /** The full user profile data (nested + flat + schemas). */
     profile: {default: null, type: Object as PropType<UserProfile | null>},
@@ -80,6 +80,7 @@ const UserProvider: Component = defineComponent({
 
     const context: UserContextValue = {
       flattenedProfile: flattenedProfileRef as unknown as Readonly<Ref<User | null>>,
+      onUpdateProfile: props.onUpdateProfile ?? ((): void => {}),
       profile: profileRef as unknown as Readonly<Ref<UserProfile | null>>,
       revalidateProfile: props.revalidateProfile,
       schemas: schemasRef as unknown as Readonly<Ref<Schema[] | null>>,

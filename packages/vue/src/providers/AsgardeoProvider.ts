@@ -20,6 +20,7 @@ import {
   AllOrganizationsApiResponse,
   AsgardeoRuntimeError,
   extractUserClaimsFromIdToken,
+  generateFlattenedUserProfile,
   hasAuthParamsInUrl,
   hasCalledForThisInstanceInUrl,
   HttpResponse,
@@ -550,6 +551,17 @@ const AsgardeoProvider: Component = defineComponent({
                             h(
                               UserProvider,
                               {
+                                onUpdateProfile: (updatedUser: User): void => {
+                                  user.value = updatedUser;
+                                  userProfile.value = {
+                                    flattenedProfile: generateFlattenedUserProfile(
+                                      updatedUser,
+                                      userProfile.value?.schemas,
+                                    ),
+                                    profile: updatedUser,
+                                    schemas: userProfile.value?.schemas ?? [],
+                                  };
+                                },
                                 profile: userProfile.value,
                                 revalidateProfile: async (): Promise<void> => {
                                   const revalConfig: AsgardeoVueConfig = buildConfig();
