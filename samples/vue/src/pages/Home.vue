@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SignedIn, SignedOut, SignInButton, UserProfile } from '@asgardeo/vue';
+import { SignedIn, SignedOut, SignInButton } from '@asgardeo/vue';
 import Header from '../components/Header.vue';
 </script>
 
