@@ -128,8 +128,8 @@ export {default as Callback} from './components/auth/Callback';
 export {default as SignedIn} from './components/control/SignedIn';
 export {default as SignedOut} from './components/control/SignedOut';
 export {default as Loading} from './components/control/Loading';
-export {default as User} from './components/control/user/User';
-export {default as OrganizationComponent} from './components/control/organization/Organization';
+export {default as User} from './components/presentation/user/User';
+export {default as Organization} from './components/presentation/organization/Organization';
 
 // ── UI Components — Presentation ──
 export {default as SignIn} from './components/presentation/sign-in/SignIn';
@@ -195,7 +195,7 @@ export {
   type HttpRequestConfig,
   type HttpResponse,
   type IdToken,
-  type Organization,
+  type Organization as IOrganization,
   type SignInOptions,
   type SignOutOptions,
   type SignUpOptions,
