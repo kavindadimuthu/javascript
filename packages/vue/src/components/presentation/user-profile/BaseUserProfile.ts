@@ -34,13 +34,10 @@ import Spinner from '../../primitives/Spinner';
 import TextField from '../../primitives/TextField';
 import Typography from '../../primitives/Typography';
 import getDisplayName from '../../../utils/getDisplayName';
+import getMappedUserProfileValue from '../../../utils/getMappedUserProfileValue';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-/**
- * Extended schema entry — a flattened schema attribute with its parent schema
- * URN attached. The SCIM schemas endpoint returns these after flattening.
- */
 interface ExtendedSchema {
   description?: string;
   displayName?: string;
@@ -56,8 +53,11 @@ interface ExtendedSchema {
 }
 
 export interface BaseUserProfileProps {
+  avatarSize?: 'sm' | 'md' | 'lg';
   cardLayout?: boolean;
+  cardVariant?: 'elevated' | 'outlined' | 'flat';
   className?: string;
+  compact?: boolean;
   editable?: boolean;
   error?: string | null;
   flattenedProfile?: User | null;
@@ -66,13 +66,13 @@ export interface BaseUserProfileProps {
   onUpdate?: (payload: any) => Promise<void>;
   profile?: User | null;
   schemas?: Schema[] | null;
+  showAvatar?: boolean;
   showFields?: string[];
   title?: string;
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-/** System/internal SCIM fields that should never be shown to the user. */
 const FIELDS_TO_SKIP: string[] = [
   'roles.default',
   'active',
@@ -93,7 +93,6 @@ const FIELDS_TO_SKIP: string[] = [
   'preferredMFAOption',
 ];
 
-/** Fields that must always be read-only regardless of schema mutability. */
 const READONLY_FIELDS: string[] = ['username', 'userName', 'user_name'];
 
 const DEFAULT_ATTRIBUTE_MAPPINGS: Record<string, string | string[]> = {
@@ -105,14 +104,14 @@ const DEFAULT_ATTRIBUTE_MAPPINGS: Record<string, string | string[]> = {
 };
 
 const AVATAR_GRADIENTS: string[] = [
-  'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
-  'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
-  'linear-gradient(135deg, #22c55e 0%, #10b981 100%)',
+  'linear-gradient(135deg, #4b6ef5 0%, #7c3aed 100%)',
+  'linear-gradient(135deg, #0ea5e9 0%, #4b6ef5 100%)',
+  'linear-gradient(135deg, #10b981 0%, #0ea5e9 100%)',
   'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
-  'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
-  'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+  'linear-gradient(135deg, #ec4899 0%, #7c3aed 100%)',
+  'linear-gradient(135deg, #8b5cf6 0%, #4b6ef5 100%)',
   'linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%)',
-  'linear-gradient(135deg, #f97316 0%, #eab308 100%)',
+  'linear-gradient(135deg, #f97316 0%, #ec4899 100%)',
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -134,17 +133,12 @@ function formatLabel(key: string): string {
     .join(' ');
 }
 
-/**
- * Build the SCIM2 PATCH `value` object for a field update.
- * Handles core schema fields, extension schema fields, and complex multi-valued attributes.
- */
 function buildScimPatchValue(
   flatKey: string,
   rawValue: any,
   schemaId: string | undefined,
   multiValued: boolean | undefined,
 ): Record<string, unknown> {
-  // phoneNumbers.mobile needs a dual-write to keep phoneNumbers and mobileNumbers in sync.
   if (flatKey === 'phoneNumbers.mobile') {
     return {
       phoneNumbers: [{type: 'mobile', value: rawValue}],
@@ -168,12 +162,10 @@ function buildScimPatchValue(
 
   const value: unknown = multiValued ? [rawValue] : rawValue;
 
-  // For extension schemas, nest under the schema URN.
   if (schemaId && schemaId !== WellKnownSchemaIds.User) {
     return {[schemaId]: {[flatKey]: value}};
   }
 
-  // For core schema, build a nested object from dotted path (e.g. name.givenName).
   const segments = flatKey.split('.');
   const nested: Record<string, unknown> = {};
   let cursor: Record<string, unknown> = nested;
@@ -191,8 +183,20 @@ const BaseUserProfile: Component = defineComponent({
   inheritAttrs: false,
   name: 'BaseUserProfile',
   props: {
+    /** Avatar circle size. */
+    avatarSize: {
+      default: 'lg',
+      type: String as PropType<'sm' | 'md' | 'lg'>,
+    },
     cardLayout: {default: true, type: Boolean},
+    /** Shadow / border style of the Card wrapper. */
+    cardVariant: {
+      default: 'elevated',
+      type: String as PropType<'elevated' | 'outlined' | 'flat'>,
+    },
     className: {default: '', type: String},
+    /** Tighter field spacing for modal / dropdown contexts. */
+    compact: {default: false, type: Boolean},
     editable: {default: true, type: Boolean},
     error: {default: null, type: String as PropType<string | null>},
     flattenedProfile: {default: null, type: Object as PropType<User | null>},
@@ -201,6 +205,8 @@ const BaseUserProfile: Component = defineComponent({
     onUpdate: {default: undefined, type: Function as PropType<(payload: any) => Promise<void>>},
     profile: {default: null, type: Object as PropType<User | null>},
     schemas: {default: () => [], type: Array as PropType<Schema[] | null>},
+    /** Whether to render the avatar hero banner. */
+    showAvatar: {default: true, type: Boolean},
     showFields: {default: () => [], type: Array as PropType<string[]>},
     title: {default: 'Profile', type: String},
   },
@@ -208,9 +214,9 @@ const BaseUserProfile: Component = defineComponent({
     const editingFields: Ref<Record<string, boolean>> = ref({});
     const editedValues: Ref<Record<string, any>> = ref({});
 
-    const prefix = withVendorCSSClassPrefix;
+    const px = withVendorCSSClassPrefix;
 
-    // ── Field visibility ──────────────────────────────────────────────────────
+    // ── Visibility ────────────────────────────────────────────────────────────
 
     function shouldShowField(fieldName: string): boolean {
       if (FIELDS_TO_SKIP.includes(fieldName)) return false;
@@ -219,7 +225,7 @@ const BaseUserProfile: Component = defineComponent({
       return true;
     }
 
-    // ── Edit state management ─────────────────────────────────────────────────
+    // ── Edit state ────────────────────────────────────────────────────────────
 
     function startEditing(fieldName: string, currentValue: any): void {
       editedValues.value = {...editedValues.value, [fieldName]: currentValue ?? ''};
@@ -260,11 +266,11 @@ const BaseUserProfile: Component = defineComponent({
 
         case 'BOOLEAN':
           return h(Checkbox, {
+            label: schema.displayName || fieldName,
             modelValue: Boolean(currentValue),
             'onUpdate:modelValue': (v: boolean) => {
               editedValues.value = {...editedValues.value, [fieldName]: v};
             },
-            label: schema.displayName || fieldName,
           });
 
         default:
@@ -279,7 +285,7 @@ const BaseUserProfile: Component = defineComponent({
       }
     }
 
-    // ── Schema-driven field row ────────────────────────────────────────────────
+    // ── Schema-driven field row ───────────────────────────────────────────────
 
     function renderSchemaFieldRow(schema: ExtendedSchema): VNode | null {
       const {name, displayName, description, mutability, value} = schema;
@@ -291,18 +297,17 @@ const BaseUserProfile: Component = defineComponent({
       const isEditing = editingFields.value[name];
       const hasValue = value !== undefined && value !== null && value !== '';
 
-      // Hide empty read-only fields; show empty editable fields so the user can fill them.
       if (!hasValue && !isEditing && !(isEditable && mutability === 'READ_WRITE')) return null;
 
-      return h('div', {class: prefix('user-profile__field'), key: name}, [
-        h('div', {class: prefix('user-profile__field-label-col')}, [
-          h(Typography, {class: prefix('user-profile__field-label'), variant: 'body2'}, () => label),
+      return h('div', {class: px('user-profile__field'), key: name}, [
+        h('div', {class: px('user-profile__field-label-col')}, [
+          h(Typography, {class: px('user-profile__field-label'), variant: 'body2'}, () => label),
         ]),
-        h('div', {class: prefix('user-profile__field-value-col')}, [
+        h('div', {class: px('user-profile__field-value-col')}, [
           isEditing
-            ? h('div', {class: prefix('user-profile__field-edit')}, [
+            ? h('div', {class: px('user-profile__field-edit')}, [
                 renderInput(schema),
-                h('div', {class: prefix('user-profile__field-edit-actions')}, [
+                h('div', {class: px('user-profile__field-edit-actions')}, [
                   h(
                     Button,
                     {onClick: () => saveField(schema), size: 'small' as const, variant: 'solid' as const},
@@ -315,18 +320,13 @@ const BaseUserProfile: Component = defineComponent({
                   ),
                 ]),
               ])
-            : h('div', {class: prefix('user-profile__field-display')}, [
+            : h('div', {class: px('user-profile__field-display')}, [
                 hasValue
-                  ? h(Typography, {class: prefix('user-profile__field-value'), variant: 'body1'}, () =>
-                      String(value),
-                    )
+                  ? h(Typography, {class: px('user-profile__field-value'), variant: 'body1'}, () => String(value))
                   : isEditable
                     ? h(
                         'span',
-                        {
-                          class: prefix('user-profile__field-placeholder'),
-                          onClick: () => startEditing(name, value),
-                        },
+                        {class: px('user-profile__field-placeholder'), onClick: () => startEditing(name, value)},
                         `Enter your ${label.toLowerCase()}`,
                       )
                     : null,
@@ -335,7 +335,7 @@ const BaseUserProfile: Component = defineComponent({
                       'button',
                       {
                         'aria-label': `Edit ${label}`,
-                        class: prefix('user-profile__field-edit-btn'),
+                        class: px('user-profile__field-edit-btn'),
                         onClick: () => startEditing(name, value),
                         type: 'button',
                       },
@@ -347,7 +347,7 @@ const BaseUserProfile: Component = defineComponent({
       ]);
     }
 
-    // ── Fallback: no schemas — show all non-empty profile fields ──────────────
+    // ── Fallback: no schemas ──────────────────────────────────────────────────
 
     function renderProfileWithoutSchemas(): VNode[] {
       const data = (props.flattenedProfile || props.profile) as Record<string, any> | null;
@@ -360,12 +360,12 @@ const BaseUserProfile: Component = defineComponent({
         })
         .sort(([a]: [string, any], [b]: [string, any]) => a.localeCompare(b))
         .map(([key, value]: [string, any]) =>
-          h('div', {class: prefix('user-profile__field'), key}, [
-            h('div', {class: prefix('user-profile__field-label-col')}, [
-              h(Typography, {class: prefix('user-profile__field-label'), variant: 'body2'}, () => formatLabel(key)),
+          h('div', {class: px('user-profile__field'), key}, [
+            h('div', {class: px('user-profile__field-label-col')}, [
+              h(Typography, {class: px('user-profile__field-label'), variant: 'body2'}, () => formatLabel(key)),
             ]),
-            h('div', {class: prefix('user-profile__field-value-col')}, [
-              h(Typography, {class: prefix('user-profile__field-value'), variant: 'body1'}, () =>
+            h('div', {class: px('user-profile__field-value-col')}, [
+              h(Typography, {class: px('user-profile__field-value'), variant: 'body1'}, () =>
                 typeof value === 'object' ? JSON.stringify(value) : String(value),
               ),
             ]),
@@ -373,27 +373,16 @@ const BaseUserProfile: Component = defineComponent({
         );
     }
 
-    // ── Render ────────────────────────────────────────────────────────────────
+    // ── Hero section ──────────────────────────────────────────────────────────
 
-    return (): VNode | VNode[] | null => {
-      const data = props.flattenedProfile || props.profile;
+    function renderHero(currentUser: Record<string, any>): VNode {
+      const displayName = getDisplayName(DEFAULT_ATTRIBUTE_MAPPINGS, currentUser as User);
+      const email =
+        getMappedUserProfileValue('email', DEFAULT_ATTRIBUTE_MAPPINGS, currentUser as User) ||
+        getMappedUserProfileValue('username', DEFAULT_ATTRIBUTE_MAPPINGS, currentUser as User);
 
-      if (!data && !props.isLoading) {
-        return slots['default'] ? slots['default']({error: props.error, isLoading: props.isLoading, profile: null}) : null;
-      }
-
-      if (slots['default']) {
-        return slots['default']({error: props.error, isLoading: props.isLoading, profile: data});
-      }
-
-      const currentUser = data as Record<string, any> | null;
-      const displayName = currentUser
-        ? getDisplayName(DEFAULT_ATTRIBUTE_MAPPINGS, currentUser as User)
-        : 'User';
       const avatarSeed = String(
-        (currentUser &&
-          (currentUser['username'] || currentUser['userName'] || currentUser['email'] || currentUser['sub'])) ??
-          displayName,
+        currentUser['username'] || currentUser['userName'] || currentUser['email'] || currentUser['sub'] || displayName,
       );
       const avatarGradient = getAvatarGradient(avatarSeed);
       const initials = displayName
@@ -403,41 +392,75 @@ const BaseUserProfile: Component = defineComponent({
         .join('')
         .toUpperCase() || '?';
 
+      const avatarSizeClass = px(`user-profile__avatar--${props.avatarSize ?? 'lg'}`);
+
+      return h('div', {class: px('user-profile__hero')}, [
+        h('div', {class: px('user-profile__avatar-wrapper')}, [
+          h(
+            'div',
+            {class: [px('user-profile__avatar'), avatarSizeClass].join(' '), style: {background: avatarGradient}},
+            [h('span', {class: px('user-profile__avatar-initials')}, initials)],
+          ),
+        ]),
+        h('div', {class: px('user-profile__hero-info')}, [
+          h('span', {class: px('user-profile__hero-name')}, displayName),
+          email ? h('span', {class: px('user-profile__hero-subtitle')}, String(email)) : null,
+        ]),
+      ]);
+    }
+
+    // ── Main render ───────────────────────────────────────────────────────────
+
+    return (): VNode | VNode[] | null => {
+      const data = props.flattenedProfile || props.profile;
+
+      if (!data && !props.isLoading) {
+        return slots['default']
+          ? slots['default']({error: props.error, isLoading: props.isLoading, profile: null})
+          : null;
+      }
+
+      if (slots['default']) {
+        return slots['default']({error: props.error, isLoading: props.isLoading, profile: data});
+      }
+
+      const currentUser = data as Record<string, any>;
       const schemas = (props.schemas ?? []) as ExtendedSchema[];
       const hasSchemas = schemas.length > 0;
 
+      const rootClasses = [
+        px('user-profile'),
+        props.compact ? px('user-profile--compact') : '',
+        props.className ?? '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
       const children: VNode[] = [];
 
-      // Header
+      // Title header
       children.push(
-        h('div', {class: prefix('user-profile__header')}, [
-          h(Typography, {class: prefix('user-profile__title'), variant: 'h5'}, () => props.title ?? 'Profile'),
+        h('div', {class: px('user-profile__header')}, [
+          h('span', {class: px('user-profile__title')}, props.title ?? 'Profile'),
         ]),
       );
-      children.push(h(Divider, {class: prefix('user-profile__header-divider')}));
+      children.push(h(Divider, {class: px('user-profile__header-divider')}));
 
-      // Avatar
-      children.push(
-        h('div', {class: prefix('user-profile__avatar-section')}, [
-          h(
-            'div',
-            {class: prefix('user-profile__avatar'), style: {background: avatarGradient}},
-            [h('span', {class: prefix('user-profile__avatar-initials')}, initials)],
-          ),
-          h(Typography, {class: prefix('user-profile__display-name'), variant: 'h6'}, () => displayName),
-        ]),
-      );
+      // Hero
+      if (props.showAvatar !== false && currentUser) {
+        children.push(renderHero(currentUser));
+      }
 
       // Error alert
       if (props.error) {
         children.push(
-          h(Alert, {class: prefix('user-profile__error'), severity: 'error' as const}, () => props.error),
+          h(Alert, {class: px('user-profile__error'), severity: 'error' as const}, () => props.error),
         );
       }
 
       // Fields
       if (props.isLoading) {
-        children.push(h('div', {class: prefix('user-profile__loading')}, [h(Spinner)]));
+        children.push(h('div', {class: px('user-profile__loading')}, [h(Spinner)]));
       } else if (hasSchemas) {
         const fieldRows: VNode[] = schemas
           .filter((s: ExtendedSchema) => s.name && shouldShowField(s.name))
@@ -452,20 +475,24 @@ const BaseUserProfile: Component = defineComponent({
           })
           .filter((node): node is VNode => node !== null);
 
-        children.push(h('div', {class: prefix('user-profile__fields')}, fieldRows));
+        children.push(h('div', {class: px('user-profile__fields')}, fieldRows));
       } else {
-        children.push(h('div', {class: prefix('user-profile__fields')}, renderProfileWithoutSchemas()));
+        children.push(h('div', {class: px('user-profile__fields')}, renderProfileWithoutSchemas()));
       }
 
       if (slots['footer']) {
-        children.push(h('div', {class: prefix('user-profile__footer')}, slots['footer']()));
+        children.push(h('div', {class: px('user-profile__footer')}, slots['footer']()));
       }
 
       if (props.cardLayout) {
-        return h(Card, {class: [prefix('user-profile'), props.className].filter(Boolean).join(' ')}, () => children);
+        return h(
+          Card,
+          {class: rootClasses, variant: props.cardVariant ?? 'elevated'},
+          () => children,
+        );
       }
 
-      return h('div', {class: [prefix('user-profile'), props.className].filter(Boolean).join(' ')}, children);
+      return h('div', {class: rootClasses}, children);
     };
   },
 });
