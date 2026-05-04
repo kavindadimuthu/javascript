@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SignedIn, SignedOut, SignInButton } from '@asgardeo/vue';
+import { SignedIn, SignedOut, SignInButton, User } from '@asgardeo/vue';
 import Header from '../components/Header.vue';
 </script>
 
@@ -19,6 +19,18 @@ import Header from '../components/Header.vue';
       <div class="max-w-2xl mx-auto">
         <h1 class="text-3xl font-bold text-gray-900">Welcome back!</h1>
         <p class="text-lg text-gray-500 mb-6">This is a sample application to demonstrate the Asgardeo Vue SDK</p>
+        <!-- AsgardeoV2 (ID token claims) -->
+         <User>   
+           <template #default="{ user }">
+             <p>Welcome, {{ user.given_name }}!</p>
+            </template>
+        </User>
+
+        <!-- Non-V2 (SCIM) -->
+        <!-- <template #default="{ user }">
+          <p>Welcome, {{ user.name?.givenName }}!</p>
+        </template> -->
+
       </div>
     </SignedIn>
   </main>

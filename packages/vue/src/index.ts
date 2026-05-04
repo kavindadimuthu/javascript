@@ -128,7 +128,7 @@ export {default as Callback} from './components/auth/Callback';
 export {default as SignedIn} from './components/control/SignedIn';
 export {default as SignedOut} from './components/control/SignedOut';
 export {default as Loading} from './components/control/Loading';
-export {default as UserComponent} from './components/control/user/User';
+export {default as User} from './components/control/user/User';
 export {default as OrganizationComponent} from './components/control/organization/Organization';
 
 // ── UI Components — Presentation ──
@@ -201,7 +201,7 @@ export {
   type SignUpOptions,
   type TokenExchangeRequestConfig,
   type TokenResponse,
-  type User, // type UserProfile,
+  type User as IUser,
 } from '@asgardeo/browser';
 
 // ── Phase 4 — Utilities ──
