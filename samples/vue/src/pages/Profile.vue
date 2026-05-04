@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import {UserProfile, SignOutButton} from '@asgardeo/vue';
-import {RouterLink} from 'vue-router';
+import { UserProfile } from '@asgardeo/vue';
+import Header from '../components/Header.vue';
 </script>
 
 <template>
-  <main>
-    <nav>
-      <RouterLink to="/">← Home</RouterLink>
-    </nav>
+  <Header />
 
-    <UserProfile />
-
-    <SignOutButton />
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="max-w-2xl mx-auto">
+      <UserProfile />
+    </div>
   </main>
 </template>

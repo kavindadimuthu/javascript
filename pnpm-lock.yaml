@@ -874,9 +874,15 @@ importers:
         specifier: ^4.5.0
         version: 4.6.4(vue@3.5.30(typescript@5.7.2))
     devDependencies:
+      '@tailwindcss/vite':
+        specifier: 4.1.8
+        version: 4.1.8(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.92.1)(sass@1.92.1)(terser@5.39.2)(tsx@4.21.0)(yaml@2.8.3))
       '@vitejs/plugin-vue':
         specifier: 5.1.4
         version: 5.1.4(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.92.1)(sass@1.92.1)(terser@5.39.2)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.30(typescript@5.7.2))
+      tailwindcss:
+        specifier: ^4.2.4
+        version: 4.2.4
       typescript:
         specifier: ~5.7.2
         version: 5.7.2
@@ -7993,6 +7999,9 @@ packages:
 
   tailwindcss@4.1.8:
     resolution: {integrity: sha512-kjeW8gjdxasbmFKpVGrGd5T4i40mV5J2Rasw48QARfYeQ8YS9x02ON9SFWax3Qf616rt4Cp3nVNIj6Hd1mP3og==}
+
+  tailwindcss@4.2.4:
+    resolution: {integrity: sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA==}
 
   tapable@2.2.2:
     resolution: {integrity: sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg==}
@@ -17187,6 +17196,8 @@ snapshots:
 
   tailwindcss@4.1.8: {}
 
+  tailwindcss@4.2.4: {}
+
   tapable@2.2.2: {}
 
   tar-stream@2.2.0:
@@ -18168,7 +18179,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.15.3
-      '@vitest/browser': 3.1.3(playwright@1.55.1)(vite@6.4.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.92.1)(sass@1.92.1)(terser@5.39.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@3.1.3)
+      '@vitest/browser': 3.1.3(playwright@1.58.2)(vite@6.4.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.92.1)(sass@1.92.1)(terser@5.39.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@3.1.3)
       jsdom: 27.4.0
     transitivePeerDependencies:
       - jiti

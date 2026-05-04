@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import {SignedIn, SignedOut, SignInButton, SignOutButton, UserDropdown} from '@asgardeo/vue';
-import {RouterLink} from 'vue-router';
+import { SignedIn, SignedOut, SignInButton, UserProfile } from '@asgardeo/vue';
+import Header from '../components/Header.vue';
 </script>
 
 <template>
-  <main>
-    <h1>Asgardeo Vue Sample</h1>
+  <Header />
 
+  <main class="max-w-7xl mx-auto px-6 py-8">
     <SignedOut>
-      <p>Sign in to access your profile.</p>
-      <SignInButton />
+      <div class="flex flex-col items-center text-center py-20 gap-5">
+        <h1 class="text-3xl font-bold text-gray-900">Welcome to Asgardeo Vue Sample</h1>
+        <p class="text-lg text-gray-500">Sign in to access your profile and manage your account.</p>
+        <SignInButton />
+      </div>
     </SignedOut>
 
     <SignedIn>
-      <nav>
-        <RouterLink to="/profile">View Profile</RouterLink>
-      </nav>
-      <UserDropdown />
-      <SignOutButton />
+      <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900">Welcome back!</h1>
+        <p class="text-lg text-gray-500 mb-6">This is a sample application to demonstrate the Asgardeo Vue SDK</p>
+      </div>
     </SignedIn>
   </main>
 </template>

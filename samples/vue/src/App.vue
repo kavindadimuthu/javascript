@@ -6,7 +6,9 @@ const baseUrl = import.meta.env.VITE_ASGARDEO_BASE_URL as string;
 const clientId = import.meta.env.VITE_ASGARDEO_CLIENT_ID as string;
 const afterSignInUrl = import.meta.env.VITE_ASGARDEO_AFTER_SIGN_IN_URL as string;
 const afterSignOutUrl = import.meta.env.VITE_ASGARDEO_AFTER_SIGN_OUT_URL as string;
-const scopes = ['openid', 'profile', 'email'];
+const scopes = ['openid', 'profile', 'email', 'internal_login', 'address', 'phone'];
+const platform = 'AsgardeoV2';
+// const platform = 'Asgardeo';
 </script>
 
 <template>
@@ -16,6 +18,7 @@ const scopes = ['openid', 'profile', 'email'];
     :afterSignInUrl="afterSignInUrl"
     :afterSignOutUrl="afterSignOutUrl"
     :scopes="scopes"
+    :platform="platform"
   >
     <RouterView />
   </AsgardeoProvider>
