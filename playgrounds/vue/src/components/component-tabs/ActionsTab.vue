@@ -13,8 +13,7 @@ const activeTab = ref(tabs[0]?.key ?? 'signInButton');
 </script>
 
 <template>
-  <div class="space-y-4">
-    <TabGroup :tabs="tabs" v-model="activeTab">
+  <TabGroup class="h-full" :tabs="tabs" v-model="activeTab">
 
       <template #signInButton>
         <ComponentCard name="SignInButton" :badges="['Actions']">
@@ -40,6 +39,5 @@ const activeTab = ref(tabs[0]?.key ?? 'signInButton');
         </ComponentCard>
       </template>
 
-    </TabGroup>
-  </div>
+  </TabGroup>
 </template>

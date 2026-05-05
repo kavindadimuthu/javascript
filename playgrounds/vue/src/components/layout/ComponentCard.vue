@@ -22,27 +22,28 @@ function badgeStyle(badge: string): string {
 </script>
 
 <template>
-  <div class="rounded-xl border border-border bg-surface-secondary shadow-sm overflow-hidden">
-    <!-- Header -->
-    <div class="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-surface-muted/60">
+  <!-- h-full is injected by TabGroup's [&>*]:h-full; flex-col propagates height into body -->
+  <div class="flex flex-col rounded-xl border border-border bg-surface-secondary shadow-sm overflow-hidden h-full">
+    <!-- Header — fixed height, never shrinks -->
+    <div class="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-surface-muted/60 shrink-0">
       <code class="text-sm font-semibold text-on-surface">&lt;{{ name }}/&gt;</code>
       <div class="flex gap-1.5 ml-auto flex-wrap justify-end">
         <span v-for="badge in badges" :key="badge" :style="badgeStyle(badge)">{{ badge }}</span>
       </div>
     </div>
 
-    <!-- Body: Preview | Divider | Controls -->
-    <div class="flex min-h-[140px]">
+    <!-- Body: stretches to fill all remaining card height -->
+    <div class="flex flex-1 min-h-0">
       <!-- Preview canvas -->
-      <div class="component-card-canvas flex-1 min-w-0 flex items-center justify-center p-6 overflow-auto">
+      <div class="component-card-canvas flex-1 min-w-0 min-h-0 flex items-center justify-center p-6 overflow-auto">
         <slot name="preview" />
       </div>
 
       <!-- Vertical divider -->
       <div class="w-px bg-border shrink-0" />
 
-      <!-- Controls panel -->
-      <div class="w-52 shrink-0 flex flex-col p-3 gap-2 overflow-y-auto bg-surface-secondary">
+      <!-- Controls panel — doubled width (w-52 → w-[26rem]) -->
+      <div class="w-[26rem] shrink-0 flex flex-col p-4 gap-3 overflow-y-auto bg-surface-secondary">
         <slot name="controls">
           <p class="text-[11px] text-on-surface-muted italic mt-1">No customizable props</p>
         </slot>

@@ -15,27 +15,7 @@ const activeTab = ref(tabs[0]?.key ?? 'signedIn');
 </script>
 
 <template>
-  <div class="space-y-4">
-
-    <!-- Auth state indicator -->
-    <div class="flex items-center gap-2 rounded-lg border border-border bg-surface-muted px-4 py-2 text-xs">
-      <span class="font-medium text-on-surface">Auth state:</span>
-      <span v-if="isLoading"
-        class="inline-flex items-center gap-1 rounded-full bg-status-warning-bg px-2 py-0.5 text-[10px] font-medium text-status-warning-text">
-        <Spinner class="h-2.5 w-2.5" /> Loading
-      </span>
-      <span v-else-if="isSignedIn"
-        class="inline-flex items-center gap-1 rounded-full bg-status-success-bg px-2 py-0.5 text-[10px] font-medium text-status-success-text">
-        ● Signed In
-      </span>
-      <span v-else
-        class="inline-flex items-center gap-1 rounded-full bg-surface-secondary border border-border px-2 py-0.5 text-[10px] font-medium text-on-surface-muted">
-        ● Signed Out
-      </span>
-      <span class="ml-auto text-on-surface-muted">Control components react to this in real time.</span>
-    </div>
-
-    <TabGroup :tabs="tabs" v-model="activeTab">
+  <TabGroup class="h-full" :tabs="tabs" v-model="activeTab">
 
       <template #signedIn>
         <ComponentCard name="SignedIn" :badges="['Control']">
@@ -96,5 +76,5 @@ const activeTab = ref(tabs[0]?.key ?? 'signedIn');
       </template>
 
     </TabGroup>
-  </div>
+  <!-- </div> -->
 </template>

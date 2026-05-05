@@ -6,9 +6,9 @@ import ComponentCard from '../layout/ComponentCard.vue';
 import PropControl from '../layout/PropControl.vue';
 
 const tabs = [
-  { key: 'callback', label: '<Callback/>' },
   { key: 'signIn',   label: '<SignIn/>'   },
   { key: 'signUp',   label: '<SignUp/>'   },
+  { key: 'callback', label: '<Callback/>' },
 ];
 const activeTab = ref(tabs[0]?.key ?? 'callback');
 
@@ -17,8 +17,7 @@ const signInVariant = ref<'elevated' | 'outlined' | 'flat'>('outlined');
 </script>
 
 <template>
-  <div class="space-y-4">
-    <TabGroup :tabs="tabs" v-model="activeTab">
+  <TabGroup class="h-full" :tabs="tabs" v-model="activeTab">
 
       <template #callback>
         <ComponentCard name="Callback" :badges="['Auth']">
@@ -73,6 +72,5 @@ const signInVariant = ref<'elevated' | 'outlined' | 'flat'>('outlined');
         </ComponentCard>
       </template>
 
-    </TabGroup>
-  </div>
+  </TabGroup>
 </template>

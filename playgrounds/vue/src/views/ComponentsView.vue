@@ -43,11 +43,13 @@ const activeComponent = computed(() => tabComponents[activeTab.value]);
 </script>
 
 <template>
-  <div class="space-y-6">
+  <!-- height = 100dvh minus App.vue's p-6 top+bottom padding (1.5rem × 2 = 3rem) -->
+  <div class="flex flex-col" style="height: calc(100dvh - 3rem);">
     <PageHeader
+      class="shrink-0"
       title="Components"
       description="Interactive catalog of all SDK components: auth, primitives, actions, control, presentation, factories, and social logins."
     />
-    <component :is="activeComponent" />
+    <component :is="activeComponent" class="flex-1 min-h-0 mt-6" />
   </div>
 </template>

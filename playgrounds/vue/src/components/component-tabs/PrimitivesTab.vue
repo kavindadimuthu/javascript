@@ -123,8 +123,7 @@ const icons = [
 </script>
 
 <template>
-  <div class="space-y-4">
-    <TabGroup :tabs="tabs" v-model="activeTab">
+  <TabGroup class="h-full" :tabs="tabs" v-model="activeTab">
 
       <template #button>
         <ComponentCard name="Button" :badges="['Primitives']">
@@ -330,6 +329,5 @@ const icons = [
         </ComponentCard>
       </template>
 
-    </TabGroup>
-  </div>
+  </TabGroup>
 </template>

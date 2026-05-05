@@ -10,8 +10,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div>
-    <div class="border-b border-border">
+  <!-- flex flex-col so that h-full / flex-1 passed by a parent propagates into the content area -->
+  <div class="flex flex-col">
+    <!-- Tab navigation bar — never shrinks -->
+    <div class="border-b border-border shrink-0">
       <div class="tab-scroll flex gap-4 flex-nowrap overflow-x-auto">
         <button
           v-for="tab in tabs"
@@ -33,9 +35,12 @@ const emit = defineEmits<{
         </button>
       </div>
     </div>
-    <div class="mt-4">
+
+    <!-- Active tab content — grows to fill whatever height the parent gave TabGroup,
+         and passes that full height down to the slot content via [&>*]:h-full -->
+    <div class="mt-4 flex-1 min-h-0 [&>*]:h-full">
       <template v-for="tab in tabs" :key="tab.key">
-        <div v-if="modelValue === tab.key">
+        <div v-if="modelValue === tab.key" class="h-full">
           <slot :name="tab.key" />
         </div>
       </template>

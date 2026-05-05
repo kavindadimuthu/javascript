@@ -19,13 +19,13 @@ import ComponentCard from '../layout/ComponentCard.vue';
 import PropControl from '../layout/PropControl.vue';
 
 const tabs = [
-  { key: 'user',                 label: '<User/>'                 },
-  { key: 'organization',         label: '<Organization/>'         },
   { key: 'userProfile',          label: '<UserProfile/>'          },
   { key: 'userDropdown',         label: '<UserDropdown/>'         },
+  { key: 'user',                 label: '<User/>'                 },
+  { key: 'organizationProfile',  label: '<OrganizationProfile/>'  },
   { key: 'organizationList',     label: '<OrganizationList/>'     },
   { key: 'organizationSwitcher', label: '<OrganizationSwitcher/>' },
-  { key: 'organizationProfile',  label: '<OrganizationProfile/>'  },
+  { key: 'organization',         label: '<Organization/>'         },
   { key: 'createOrganization',   label: '<CreateOrganization/>'   },
   { key: 'inviteUser',           label: '<InviteUser/>'           },
   { key: 'languageSwitcher',     label: '<LanguageSwitcher/>'     },
@@ -37,8 +37,7 @@ const userProfileEditable = ref(false);
 </script>
 
 <template>
-  <div class="space-y-4">
-    <TabGroup :tabs="tabs" v-model="activeTab">
+  <TabGroup class="h-full" :tabs="tabs" v-model="activeTab">
 
       <template #user>
         <ComponentCard name="User" :badges="['Presentation']">
@@ -198,6 +197,5 @@ const userProfileEditable = ref(false);
         </ComponentCard>
       </template>
 
-    </TabGroup>
-  </div>
+  </TabGroup>
 </template>

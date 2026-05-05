@@ -44,8 +44,7 @@ function handleChange(val: string | boolean) {
 </script>
 
 <template>
-  <div class="space-y-4">
-    <TabGroup :tabs="tabs" v-model="activeTab">
+  <TabGroup class="h-full" :tabs="tabs" v-model="activeTab">
 
       <template #fieldFactory>
         <ComponentCard name="FieldFactory" :badges="['Factories']">
@@ -72,6 +71,5 @@ function handleChange(val: string | boolean) {
         </ComponentCard>
       </template>
 
-    </TabGroup>
-  </div>
+  </TabGroup>
 </template>
