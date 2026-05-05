@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
   SignedIn,
   User,
@@ -33,7 +33,21 @@ const tabs = [
 ];
 const activeTab = ref(tabs[0]?.key ?? 'user');
 
-const userProfileEditable = ref(false);
+const userProfileAvatarSize = ref<'sm' | 'md' | 'lg'>('lg');
+const userProfileCardLayout = ref(true);
+const userProfileCardVariant = ref<'elevated' | 'outlined' | 'flat'>('elevated');
+const userProfileCompact = ref(false);
+const userProfileEditable = ref(true);
+const userProfileShowAvatar = ref(true);
+const userProfileTitle = ref('Profile');
+const userProfileHideFieldsInput = ref('');
+const userProfileShowFieldsInput = ref('');
+const userProfileHideFields = computed(() =>
+  userProfileHideFieldsInput.value.split(',').map(f => f.trim()).filter(Boolean)
+);
+const userProfileShowFields = computed(() =>
+  userProfileShowFieldsInput.value.split(',').map(f => f.trim()).filter(Boolean)
+);
 </script>
 
 <template>
@@ -78,7 +92,17 @@ const userProfileEditable = ref(false);
           <template #preview>
             <SignedIn>
               <template #default>
-                <UserProfile :editable="userProfileEditable" />
+                <UserProfile
+                  :avatarSize="userProfileAvatarSize"
+                  :cardLayout="userProfileCardLayout"
+                  :cardVariant="userProfileCardVariant"
+                  :compact="userProfileCompact"
+                  :editable="userProfileEditable"
+                  :hideFields="userProfileHideFields"
+                  :showAvatar="userProfileShowAvatar"
+                  :showFields="userProfileShowFields"
+                  :title="userProfileTitle"
+                />
               </template>
               <template #fallback>
                 <p class="text-sm text-on-surface-muted italic">Sign in to preview.</p>
@@ -87,6 +111,14 @@ const userProfileEditable = ref(false);
           </template>
           <template #controls>
             <PropControl label="editable" type="toggle" v-model="userProfileEditable" />
+            <PropControl label="showAvatar" type="toggle" v-model="userProfileShowAvatar" />
+            <PropControl label="compact" type="toggle" v-model="userProfileCompact" />
+            <PropControl label="cardLayout" type="toggle" v-model="userProfileCardLayout" />
+            <PropControl label="avatarSize" type="select" :options="['sm', 'md', 'lg']" v-model="userProfileAvatarSize" />
+            <PropControl label="cardVariant" type="select" :options="['elevated', 'outlined', 'flat']" v-model="userProfileCardVariant" />
+            <PropControl label="title" type="text" v-model="userProfileTitle" />
+            <PropControl label="hideFields" type="text" v-model="userProfileHideFieldsInput" />
+            <PropControl label="showFields" type="text" v-model="userProfileShowFieldsInput" />
           </template>
         </ComponentCard>
       </template>
