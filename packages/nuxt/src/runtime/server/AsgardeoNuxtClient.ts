@@ -19,6 +19,7 @@
 import {
   AsgardeoNodeClient,
   LegacyAsgardeoNodeClient,
+  Platform,
   type AuthClientConfig,
   type IdToken,
   type Organization,
@@ -301,9 +302,22 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
   /**
    * Clears the session and returns the RP-Initiated Logout URL.
    * Accepts either `(sessionId: string)` or `(options?, sessionId?, callback?)`.
+   *
+   * For AsgardeoV2 (Thunder), RP-Initiated Logout is not yet supported by the platform.
+   * Skip the /oidc/logout call and return afterSignOutUrl directly — the caller
+   * (signout.post.ts) is responsible for clearing session cookies.
    */
   override async signOut(...args: any[]): Promise<string> {
     const sessionId: string = typeof args[0] === 'string' ? args[0] : (args[1] as string);
+
+    const configData: AuthClientConfig<AsgardeoNuxtConfig> | undefined = (await this.legacy.getConfigData?.()) as
+      | AuthClientConfig<AsgardeoNuxtConfig>
+      | undefined;
+
+    if ((configData as any)?.platform === Platform.AsgardeoV2) {
+      return (configData?.afterSignOutUrl as string) || (configData?.afterSignInUrl as string) || '/';
+    }
+
     return this.legacy.signOut(sessionId);
   }
 
