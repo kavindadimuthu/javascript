@@ -359,6 +359,12 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
       | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
 
+    // AsgardeoV2 (Thunder) does not support SCIM2 — return ID token claims directly.
+    if ((configData as any)?.platform === Platform.AsgardeoV2) {
+      const user: User = await this.getUser(sessionId);
+      return {flattenedProfile: user, profile: user, schemas: []};
+    }
+
     try {
       const authHeaders: Record<string, string> = {Authorization: `Bearer ${accessToken}`};
 
@@ -437,6 +443,11 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
       | AuthClientConfig<AsgardeoNuxtConfig>
       | undefined;
     const baseUrl: string = (configData?.baseUrl ?? '') as string;
+
+    // AsgardeoV2 (Thunder) does not support SCIM2 profile updates.
+    if ((configData as any)?.platform === Platform.AsgardeoV2) {
+      throw new Error('Profile updates are not supported for the AsgardeoV2 (Thunder) platform.');
+    }
 
     return updateMeProfile({
       ...config, // pass-through, includes payload
