@@ -117,6 +117,7 @@ class AsgardeoNuxtClient extends AsgardeoNodeClient<AsgardeoNuxtConfig> {
       clientId: config.clientId as string,
       clientSecret: config.clientSecret || undefined,
       enablePKCE: true,
+      platform: config.platform,
       scopes: config.scopes || ['openid', 'profile'],
     } as AuthClientConfig<AsgardeoNuxtConfig>;
 
