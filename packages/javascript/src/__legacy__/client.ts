@@ -34,6 +34,7 @@ import {Storage, TemporaryStore} from '../models/store';
 import {TokenResponse, IdToken, TokenExchangeRequestConfig} from '../models/token';
 import {User} from '../models/user';
 import StorageManager from '../StorageManager';
+import base64Encode from '../utils/base64Encode';
 import deepMerge from '../utils/deepMerge';
 import extractPkceStorageKeyFromState from '../utils/extractPkceStorageKeyFromState';
 import generatePkceStorageKey from '../utils/generatePkceStorageKey';
@@ -377,7 +378,12 @@ export class AsgardeoAuthClient<T> {
 
     body.set('client_id', configData.clientId);
 
-    if (configData.clientSecret && configData.clientSecret.trim().length > 0) {
+    // AsgardeoV2 (Thunder) requires client_secret_basic: credentials in the Authorization header.
+    // All other platforms use client_secret_post: credentials in the request body.
+    const hasSecret: boolean = Boolean(configData.clientSecret && configData.clientSecret.trim().length > 0);
+    const useBasicAuth: boolean = hasSecret && (configData as any).platform === Platform.AsgardeoV2;
+
+    if (hasSecret && !useBasicAuth) {
       body.set('client_secret', configData.clientSecret);
     }
 
@@ -403,16 +409,25 @@ export class AsgardeoAuthClient<T> {
       await this.storageManager.removeTemporaryDataParameter(extractPkceStorageKeyFromState(state), userId);
     }
 
+    const tokenRequestHeaders: Record<string, string> = {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    if (useBasicAuth) {
+      const credential: string = `${encodeURIComponent(configData.clientId)}:${encodeURIComponent(
+        configData.clientSecret,
+      )}`;
+      tokenRequestHeaders['Authorization'] = `Basic ${base64Encode(credential)}`;
+    }
+
     let tokenResponse: Response;
 
     try {
       tokenResponse = await fetch(tokenEndpoint, {
         body,
         credentials: configData.sendCookiesInRequests ? 'include' : 'same-origin',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        headers: tokenRequestHeaders,
         method: 'POST',
       });
     } catch (error: any) {
